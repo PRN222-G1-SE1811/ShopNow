@@ -7,7 +7,7 @@ using System.Diagnostics;
 namespace ShopNow.Presentation.Controllers
 {
 	public class HomeController : Controller
-	{// test
+	{
 		private readonly ILogger<HomeController> _logger;
 		private readonly IUnitOfWork<Product, Guid> _unitOfWork;
 
