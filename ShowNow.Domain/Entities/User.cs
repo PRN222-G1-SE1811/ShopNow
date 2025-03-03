@@ -7,11 +7,11 @@ namespace ShowNow.Domain.Entities
 	[Table("Users")]
 	public class User : IdentityUser<Guid>, IHasCreatedAt, IHasUpdatedAt
 	{
-		public string FirstName { get; set; }
-		public string LastName { get; set; }
-		public string Address { get; set; }
-		public string City { get; set; }
-		public string Country { get; set; }
+		public required string FirstName { get; set; }
+		public required string LastName { get; set; }
+		public required string Address { get; set; }
+		public required string City { get; set; }
+		public required string Country { get; set; }
 		public DateTime CreatedAt { get; set; }
 		public DateTime UpdatedAt { get; set; }
 	}
