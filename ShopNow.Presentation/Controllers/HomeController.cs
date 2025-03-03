@@ -6,6 +6,7 @@ using System.Diagnostics;
 
 namespace ShopNow.Presentation.Controllers
 {
+	// test
 	public class HomeController : Controller
 	{
 		private readonly ILogger<HomeController> _logger;
