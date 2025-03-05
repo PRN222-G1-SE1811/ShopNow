@@ -1,4 +1,5 @@
-﻿using ShowNow.Domain.Entities;
+﻿using ShopNow.Shared.Paginators;
+using ShowNow.Domain.Entities;
 using System.Linq.Expressions;
 
 namespace ShowNow.Domain.Interfaces
@@ -122,7 +123,6 @@ namespace ShowNow.Domain.Interfaces
 		/// </summary>
 		/// <param name="predicate">A condition to filter entities</param>
 		/// <returns>List of all entities</returns>
-
 		List<TEntity> GetAllList(Expression<Func<TEntity, bool>> predicate);
 
 
@@ -209,5 +209,19 @@ namespace ShowNow.Domain.Interfaces
 		/// <param name="entity"></param>
 		/// <returns>Entity</returns>
 		TEntity Update(TEntity entity);
+
+		/// <summary>
+		/// Get paginated results with filtering and sorting
+		/// </summary>
+		/// <param name="pageIndex">The current page</param>
+		/// <param name="pageSize">The page size</param>
+		/// <param name="filter">Filter condition</param>
+		/// <param name="orderBy">Order by condition</param>
+		/// <returns>Page result</returns>
+		Task<PageResult<TEntity>> GetPaginatedAsync(
+			int pageIndex,
+			int pageSize,
+			Func<IQueryable<TEntity>, IQueryable<TEntity>>? filter = null,
+			Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null);
 	}
 }
