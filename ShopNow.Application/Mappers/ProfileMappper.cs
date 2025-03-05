@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using ShowNow.Domain.Entities;
 
 namespace ShopNow.Application.Mappers
 {
