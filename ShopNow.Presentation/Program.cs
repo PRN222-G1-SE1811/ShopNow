@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using ShopNow.Infrastructure.Data;
 using ShopNow.Infrastructure;
+using ShopNow.Application;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,7 @@ builder.Services.AddDbContext<ShopNowDbContext>(options =>
 
 #region configure layer
 builder.Services.AddInfrastructureService();
+builder.Services.AddApplicationService();
 #endregion
 
 var app = builder.Build();
