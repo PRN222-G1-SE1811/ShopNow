@@ -5,13 +5,6 @@ namespace ShopNow.Application.Services.Implements
 {
 	public class StorageService : IStorageService
 	{
-		/// <summary>
-		/// Upload file then return file name
-		/// </summary>
-		/// <param name="file">Upload file</param>
-		/// <param name="uploadPath">Upload path</param>
-		/// <returns>filename</returns>
-		/// <exception cref="ArgumentNullException">Exception when file null</exception>
 		public async Task<string> Upload(IFormFile file, string uploadPath)
 		{
 			if(file == null) throw new ArgumentNullException("Invalid file");

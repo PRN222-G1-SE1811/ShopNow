@@ -1,8 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using ShopNow.Application.Services.Interfaces;
 using ShopNow.Presentation.Models;
-using ShowNow.Domain.Entities;
-using ShowNow.Domain.Interfaces;
 using System.Diagnostics;
 
 namespace ShopNow.Presentation.Controllers
@@ -11,12 +8,10 @@ namespace ShopNow.Presentation.Controllers
 	public class HomeController : Controller
 	{
 		private readonly ILogger<HomeController> _logger;
-		private readonly IUnitOfWork<Product, Guid> _unitOfWork;
 
-		public HomeController(ILogger<HomeController> logger, IUnitOfWork<Product, Guid> unitOfWork)
+		public HomeController(ILogger<HomeController> logger)
 		{
 			_logger = logger;
-			_unitOfWork = unitOfWork;
 		}
 
 		public IActionResult Index()
