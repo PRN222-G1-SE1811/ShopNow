@@ -19,7 +19,7 @@ namespace ShopNow.Application.Services.Implements
 			{
 				Directory.CreateDirectory(uploadPath);
 			}
-			string filename = $"{Guid.NewGuid()}_{Path.GetFileName(file.Name)}";
+			string filename = $"{Guid.NewGuid()}_{Path.GetFileName(file.FileName)}";
 			string filePath = Path.Combine(uploadPath, filename);
 			using (var stream = new FileStream(filePath, FileMode.Create))
 			{

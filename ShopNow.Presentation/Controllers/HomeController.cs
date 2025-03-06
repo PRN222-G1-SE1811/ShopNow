@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using ShopNow.Application.Services.Interfaces;
 using ShopNow.Presentation.Models;
 using ShowNow.Domain.Entities;
 using ShowNow.Domain.Interfaces;
@@ -18,9 +19,8 @@ namespace ShopNow.Presentation.Controllers
 			_unitOfWork = unitOfWork;
 		}
 
-		public IActionResult Index(IFormFile file)
+		public IActionResult Index()
 		{
-			
 			return View();
 		}
 
