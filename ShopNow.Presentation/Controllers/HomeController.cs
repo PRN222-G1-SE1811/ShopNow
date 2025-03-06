@@ -18,7 +18,7 @@ namespace ShopNow.Presentation.Controllers
 			_unitOfWork = unitOfWork;
 		}
 
-		public IActionResult Index()
+		public IActionResult Index(IFormFile file)
 		{
 			
 			return View();
