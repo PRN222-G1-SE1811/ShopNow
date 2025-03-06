@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ShopNow.Infrastructure.Data;
+using ShopNow.Shared.Paginators;
 using ShowNow.Domain.Entities;
 using ShowNow.Domain.Interfaces;
 using System;
@@ -186,6 +187,32 @@ namespace ShopNow.Infrastructure.Repositories
 		{
 			var result = DbContext.Set<TEntity>().Update(entity);
 			return result.Entity;
+		}
+
+		public async Task<PageResult<TEntity>> GetPaginatedAsync(int pageIndex, int pageSize, Func<IQueryable<TEntity>, IQueryable<TEntity>>? filter = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null)
+		{
+			var query = DbContext.Set<TEntity>().AsQueryable();
+			if (filter != null)
+			{
+				query = filter(query);
+			}
+			int totalItems = await query.CountAsync();
+			if (orderBy != null)
+			{
+				query = orderBy(query);
+			}
+			else
+			{
+				// If no ordering specified, try to order by primary key
+				query = query.OrderBy(e => e.Id);
+			}
+			var items = await query
+				.Skip((pageIndex - 1) * pageSize)
+				.Take(pageSize)
+				.ToListAsync();
+
+			var pageResult = new PageResult<TEntity>(items, totalItems, pageIndex, pageSize);
+			return pageResult;
 		}
 
 		private bool disposed = false;
