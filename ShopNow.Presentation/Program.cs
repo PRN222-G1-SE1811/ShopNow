@@ -11,7 +11,7 @@ builder.Services.AddControllersWithViews();
 #region configure db connection
 builder.Services.AddDbContext<ShopNowDbContext>(options =>
 {
-	options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 #endregion
 
@@ -25,9 +25,9 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-	app.UseExceptionHandler("/Home/Error");
-	// The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-	app.UseHsts();
+    app.UseExceptionHandler("/Home/Error");
+    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    app.UseHsts();
 }
 
 app.UseHttpsRedirection();
@@ -36,16 +36,17 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
-if(2 == 1)
+if (2 == 1)
 {
-	app.MapControllerRoute(
-	name: "default",
-	pattern: "{controller=Home}/{action=Index}/{id?}");
-} else
+    app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+}
+else
 {
-	app.MapControllerRoute(
-	name: "default",
-	pattern: "{controller=Dashboard}/{action=Index}/{id?}");
+    app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Dashboard}/{action=Index}/{id?}");
 }
 
 app.Run();

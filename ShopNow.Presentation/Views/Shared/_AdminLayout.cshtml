@@ -1,0 +1,125 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="~/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="~/css/font-awesome.min.css" type="text/css">
+    <style>
+        body {
+            display: flex;
+            background: #f8f9fa;
+        }
+
+        #sidebar {
+            width: 250px;
+            height: 100vh;
+            background: #343a40;
+            color: white;
+            padding: 20px;
+            position: fixed;
+            transition: all 0.3s;
+            left: 0;
+        }
+
+            #sidebar h4 {
+                font-size: 1.5rem;
+                margin-bottom: 20px;
+                text-align: center;
+            }
+
+        .nav-link {
+            color: white;
+            padding: 10px;
+            font-size: 1.1rem;
+        }
+
+            .nav-link:hover {
+                background: #495057;
+                border-radius: 5px;
+            }
+
+        #content-wrapper {
+            margin-left: 250px;
+            flex: 1;
+            padding: 20px;
+            transition: margin-left 0.3s;
+            width: 100%;
+        }
+
+        /* Sidebar Hidden */
+        #sidebar.hidden {
+            left: -250px;
+        }
+
+        #content-wrapper.full {
+            margin-left: 0;
+        }
+
+        .navbar {
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        #toggleSidebar {
+            border: none;
+            background: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <nav id="sidebar">
+        <h4>Shop Now</h4>
+        <ul class="nav flex-column">
+            <li class="nav-item"><a class="nav-link" href="#"><i class="fa fa-tachometer"></i> Dashboard</a></li>
+            <li class="nav-item"><a class="nav-link" href="#"><i class="fa fa-product-hunt"></i> Products</a></li>
+            <li class="nav-item"><a class="nav-link" href="#"><i class="fa fa-shopping-cart"></i> Orders</a></li>
+            <li class="nav-item"><a class="nav-link" href="#"><i class="fa fa-th-list"></i> Categories</a></li>
+            <li class="nav-item"><a class="nav-link" href="#"><i class="fa fa-users"></i> Clients</a></li>
+            <li class="nav-item"><a class="nav-link" href="#"><i class="fa fa-comments"></i> Messages</a></li>
+        </ul>
+    </nav>
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper">
+        <!-- Top Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <button id="toggleSidebar"><i class="fa fa-bars"></i></button>
+            <form class="form-inline ml-auto">
+                <input class="form-control mr-sm-2" type="search" placeholder="Search for...">
+                <button class="btn btn-primary" type="submit"><i class="fa fa-search"></i></button>
+            </form>
+            <ul class="navbar-nav ml-3">
+                <li class="nav-item">
+                    <a class="nav-link" href="#"><i class="fa fa-user-circle-o"></i></a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main role="main" class="mt-4">
+            @RenderBody()
+        </main>
+    </div>
+
+    <!-- JavaScript Files -->
+    <script src="~/js/jquery-3.3.1.min.js"></script>
+    <script src="~/js/bootstrap.min.js"></script>
+
+    <!-- Sidebar Toggle Script -->
+    <script>
+        document.getElementById("toggleSidebar").addEventListener("click", function () {
+            document.getElementById("sidebar").classList.toggle("hidden");
+            document.getElementById("content-wrapper").classList.toggle("full");
+        });
+    </script>
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>
