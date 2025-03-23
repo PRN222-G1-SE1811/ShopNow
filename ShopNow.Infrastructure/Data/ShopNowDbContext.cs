@@ -28,6 +28,7 @@ namespace ShopNow.Infrastructure.Data
 		public DbSet<Review> Reviews { get; set; }
 		public DbSet<Order> Orders { get; set; }
 		public DbSet<OrderItem> OrderItems { get; set; }
+		public DbSet<OrderItemAttributes> OrderItemAttributes { get; set; }
 		#endregion
 
 		public ShopNowDbContext(DbContextOptions options) : base(options)
