@@ -1,0 +1,66 @@
+﻿@{
+	ViewData["Title"] = "Manage Product";
+}
+@{
+	ViewBag.Title = "Manage Product";
+}
+
+<div class="mt-4">
+	<h1 class="mb-3">@ViewBag.Title</h1>
+
+	<!-- Filter, Search & Create Product -->
+	<div class="d-flex justify-content-between mb-3">
+		<!-- Search Box -->
+		<input type="text" id="searchInput" class="form-control w-25" placeholder="Search product..." onkeyup="filterProducts()">
+
+		<!-- Category Filter -->
+		<select id="categoryFilter" class="form-select w-25" onchange="filterProducts()">
+			<option value="">All Categories</option>
+			<option value="Electronics">Electronics</option>
+			<option value="Clothing">Clothing</option>
+			<option value="Furniture">Furniture</option>
+		</select>
+
+		<!-- Create Product Button -->
+		<a asp-action="Create" class="btn btn-success">Create Product</a>
+	</div>
+
+	<!-- Scrollable Table -->
+	<div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+		<table class="table table-bordered table-hover">
+			<thead class="table-success" style="position: sticky; top: 0; z-index: 1;">
+				<tr>
+					<th>#</th>
+					<th onclick="alert('Dit me nha may')">Name<i class="fa fa-sort-amount-asc" aria-hidden="true"></i></th>
+					<th>Category</th>
+					<th onclick="alert('Dit me nha may')">Price <i class="fa fa-sort-amount-asc" aria-hidden="true"></i></th>
+					<th onclick="alert('Dit me nha may')">Quantity <i class="fa fa-sort-amount-asc" aria-hidden="true"></i></th>
+					<th onclick="alert('Dit me nha may')">Sold <i class="fa fa-sort-amount-asc" aria-hidden="true"></i></th>
+					<th onclick="alert('Dit me nha may')">Discount <i class="fa fa-sort-amount-asc" aria-hidden="true"></i></th>
+					<th onclick="alert('Dit me nha may')">Featured <i class="fa fa-sort-amount-asc" aria-hidden="true"></i></th>
+					<th onclick="alert('Dit me nha may')">Status <i class="fa fa-sort-amount-asc" aria-hidden="true"></i></th>
+
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody id="productTable">
+				<tr>
+					<td>1</td>
+					<td>Smartphone</td>
+					<td>Electronics</td>
+					<td>599.99</td>
+					<td>30</td>
+					<td>599.99</td>
+					<td>30</td>
+					<td>30</td>
+					<td>30</td>
+					<td>
+						<a asp-action="ViewDetails" class="btn btn-info btn-sm">View Details</a>
+						<a asp-action="Edit" class="btn btn-primary btn-sm">Edit</a>
+						<a class="btn btn-danger btn-sm">Delete</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
