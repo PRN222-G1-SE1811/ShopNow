@@ -8,9 +8,9 @@ namespace ShowNow.Domain.Entities
 		public Guid AttributeId { get; set; }
 
 		[ForeignKey("OrderItemId")]
-		public OrderItem OrderItem { get; set; }
+		public OrderItem? OrderItem { get; set; }
 
 		[ForeignKey("AttributeId")]
-		public Attribute Attribute { get; set; }
+		public Attribute? Attribute { get; set; }
 	}
 }

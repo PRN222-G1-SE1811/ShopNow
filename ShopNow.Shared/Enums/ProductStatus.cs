@@ -3,6 +3,7 @@
 	public enum ProductStatus
 	{
 		DiscontinueBusiness = 0,
-		Active = 1
+		Daft = 1,
+		Active = 2
 	}
 }

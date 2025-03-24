@@ -23,7 +23,6 @@ namespace ShopNow.Presentation.Controllers
 		{
 			CreateProductViewModel model = new CreateProductViewModel();
 			model.Categories = new SelectList(await categoryService.GetSelectListCategories(), "Id", "Name");
-			model.Statuses = new SelectList(new ProductStatus[] { ProductStatus.Active, ProductStatus.DiscontinueBusiness });
 			model.Featured = new SelectList(new ProductFeatured[] { ProductFeatured.No, ProductFeatured.Yes });
 			return View(model);
 		}
@@ -32,7 +31,8 @@ namespace ShopNow.Presentation.Controllers
 
 		public IActionResult Create(CreateProductViewModel model)
 		{
-			return View(model);
+
+			return RedirectToAction("Manage");
 		}
 	}
 }

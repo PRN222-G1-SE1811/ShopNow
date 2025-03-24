@@ -1,12 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using ShopNow.Application.Attributes;
 using ShopNow.Shared.Enums;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ShopNow.Application.DTOs.Prodducts
 {
@@ -18,26 +14,27 @@ namespace ShopNow.Application.DTOs.Prodducts
 		[Required]
 		public string Description { get; set; }
 
-		[Required]
-		[Range(0, double.MaxValue)]
+		[Required(ErrorMessage = "Please enter a value greater than or equal to 0.")]
+		[Range(0, double.MaxValue, ErrorMessage = "Please enter a value greater than or equal to 0.")]
 		public decimal Price { get; set; }
 
-		[Required]
-		[Range(0, 100)]
+		[Required(ErrorMessage = "Please enter a value greater than or equal to 0.")]
+		[Range(0, 100, ErrorMessage = "Please enter a value greater than or equal to 0.")]
 		public float Discount { get; set; }
 
-		[Required]
-		[Range(0, int.MaxValue)]
+		[Required(ErrorMessage = "Please enter a value greater than or equal to 0.")]
+		[Range(0, int.MaxValue, ErrorMessage = "Please enter a value greater than or equal to 0.")]
 		public int Quantity { get; set; }
 
-		[Required]
+		[BindNever]
 		public ProductStatus Status { get; set; }
 
 		[Required]
 		public ProductFeatured Featured { get; set; }
 
 		[Required]
-		public IEnumerable<IFormFile> Files { get; set; }
+		[RequiredFile]
+		public IEnumerable<IFormFile> Files { get; set; } = new List<IFormFile>();
 
 		[Required]
 		public Guid CategoryId { get; set; }

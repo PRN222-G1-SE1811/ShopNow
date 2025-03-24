@@ -6,35 +6,33 @@
 <main class="container mt-4">
 	<h1 class="mb-3">@ViewBag.Title</h1>
 
-	<form id="createProductForm" enctype="multipart/form-data">
+	<form id="createProductForm" method="post" enctype="multipart/form-data">
 		<!-- Name -->
 		<div class="mb-3">
-			<label for="name" class="form-label">Product Name</label>
-			<input type="text" class="form-control" id="name" name="name" required>
-		</div>
-
-		<!-- Slug -->
-		<div class="mb-3">
-			<label for="slug" class="form-label">Slug</label>
-			<input type="text" class="form-control" id="slug" name="slug" required>
+			<label asp-for="@Model.CreateProductDTO.Name" class="form-label">Product Name</label>
+			<input asp-for="@Model.CreateProductDTO.Name" type="text" class="form-control" required>
+			<span asp-validation-for="@Model.CreateProductDTO.Name" class="text-danger"></span>
 		</div>
 
 		<!-- Description -->
 		<div class="mb-3">
-			<label for="description" class="form-label">Description</label>
-			<textarea class="form-control" id="description" name="description" rows="3"></textarea>
+			<label asp-for="@Model.CreateProductDTO.Description" class="form-label">Description</label>
+			<textarea asp-for="@Model.CreateProductDTO.Description" class="form-control" rows="3"></textarea>
+			<span asp-validation-for="@Model.CreateProductDTO.Description" class="text-danger"></span>
 		</div>
 
 		<!-- Price -->
 		<div class="mb-3">
-			<label for="price" class="form-label">Price ($)</label>
-			<input type="number" class="form-control" id="price" name="price" step="0.01" required>
+			<label asp-for="@Model.CreateProductDTO.Price" class="form-label">Price ($)</label>
+			<input asp-for="@Model.CreateProductDTO.Price" type="number" class="form-control" step="0.01" required>
+			<span asp-validation-for="@Model.CreateProductDTO.Price" class="text-danger"></span>
 		</div>
 
 		<!-- Discount -->
 		<div class="mb-3">
-			<label for="discount" class="form-label">Discount (%)</label>
-			<input type="number" class="form-control" id="discount" name="discount" min="0" max="100">
+			<label asp-for="@Model.CreateProductDTO.Discount" class="form-label">Discount (%)</label>
+			<input asp-for="@Model.CreateProductDTO.Discount" type="number" class="form-control" min="0" max="100">
+			<span asp-validation-for="@Model.CreateProductDTO.Discount" class="text-danger"></span>
 		</div>
 
 		<!-- Quantity -->
@@ -44,24 +42,20 @@
 			<span asp-validation-for="@Model.CreateProductDTO.Quantity" class="text-danger"></span>
 		</div>
 
-		<!-- Status -->
-		<div class="mb-3">
-			<label class="form-label">Status</label>
-			<select asp-items="@Model.Statuses" class="form-control" required>
-			</select>
-		</div>
 
 		<!-- Featured -->
 		<div class="mb-3">
-			<label class="form-label">Featured</label>
-			<select asp-items="@Model.Featured" class="form-control" required>
+			<label asp-for="@Model.CreateProductDTO.Featured" class="form-label">Featured</label>
+			<select asp-for="@Model.CreateProductDTO.Featured" asp-items="@Model.Featured" class="form-control" required>
 			</select>
+			<span asp-validation-for="@Model.CreateProductDTO.Featured" class="text-danger"></span>
 		</div>
 
 		<!-- Product Assets (Multiple File Upload) -->
 		<div class="mb-3">
 			<label asp-for="@Model.CreateProductDTO.Files" class="form-label">Product Images</label>
 			<input asp-for="@Model.CreateProductDTO.Files" type="file" class="form-control" multiple>
+			<span asp-validation-for="@Model.CreateProductDTO.Files" class="text-danger"></span>
 		</div>
 
 		<!-- Category (Dropdown) -->
@@ -69,6 +63,7 @@
 			<label asp-for="@Model.CreateProductDTO.CategoryId" class="form-label">Category</label>
 			<select asp-for="@Model.CreateProductDTO.CategoryId" class="form-control" asp-items="@Model.Categories" required>
 			</select>
+			<span asp-validation-for="@Model.CreateProductDTO.CategoryId" class="text-danger"></span>
 		</div>
 
 		<!-- Submit Button -->
