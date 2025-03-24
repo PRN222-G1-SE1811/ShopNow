@@ -36,17 +36,27 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
-if (2 == 1)
+<<<<<<<<< Temporary merge branch 1
+if(2 == 1)
 {
-    app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
-}
-else
+	app.MapControllerRoute(
+	name: "default",
+	pattern: "{controller=Home}/{action=Index}/{id?}");
+} else
 {
-    app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Dashboard}/{action=Index}/{id?}");
+	app.MapControllerRoute(
+	name: "default",
+	pattern: "{controller=Dashboard}/{action=Index}/{id?}");
 }
+=========
+
+//app.MapControllerRoute(
+//	name: "default",
+//	pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.MapControllerRoute(
+	name: "default",
+	pattern: "{controller=Product}/{action=Manage}");
+>>>>>>>>> Temporary merge branch 2
 
 app.Run();
