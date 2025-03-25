@@ -55,7 +55,6 @@ namespace ShopNow.Presentation.Controllers
 		}
 
 		[HttpPost]
-
 		public IActionResult Create(CreateProductBaseInfoViewModel model)
 		{
 			return RedirectToAction(nameof(Create), new { step = 1 });
