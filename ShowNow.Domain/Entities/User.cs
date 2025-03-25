@@ -14,6 +14,6 @@ namespace ShowNow.Domain.Entities
 		public required string City { get; set; }
 		public required string Country { get; set; }
 		public DateTime CreatedAt { get; set; }
-		public DateTime UpdatedAt { get; set; }
+		public DateTime? UpdatedAt { get; set; }
 	}
 }

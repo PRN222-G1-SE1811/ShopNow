@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ShopNow.Infrastructure.Data;
 
@@ -11,9 +12,11 @@ using ShopNow.Infrastructure.Data;
 namespace ShopNow.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(ShopNowDbContext))]
-    partial class ShopNowDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250324160645_Modified")]
+    partial class Modified
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -478,6 +481,10 @@ namespace ShopNow.Infrastructure.Data.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(255)");
 
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
@@ -487,6 +494,8 @@ namespace ShopNow.Infrastructure.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryID");
+
+                    b.HasIndex("Slug");
 
                     b.ToTable("Products");
                 });
@@ -776,7 +785,7 @@ namespace ShopNow.Infrastructure.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ShowNow.Domain.Entities.ProductVariant", "Product")
+                    b.HasOne("ShowNow.Domain.Entities.Product", "Product")
                         .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)

@@ -2,7 +2,9 @@
 {
 	public enum ProductStatus
 	{
-		DiscontinueBusiness = 0,
-		Active = 1
+		MissingAsset = 1,
+		MissingAttribute = 2,
+		DiscontinueBusiness = 3,
+		Active = 4
 	}
 }
