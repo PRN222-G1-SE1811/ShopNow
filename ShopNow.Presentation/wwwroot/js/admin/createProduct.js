@@ -1,29 +1,46 @@
-﻿let index = 1;
+﻿function addProduct() {
+    let productContainer = document.getElementById("productsContainer");
+    let products = document.querySelectorAll(".product");
+    let newProduct = products[0].cloneNode(true);
 
-function addAttribute() {
-	let container = $("#attributesContainer");
-	let newRow = `
-            <div class="form-row attribute mb-3">
-                <div class="col-md-4">
-                    <select name="Attributes[${index}].Type" class="form-control">
-                        <option value="color">Color</option>
-                        <option value="size">Size</option>
-                        <option value="weight">Weight</option>
-                    </select>
-                </div>
-                <div class="col-md-4">
-                    <input type="text" name="Attributes[${index}].Value" class="form-control" placeholder="Enter value">
-                </div>
-                <div class="col-md-2">
-                    <button type="button" class="btn btn-danger remove-btn" onclick="removeAttribute(this)"><i class="fa fa-times" aria-hidden="true"></i></button>
-                </div>
-            </div>`;
-	container.append(newRow);
-	index++;
+    // Xóa giá trị nhập vào
+    newProduct.querySelectorAll("input").forEach(input => input.value = "");
+
+    // Xóa các thuộc tính cũ (để tạo sản phẩm mới có danh sách riêng)
+    let attributes = newProduct.querySelector(".attributesContainer");
+    attributes.innerHTML = attributes.children[0].outerHTML;
+
+    productContainer.appendChild(newProduct);
 }
 
-function removeAttribute(btn) {
-	if (index > 1) {
-		$(btn).closest(".attribute").remove();
-	}
+function removeProduct(button) {
+    let product = button.closest(".product");
+    let products = document.querySelectorAll(".product");
+
+    if (products.length > 1) {
+        product.remove();
+    } else {
+        alert("Phải có ít nhất một sản phẩm!");
+    }
+}
+
+function addAttribute(button) {
+    let attributesContainer = button.previousElementSibling; // Lấy container chứa attributes
+    let attribute = attributesContainer.children[0].cloneNode(true);
+
+    // Xóa giá trị nhập vào của thuộc tính mới
+    attribute.querySelectorAll("input").forEach(input => input.value = "");
+
+    attributesContainer.appendChild(attribute);
+}
+
+function removeAttribute(button) {
+    let attribute = button.closest(".attribute");
+    let attributesContainer = attribute.parentElement;
+
+    if (attributesContainer.children.length > 1) {
+        attribute.remove();
+    } else {
+        alert("Phải có ít nhất một thuộc tính!");
+    }
 }
