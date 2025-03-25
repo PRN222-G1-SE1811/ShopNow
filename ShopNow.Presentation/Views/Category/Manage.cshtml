@@ -1,0 +1,92 @@
+﻿@model IEnumerable<ShopNow.Application.DTOs.Categories.SelectCategoryDTO>
+
+@{
+	ViewData["Title"] = "Manage Category";
+}
+@{
+	ViewBag.Title = "Manage Category";
+}
+
+
+<div class="mt-4">
+	<h1 class="mb-3">@ViewBag.Title</h1>
+
+	<!-- Filter, Search & Create Category -->
+    <form method="get">
+        <div class="d-flex justify-content-between mb-3">
+            <!-- Search Box -->
+            <input type="text" name="search" class="form-control w-25" placeholder="Search Name..." value="@Context.Request.Query["search"]">
+
+            <!-- Sort by Date -->
+            <select name="sortByDate" class="form-select w-25">
+                <option value="">Sort by Date</option>
+                <option value="CreatedAt" selected="@(Context.Request.Query["sortByDate"] == "CreatedAt")">Created At</option>
+                <option value="UpdatedAt" selected="@(Context.Request.Query["sortByDate"] == "UpdatedAt")">Updated At</option>
+            </select>
+
+            <!-- Filter Button -->
+            <button type="submit" class="btn btn-primary">Sort</button>
+
+            <!-- Reset Button -->
+            <a asp-action="Create" class="btn btn-success">Create Category</a>
+        </div>
+    </form>
+
+	<!-- Scrollable Table -->
+	<div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+		<table class="table table-bordered table-hover">
+			<thead class="table-success" style="position: sticky; top: 0; z-index: 1;">
+				<tr>
+					<th>#</th>
+					<th onclick="">Name<i class="fa fa-sort-amount-asc" aria-hidden="true"></i></th>
+					<th onclick="">SLug <i class="fa fa-sort-amount-asc" aria-hidden="true"></i></th>
+					<th onclick="">Parent <i class="fa fa-sort-amount-asc" aria-hidden="true"></i></th>
+					<th onclick="">Desription<i class="fa fa-sort-amount-asc" aria-hidden="true"></i></th>
+					<th onclick="">Image<i class="fa fa-sort-amount-asc" aria-hidden="true"></i></th>
+					<th onclick="">Status <i class="fa fa-sort-amount-asc" aria-hidden="true"></i></th>
+					<th onclick="">Update At<i class="fa fa-sort-amount-asc" aria-hidden="true"></i></th>
+					<th onclick="">Create At<i class="fa fa-sort-amount-asc" aria-hidden="true"></i></th>
+
+					<th>Actions</th>
+				</tr>
+			</thead>
+            <tbody id="categoryTable">
+                @if (Model.Any())
+                {
+                    @foreach (var category in Model)
+                    {
+                        <tr>
+                            <td>@category.Id</td>
+                            <td>@category.Name</td>
+                            <td>@category.Slug</td>
+                            <td>@category.ParentCategoryName</td>
+                            <td>@category.Description</td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(category.Image))
+                                {
+                                    <img src="@category.Image" alt="Category Image" width="50" height="50" />
+                                }
+                                else
+                                {
+                                    <span>No Image</span>
+                                }
+                            </td>
+                            <td>@(category.Status)</td>
+                            <td>@category.UpdatedAt.ToString("yyyy-MM-dd")</td>
+                            <td>@category.CreatedAt.ToString("yyyy-MM-dd")</td>
+                            <td>
+                                <a asp-controller="Category" asp-action="Detail" asp-route-id="@category.Id" class="btn btn-info btn-sm">View Details</a>
+                                <a asp-action="Edit" asp-route-id="@category.Id" class="btn btn-primary btn-sm">Edit</a>
+                                <a href="javascript:void(0);" onclick="confirmDelete(@category.Id)" class="btn btn-danger btn-sm">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr><td colspan="10" class="text-center">No categories found.</td></tr>
+                }
+            </tbody>
+		</table>
+	</div>
+</div>

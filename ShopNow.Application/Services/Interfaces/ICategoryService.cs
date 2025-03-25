@@ -10,5 +10,6 @@ namespace ShopNow.Application.Services.Interfaces
 	public interface ICategoryService
 	{
 		public Task<IEnumerable<SelectCategoryDTO>> GetSelectListCategories();
-	}
+        public Task<SelectCategoryDTO> GetCategoryById(Guid id);
+    }
 }
