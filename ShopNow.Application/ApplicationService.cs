@@ -10,8 +10,29 @@ namespace ShopNow.Application
 		{
 			services.AddScoped<IStorageService, StorageService>();
 			services.AddAutoMapper(typeof(ApplicationService));
+
 			#region add category service
 			services.AddScoped<ICategoryService, CategoryService>();
+			#endregion
+
+			#region add product service
+			services.AddScoped<IProductService, ProductService>();
+			#endregion
+
+			#region add product variant service
+			services.AddScoped<IProductVariantService, ProductVariantService>();
+			#endregion
+
+			#region add SKU genrator
+			services.AddScoped<ISKUGenerator, SKUGenerator>();
+			#endregion
+
+			#region add asset service
+			services.AddScoped<IAssetService, AssetService>();
+			#endregion
+
+			#region add attribute service
+			services.AddScoped<IAttributeService, AttributeService>();
 			#endregion
 		}
 	}

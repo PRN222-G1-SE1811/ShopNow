@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using ShopNow.Application.Attributes;
 using System.ComponentModel.DataAnnotations;
 
@@ -6,6 +7,9 @@ namespace ShopNow.Application.DTOs.Prodducts
 {
 	public class ProductAttributeDTO
 	{
+		[BindNever]
+		public Guid ProductId { get; set; }
+
 		[Required(ErrorMessage = "Please enter a value greater than or equal to 0.")]
 		[Range(0, double.MaxValue, ErrorMessage = "Please enter a value greater than or equal to 0.")]
 		public decimal Price { get; set; }
@@ -20,6 +24,6 @@ namespace ShopNow.Application.DTOs.Prodducts
 
 		[Required]
 		[RequiredFile]
-		public IEnumerable<IFormFile> Files { get; set; } = new List<IFormFile>();
+		public List<IFormFile> Files { get; set; } = new List<IFormFile>();
 	}
 }
