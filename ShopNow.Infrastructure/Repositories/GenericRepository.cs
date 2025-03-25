@@ -239,5 +239,10 @@ namespace ShopNow.Infrastructure.Repositories
 		{
 			return GetAll(isAll).Where(predicate);
 		}
+
+		public async Task InsertRange(List<TEntity> entities)
+		{
+			await DbContext.Set<TEntity>().AddRangeAsync(entities);
+		}
 	}
 }

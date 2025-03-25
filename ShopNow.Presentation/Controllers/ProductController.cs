@@ -5,10 +5,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using ShopNow.Shared.Enums;
 using System.Text.Json;
 using ShopNow.Application.DTOs.Prodducts;
+using System.Runtime.InteropServices.Marshalling;
 
 namespace ShopNow.Presentation.Controllers
 {
-	public class ProductController(ICategoryService categoryService) : Controller
+	public class ProductController(ICategoryService categoryService, IProductService productService, IProductVariantService productVariantService) : Controller
 	{
 		public IActionResult Index()
 		{
@@ -21,9 +22,9 @@ namespace ShopNow.Presentation.Controllers
 			return View();
 		}
 
-		public async Task<IActionResult> Create(int step = 0)
+		public async Task<IActionResult> Create(int step = 0, Guid? productId = null)
 		{
-			ViewBag.Step = step; // Truyền bước hiện tại qua View
+			ViewBag.Step = step;
 			if (step == 0)
 			{
 				CreateProductBaseInfoViewModel model = new CreateProductBaseInfoViewModel();
@@ -34,8 +35,6 @@ namespace ShopNow.Presentation.Controllers
 
 			if (step == 1)
 			{
-				//var baseInfo = JsonSerializer.DeserializeObject<CreateProductBaseInfoViewModel>((string)TempData["BaseInfo"]);
-				//TempData.Keep("BaseInfo"); // Giữ lại dữ liệu
 				CreateAttributeViewModel model = new CreateAttributeViewModel();
 				model.ProductVariantDTOs = new List<ProductVariantDTO>()
 				{
@@ -47,7 +46,7 @@ namespace ShopNow.Presentation.Controllers
 						ProductDetail = new ProductAttributeDTO()
 					}
 				};
-
+				ViewBag.ProductId = productId;
 				return View("CreateAttribute", model);
 			}
 
@@ -55,14 +54,24 @@ namespace ShopNow.Presentation.Controllers
 		}
 
 		[HttpPost]
-		public IActionResult Create(CreateProductBaseInfoViewModel model)
+		public async Task<IActionResult> Create(CreateProductBaseInfoViewModel model)
 		{
-			return RedirectToAction(nameof(Create), new { step = 1 });
+			model.CreateProductDTO.CreatedAt = DateTime.Now;
+			model.CreateProductDTO.Status = ProductStatus.MissingAttribute;
+			var productId = await productService.CreateBaseProduct(model.CreateProductDTO);
+			return RedirectToAction(nameof(Create), new { step = 1, productId = productId });
 		}
 
 		[HttpPost]
-		public IActionResult CreateAttribute(CreateAttributeViewModel model)
+		public async Task<IActionResult> CreateAttribute(CreateAttributeViewModel model)
 		{
+			model.ProductVariantDTOs.ForEach(p =>
+			{
+			   p.ProductDetail.ProductId = model.ProductId;
+			});
+
+			await productVariantService.AddRangeVariantProduct(model.ProductVariantDTOs);
+
 			return RedirectToAction(nameof(Create), new { step = 2 });
 		}
 	}
