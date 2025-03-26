@@ -110,6 +110,56 @@ namespace ShopNow.Presentation.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Edit(Guid id)
+        {
+            var category = await _categoryService.GetCategoryUpdateById(id);
+            if (category == null)
+            {
+                TempData["Error"] = "Category not found.";
+                return RedirectToAction("Manage");
+            }
+
+            ViewBag.ParentCategories = await _categoryService.GetParentCategories();
+            return View(category);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(UpdateCategoryDTO dto)
+        {
+            if (!ModelState.IsValid)
+            {
+                ViewBag.ParentCategories = await _categoryService.GetParentCategories();
+                return View(dto);
+            }
+
+            var result = await _categoryService.UpdateCategory(dto);
+            if (result)
+            {
+                TempData["Success"] = "Category updated successfully.";
+                return RedirectToAction("Manage");
+            }
+
+            TempData["Error"] = "Failed to update category.";
+            ViewBag.ParentCategories = await _categoryService.GetParentCategories();
+            return View(dto);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var result = await _categoryService.DeleteCategory(id);
+            if (!result)
+            {
+                TempData["Error"] = "Failed to delete category. It may not exist.";
+            }
+            else
+            {
+                TempData["Success"] = "Category deleted successfully.";
+            }
+
+            return RedirectToAction("Manage");
+        }
 
     }
 }

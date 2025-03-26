@@ -45,11 +45,6 @@ namespace ShopNow.Application.Services.Implements
 
             return categories;
         }
-
-
-
-
-
         public async Task<ListCategoryDTO> GetCategoryById(Guid id)
         {
             var categories = await unitOfWork.GenericRepository.GetAllListAsync();
@@ -115,6 +110,48 @@ namespace ShopNow.Application.Services.Implements
             return await unitOfWork.CommitAsync() > 0;
         }
 
+        public async Task<UpdateCategoryDTO> GetCategoryUpdateById(Guid id)
+        {
+            var category =  unitOfWork.GenericRepository.GetById(id);
+            if (category == null) return null;
+
+            return new UpdateCategoryDTO
+            {
+                Id = category.Id,
+                Name = category.Name,
+                Slug = category.Slug,
+                ParentId = category.ParentId,
+                Description = category.Description,
+                Image = category.Image,
+                Status = category.Status
+            };
+        }
+
+        public async Task<bool> UpdateCategory(UpdateCategoryDTO dto)
+        {
+            var category =  unitOfWork.GenericRepository.GetById(dto.Id);
+            if (category == null) return false;
+
+            category.Name = dto.Name;
+            category.Slug = dto.Slug;
+            category.ParentId = dto.ParentId;
+            category.Description = dto.Description;
+            category.Image = dto.Image;
+            category.Status = dto.Status;
+            category.UpdatedAt = DateTime.UtcNow;
+
+            unitOfWork.GenericRepository.Update(category);
+            return await unitOfWork.CommitAsync() > 0;
+        }
+
+        public async Task<bool> DeleteCategory(Guid id)
+        {
+            var category = unitOfWork.GenericRepository.GetById(id);
+            if (category == null) return false;
+
+            unitOfWork.GenericRepository.Delete(category);
+            return await unitOfWork.CommitAsync() > 0;
+        }
 
 
     }

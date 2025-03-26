@@ -1,0 +1,59 @@
+﻿@model ShopNow.Application.DTOs.Categories.UpdateCategoryDTO
+
+<h2>Edit Category</h2>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="Id" />
+
+    <div class="form-group">
+        <label asp-for="Name"></label>
+        <input asp-for="Name" class="form-control" required />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Slug"></label>
+        <input asp-for="Slug" class="form-control" />
+        <span asp-validation-for="Slug" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ParentId">Parent Category</label>
+        <select asp-for="ParentId" class="form-control">
+            <option value="">-- Select Parent Category --</option>
+            @foreach (var category in ViewBag.ParentCategories)
+            {
+                <option value="@category.Id" selected="@(category.Id == Model.ParentId)">
+                    @category.Name
+                </option>
+            }
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Description"></label>
+        <textarea asp-for="Description" class="form-control"></textarea>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Image"></label>
+        <input asp-for="Image" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Status"></label>
+        <select asp-for="Status" class="form-control">
+            <option value="0">Inactive</option>
+            <option value="1">Active</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Update</button>
+    <a asp-action="Manage" class="btn btn-secondary">Back to List</a>
+
+</form>

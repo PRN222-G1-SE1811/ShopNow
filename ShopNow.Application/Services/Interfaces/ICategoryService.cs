@@ -13,8 +13,12 @@ namespace ShopNow.Application.Services.Interfaces
 		public Task<IEnumerable<SelectCategoryDTO>> GetSelectListCategories();
 		public Task<IEnumerable<ListCategoryDTO>> GetListCategories();
 		public Task<ListCategoryDTO> GetCategoryById(Guid id);
-        public Task<bool> CreateCategory(CreateCategoryDTO dto);
-       public Task<List<SelectCategoryDTO>> GetParentCategories();
+		public Task<bool> CreateCategory(CreateCategoryDTO dto);
+		public Task<List<SelectCategoryDTO>> GetParentCategories();
+		public Task<bool> UpdateCategory(UpdateCategoryDTO dto);
+		public Task<UpdateCategoryDTO> GetCategoryUpdateById(Guid id);
+        public Task<bool> DeleteCategory(Guid id);
+
 
     }
 }
