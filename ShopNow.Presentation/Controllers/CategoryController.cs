@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ShopNow.Application.DTOs.Categories;
+using ShopNow.Application.Services.Implements;
 using ShopNow.Application.Services.Interfaces;
 
 namespace ShopNow.Presentation.Controllers
@@ -21,10 +22,10 @@ namespace ShopNow.Presentation.Controllers
 
         public async Task<IActionResult> Manage(string? search, string? sortByDate)
         {
-            var categories = await _categoryService.GetSelectListCategories();
+            var categories = await _categoryService.GetListCategories();
 
             // Gán tên danh mục cha ngay trong Manage()
-            var categoryList = categories.Select(c => new SelectCategoryDTO
+            var categoryList = categories.Select(c => new ListCategoryDTO
             {
                 Id = c.Id,
                 Name = c.Name,
@@ -72,65 +73,42 @@ namespace ShopNow.Presentation.Controllers
             return View(category);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Create()
+        {            
+            ViewBag.ParentCategories = await _categoryService.GetParentCategories();
 
-        // 2️⃣ Hiển thị trang tạo danh mục
-        //public async Task<IActionResult> Create()
-        //{
-        //	var model = new CreateCategoryViewModel
-        //	{
-        //		Categories = new SelectList(await _categoryService.GetSelectListCategories(), "Id", "Name")
-        //	};
-        //	return View(model);
-        //}
+            return View(new CreateCategoryDTO());
+        }
 
-        //// 3️⃣ Xử lý tạo danh mục (POST)
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Create(CreateCategoryViewModel model)
-        //{
-        //	if (!ModelState.IsValid)
-        //	{
-        //		model.Categories = new SelectList(await _categoryService.GetSelectListCategories(), "Id", "Name");
-        //		return View(model);
-        //	}
 
-        //	await _categoryService.CreateCategory(model);
-        //	return RedirectToAction(nameof(Index));
-        //}
 
-        //// 4️⃣ Hiển thị trang chỉnh sửa danh mục
-        //public async Task<IActionResult> Edit(int id)
-        //{
-        //	var category = await _categoryService.GetCategoryById(id);
-        //	if (category == null)
-        //	{
-        //		return NotFound();
-        //	}
 
-        //	var model = new EditCategoryViewModel
-        //	{
-        //		Id = category.Id,
-        //		Name = category.Name,
-        //		Categories = new SelectList(await _categoryService.GetSelectListCategories(), "Id", "Name")
-        //	};
+        [HttpPost]
+        public async Task<IActionResult> Create(CreateCategoryDTO model)
+        {
+            if (!ModelState.IsValid)
+            {
+                var parentCategories = await _categoryService.GetParentCategories();
+                ViewBag.ParentCategories = new SelectList(parentCategories, "Id", "Name");
+                return View(model);
+            }
 
-        //	return View(model);
-        //}
+            var result = await _categoryService.CreateCategory(model);
 
-        //// 5️⃣ Xử lý cập nhật danh mục (POST)
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Edit(int id, EditCategoryViewModel model)
-        //{
-        //	if (!ModelState.IsValid)
-        //	{
-        //		model.Categories = new SelectList(await _categoryService.GetSelectListCategories(), "Id", "Name");
-        //		return View(model);
-        //	}
-
-        //	await _categoryService.UpdateCategory(id, model);
-        //	return RedirectToAction(nameof(Index));
-        //}
+            if (result)
+            {
+                TempData["Success"] = "Category created successfully.";
+                return RedirectToAction("Manage");
+            }
+            else
+            {
+                TempData["Error"] = "Failed to create category.";
+                var parentCategories = await _categoryService.GetParentCategories();
+                ViewBag.ParentCategories = new SelectList(parentCategories, "Id", "Name");
+                return View(model);
+            }
+        }
 
 
     }

@@ -9,6 +9,8 @@ namespace ShopNow.Application.Mappers
 		public CategoryProfile()
 		{
 			CreateMap<Category, SelectCategoryDTO>();
-		}
-	}
+            CreateMap<Category, ListCategoryDTO>();
+
+        }
+    }
 }

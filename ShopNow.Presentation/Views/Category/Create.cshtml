@@ -2,10 +2,6 @@
 
 <h2>Create Category</h2>
 
-@if (TempData["Success"] != null)
-{
-    <div class="alert alert-success">@TempData["Success"]</div>
-}
 @if (TempData["Error"] != null)
 {
     <div class="alert alert-danger">@TempData["Error"]</div>
@@ -19,22 +15,34 @@
     </div>
 
     <div class="form-group">
+        <label asp-for="Slug"></label>
+        <input asp-for="Slug" class="form-control" />
+        <span asp-validation-for="Slug" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
         <label asp-for="ParentId">Parent Category</label>
-        <select asp-for="ParentId" class="form-control" asp-items="ViewBag.ParentCategories" id="parentCategorySelect">
+        <select asp-for="ParentId" class="form-control">
             <option value="">-- Select Parent Category --</option>
-            <option value="new">+ Create New Parent Category</option>
+            @foreach (var category in ViewBag.ParentCategories)
+            {
+                <option value="@category.Id">@category.Name</option>
+            }
         </select>
     </div>
 
-    <!-- Ô nhập liệu cho danh mục cha mới, ẩn ban đầu -->
-    <div class="form-group" id="newParentCategoryContainer" style="display: none;">
-        <label for="newParentCategory">New Parent Category Name</label>
-        <input type="text" id="newParentCategory" name="NewParentCategory" class="form-control" />
-    </div>
+
+
+
 
     <div class="form-group">
         <label asp-for="Description"></label>
         <textarea asp-for="Description" class="form-control"></textarea>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Image"></label>
+        <input asp-for="Image" class="form-control" />
     </div>
 
     <div class="form-group">
@@ -46,15 +54,6 @@
     </div>
 
     <button type="submit" class="btn btn-primary">Create</button>
-</form>
+    <a asp-action="Manage" class="btn btn-secondary">Back to List</a>
 
-<script>
-    document.getElementById("parentCategorySelect").addEventListener("change", function() {
-        var newParentCategoryContainer = document.getElementById("newParentCategoryContainer");
-        if (this.value === "new") {
-            newParentCategoryContainer.style.display = "block";
-        } else {
-            newParentCategoryContainer.style.display = "none";
-        }
-    });
-</script>
+</form>

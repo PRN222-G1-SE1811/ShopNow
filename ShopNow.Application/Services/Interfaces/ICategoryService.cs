@@ -1,4 +1,5 @@
 ﻿using ShopNow.Application.DTOs.Categories;
+using ShowNow.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,10 @@ namespace ShopNow.Application.Services.Interfaces
 	public interface ICategoryService
 	{
 		public Task<IEnumerable<SelectCategoryDTO>> GetSelectListCategories();
-        public Task<SelectCategoryDTO> GetCategoryById(Guid id);
+		public Task<IEnumerable<ListCategoryDTO>> GetListCategories();
+		public Task<ListCategoryDTO> GetCategoryById(Guid id);
+        public Task<bool> CreateCategory(CreateCategoryDTO dto);
+       public Task<List<SelectCategoryDTO>> GetParentCategories();
+
     }
 }
