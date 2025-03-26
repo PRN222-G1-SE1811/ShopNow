@@ -3,7 +3,7 @@
 	ViewBag.Title = "Create New Product";
 }
 
-<main class="container mt-4">
+<main class="container mt-4" >
 	<h1 class="mb-3">@ViewBag.Title</h1>
 	<partial name="_StateBar"></partial>
 	<form id="createProductForm" method="post" enctype="multipart/form-data">
@@ -46,5 +46,11 @@
 	@{
 		<partial name="_ValidationScriptsPartial" />
 		<link href="~/css/admin/progressBar.css" rel="stylesheet" type="text/css" />
+		<script src="https://cdn.tiny.cloud/1/0vuhsazgiv5rjydoflr0l0zbhd3khd54mgka0cgti58u6pld/tinymce/6/tinymce.min.js" 
+			referrerpolicy="origin"></script>
+		<script src="~/js/admin/tinyMCE.js"></script>
+		<script type="text/javascript">
+			loadEditor('#CreateProductDTO_Description')
+		</script>
 	}
 }
