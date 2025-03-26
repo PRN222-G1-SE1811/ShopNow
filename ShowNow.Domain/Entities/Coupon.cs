@@ -24,7 +24,7 @@ namespace ShowNow.Domain.Entities
 		public required decimal CouponMaxSpend { get; set; }
 		public required CouponStatus CouponStatus { get; set; }
 		public DateTime CreatedAt { get; set; }
-		public DateTime UpdatedAt { get; set; }
+		public DateTime? UpdatedAt { get; set; }
 		public DateTime? DeletedAt { get; set; }
 	}
 }

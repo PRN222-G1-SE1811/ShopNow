@@ -66,7 +66,7 @@ namespace ShopNow.Application.Services.Implements
                 Image = category.Image,
                 Status = category.Status,
                 CreatedAt = category.CreatedAt,
-                UpdatedAt = category.UpdatedAt
+                UpdatedAt = (DateTime)category.UpdatedAt
             };
         }
         public async Task<bool> CreateCategory(CreateCategoryDTO dto)

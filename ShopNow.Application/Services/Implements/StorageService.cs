@@ -7,8 +7,8 @@ namespace ShopNow.Application.Services.Implements
 	{
 		public async Task<string> Upload(IFormFile file, string uploadPath)
 		{
-			if(file == null) throw new ArgumentNullException("Invalid file");
-			if(!Directory.Exists(uploadPath))
+			if (file == null) throw new ArgumentNullException("Invalid file");
+			if (!Directory.Exists(uploadPath))
 			{
 				Directory.CreateDirectory(uploadPath);
 			}
@@ -18,7 +18,7 @@ namespace ShopNow.Application.Services.Implements
 			{
 				await file.CopyToAsync(stream);
 			}
-			return filename;
+			return $"{uploadPath}\\{filename}";
 		}
 	}
 }

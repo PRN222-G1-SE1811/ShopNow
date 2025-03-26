@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ShopNow.Infrastructure.Data;
 
@@ -11,9 +12,11 @@ using ShopNow.Infrastructure.Data;
 namespace ShopNow.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(ShopNowDbContext))]
-    partial class ShopNowDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250324163930_ModifiedDB1")]
+    partial class ModifiedDB1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
