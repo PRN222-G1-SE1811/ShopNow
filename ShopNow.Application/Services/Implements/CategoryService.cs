@@ -25,14 +25,6 @@ namespace ShopNow.Application.Services.Implements
         }
         public async Task<List<SelectCategoryDTO>> GetParentCategories()
         {
-            //var categories = await unitOfWork.GenericRepository
-            //    .GetAll(c => c.ParentId != null) // Chỉ lấy danh mục cha
-            //    .Select(c => new SelectCategoryDTO
-            //    {
-            //        Id = c.Id,
-            //        Name = c.Name
-            //    })
-            //    .ToListAsync();
             var categories = await unitOfWork.GenericRepository
                             .GetAll(c => c.ParentId != null)
                             .GroupBy(c => c.Name) // Nhóm theo Name để loại bỏ trùng lặp
