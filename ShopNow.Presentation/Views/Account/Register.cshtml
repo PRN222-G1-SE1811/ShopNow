@@ -1,0 +1,80 @@
+﻿
+@using App.Areas.Identity.Models.AccountViewModels
+@using Microsoft.AspNetCore.Identity
+@using ShowNow.Domain.Entities
+
+@inject SignInManager<User> SignInManager
+
+@model RegisterViewModel
+@{
+    ViewData["Title"] = "Đăng ký tài khoản";
+}
+
+@* <h1>@ViewData["Title"].</h1> *@
+
+<div class="row justify-content-center align-items-center min-vh-100 bg-light">
+    <div class="col-lg-6 col-md-8 col-sm-10">
+        <section class="card shadow-lg p-5 border-0 rounded-4">
+            <h3 class="text-center text-primary fw-bold">Create a New Account</h3>
+            <p class="text-center text-muted">Join us and explore amazing features.</p>
+            <hr />
+            <form asp-controller="Account" asp-action="Register" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                <div class="mb-3">
+                    <label asp-for="UserName" class="form-label fw-semibold">Username</label>
+                    <input asp-for="UserName" class="form-control rounded-3 p-2" placeholder="Enter your username" />
+                    <span asp-validation-for="UserName" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Email" class="form-label fw-semibold">Email</label>
+                    <input asp-for="Email" class="form-control rounded-3 p-2" placeholder="Enter your email" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Password" class="form-label fw-semibold">Password</label>
+                    <input asp-for="Password" class="form-control rounded-3 p-2" type="password" placeholder="Enter your password" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="ConfirmPassword" class="form-label fw-semibold">Confirm Password</label>
+                    <input asp-for="ConfirmPassword" class="form-control rounded-3 p-2" type="password" placeholder="Confirm your password" />
+                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                </div>
+                <button type="submit" class="btn btn-primary w-100 rounded-3 py-2 fw-semibold">Sign Up</button>
+            </form>
+        </section>
+    </div>
+    <div class="col-lg-4 col-md-8 col-sm-10 mt-4 mt-lg-0">
+        <section class="card shadow-lg p-5 border-0 rounded-4 text-center">
+            <h4 class="text-primary fw-bold">Sign in with Social Account</h4>
+            <p class="text-muted">Quick and secure</p>
+            <hr />
+            @{
+                var schemes = await SignInManager.GetExternalAuthenticationSchemesAsync(); var loginProviders = schemes.ToList();
+            }
+            @if (loginProviders.Count == 0)
+            {
+                <p class="text-muted">No external login providers available.</p>
+            }
+            else
+            {
+                <form asp-controller="Account" asp-action="ExternalLogin" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post">
+                    <div class="d-grid gap-3">
+                        @foreach (var provider in loginProviders)
+                        {
+                            <button type="submit" class="btn btn-outline-primary rounded-3 py-2 fw-semibold" name="provider" value="@provider.Name" title="Log in using @provider.Name">
+                                <i class="bi bi-box-arrow-in-right me-2"></i> Log in with @provider.Name
+                            </button>
+                        }
+                    </div>
+                </form>
+            }
+        </section>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}

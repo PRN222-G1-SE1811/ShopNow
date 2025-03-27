@@ -33,7 +33,8 @@
 	<div class="offcanvas-menu-wrapper">
 		<div class="offcanvas__option">
 			<div class="offcanvas__links">
-				<a href="#">Sign in</a>
+				<partial name="_LoginPartial" />
+				@* <a href="#">Sign in</a> *@
 				<a href="#">FAQs</a>
 			</div>
 			<div class="offcanvas__top__hover">
@@ -70,14 +71,17 @@
 					<div class="col-lg-6 col-md-5">
 						<div class="header__top__right">
 							<div class="header__top__links">
-								<a href="#">Sign in</a>
+								<partial name="_LoginPartial" />
+								@* <a href="#">Sign in</a> *@
 								<a href="#">FAQs</a>
 							</div>
 							<div class="header__top__hover">
-								<span>VND <i class="arrow_carrot-down"></i></span>
+								<span>Manage <i class="arrow_carrot-down"></i></span>
 								<ul>
-									<li>VND</li>
+									<li><a asp-controller="Role" asp-action="Index">Role</a></li>
+									<li><a asp-controller="User" asp-action="Index">User</a></li>
 								</ul>
+
 							</div>
 						</div>
 					</div>
