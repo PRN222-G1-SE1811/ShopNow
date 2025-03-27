@@ -13,6 +13,9 @@ namespace ShowNow.Domain.Entities
 
 		[Column(TypeName = "text")]
 		public string? Description { get; set; }
+
+		[Column(TypeName = "decimal(18,2)")]
+		public decimal Price { get; set; }
 		public required ProductStatus Status { get; set; }
 		public required ProductFeatured Featured { get; set; }
 		public DateTime? UpdatedAt { get; set; }

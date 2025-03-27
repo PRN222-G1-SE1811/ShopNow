@@ -3,84 +3,84 @@ using ShopNow.Application.Services.Interfaces;
 using ShopNow.Presentation.Models.ProductViewModel;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ShopNow.Shared.Enums;
-using ShopNow.Application.DTOs.Prodducts;
+using ShopNow.Application.DTOs.Categories;
 
 namespace ShopNow.Presentation.Controllers
 {
-	public class ProductController(ICategoryService categoryService, IProductService productService, IProductVariantService productVariantService) : Controller
+	public class ProductController(ICategoryService categoryService, IProductService productService) : Controller
 	{
 		public IActionResult Index()
 		{
 			return View();
 		}
 
-		[HttpGet("Product/{id:guid}")]
-		public async Task<IActionResult> ProductDetail([FromRoute] Guid id)
-		{
-			var product = await productService.GetProductDetail(id);
-			var productVM = new ProductDetailViewModel() { ProductDetailDTO = product };
-			return View(productVM);
-		}
-
 		#region manage
-		public IActionResult Manage()
+		public async Task<IActionResult> Manage()
 		{
 			ViewData["active"] = "product";
 			return View();
 		}
 
-		public async Task<IActionResult> Create(int step = 0, Guid? productId = null)
+		[HttpGet]
+		public async Task<IActionResult> CreateProduct([FromQuery] int step = 1)
 		{
 			ViewBag.Step = step;
-			if (step == 0)
-			{
-				CreateProductBaseInfoViewModel model = new CreateProductBaseInfoViewModel();
-				model.Categories = new SelectList(await categoryService.GetSelectListCategories(), "Id", "Name");
-				model.Featured = new SelectList(new ProductFeatured[] { ProductFeatured.No, ProductFeatured.Yes });
-				return View("CreateBaseInfo", model);
-			}
-
 			if (step == 1)
 			{
-				CreateAttributeViewModel model = new CreateAttributeViewModel();
-				model.ProductVariantDTOs = new List<ProductVariantDTO>()
+				var categories = await categoryService.GetSelectListCategories();
+				var status = new List<ProductStatus>()
 				{
-					new ProductVariantDTO() {
-						AttributeDTOs = new List<AttributeDTO>()
-						{
-							new AttributeDTO()
-						},
-						ProductDetail = new ProductAttributeDTO()
-					}
+					ProductStatus.Active,
+					ProductStatus.Inactive
 				};
-				ViewBag.ProductId = productId;
-				return View("CreateAttribute", model);
+				var features = new List<ProductFeatured>()
+				{
+					ProductFeatured.Yes,
+					ProductFeatured.No,
+				};
+				CreateProductViewModel model = new CreateProductViewModel()
+				{
+					Categories = new SelectList(categories, nameof(SelectCategoryDTO.Id), nameof(SelectCategoryDTO.Name)),
+					Status = new SelectList(status),
+					Features = new SelectList(features)
+				};
+				return View(model);
+			}
+			else
+			{
+				
+			}
+		}
+
+		[HttpPost]
+		public async Task<IActionResult> CreateProduct(CreateProductViewModel model)
+		{
+			if (!ModelState.IsValid)
+			{
+				return RedirectToAction(nameof(CreateProduct), 1);
 			}
 
-			return RedirectToAction(nameof(Manage));
+			return RedirectToAction(nameof(CreateProductVariant), 2);
+		}
+
+		[HttpGet]
+		public IActionResult CreateProductVariant([FromQuery] int step = 2)
+		{
+			ViewBag.Step = step;
+			CreateProductVariantViewModel model = new CreateProductVariantViewModel();
+			return View(model);
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> Create(CreateProductBaseInfoViewModel model)
+		public IActionResult CreateProductVariant(CreateProductVariantViewModel model)
 		{
-			model.CreateProductDTO.CreatedAt = DateTime.Now;
-			model.CreateProductDTO.Status = ProductStatus.MissingAttribute;
-			var productId = await productService.CreateBaseProduct(model.CreateProductDTO);
-			return RedirectToAction(nameof(Create), new { step = 1, productId = productId });
-		}
-
-		[HttpPost]
-		public async Task<IActionResult> CreateAttribute(CreateAttributeViewModel model)
-		{
-			model.ProductVariantDTOs.ForEach(p =>
+			if (!ModelState.IsValid)
 			{
-				p.ProductDetail.ProductId = model.ProductId;
-			});
 
-			await productVariantService.AddRangeVariantProduct(model.ProductVariantDTOs);
-
-			return RedirectToAction(nameof(Create), new { step = 2 });
+			}
+			return View(model);
 		}
+
 		#endregion
 	}
 }

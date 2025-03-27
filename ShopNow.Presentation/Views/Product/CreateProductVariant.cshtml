@@ -1,0 +1,78 @@
+﻿@model ShopNow.Presentation.Models.ProductViewModel.CreateProductVariantViewModel
+
+@{
+	ViewData["Title"] = "Create Product Variants";
+}
+
+<div class="container">
+	<partial name="_StateBar" />
+	<h2 class="mb-4">Create Product Variants</h2>
+	<form asp-action="CreateProductVariant" asp-controller="Product" method="post" id="productVariantForm">
+		<input asp-for="@Model.ProductId" hidden />
+		<div id="productVariantsContainer">
+			@for (int i = 0; i < Model.ProductVariantDTOs.Count; i++)
+			{
+				<div class="card mb-3 product-variant-card">
+					<div class="card-body">
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group">
+									<label asp-for="ProductVariantDTOs[i].Discount">Discount (%)</label>
+									<input asp-for="ProductVariantDTOs[i].Discount" class="form-control" type="number" min="0" max="100" />
+									<span asp-validation-for="ProductVariantDTOs[i].Discount" class="text-danger"></span>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label asp-for="ProductVariantDTOs[i].Quantity">Quantity</label>
+									<input asp-for="ProductVariantDTOs[i].Quantity" class="form-control" type="number" min="0" />
+									<span asp-validation-for="ProductVariantDTOs[i].Quantity" class="text-danger"></span>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group">
+									<label asp-for="ProductVariantDTOs[i].Color">Color</label>
+									<input asp-for="ProductVariantDTOs[i].Color" class="form-control" />
+									<span asp-validation-for="ProductVariantDTOs[i].Color" class="text-danger"></span>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label asp-for="ProductVariantDTOs[i].Size">Size</label>
+									<input asp-for="ProductVariantDTOs[i].Size" class="form-control" type="text" />
+									<span asp-validation-for="ProductVariantDTOs[i].Size" class="text-danger"></span>
+								</div>
+							</div>
+						</div>
+						<div class="text-right">
+							<button type="button" class="btn btn-danger remove-variant">Remove</button>
+						</div>
+					</div>
+				</div>
+			}
+		</div>
+
+		<div class="text-center mb-3">
+			<button type="button" id="addProductVariant" class="btn btn-primary">
+				<i class="fa fa-plus"></i> Add Product Variant
+			</button>
+		</div>
+
+		<div class="text-center">
+			<button type="submit" class="btn btn-success">
+				<i class="fa fa-save"></i> Save Product Variants
+			</button>
+		</div>
+	</form>
+</div>
+
+@section Scripts {
+	@{
+		<link rel="stylesheet" href="~/css/admin/progressBar.css" type="text/css">
+		<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+		<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+		<script src="~/js/admin/createProduct.js"></script>
+	}
+}
