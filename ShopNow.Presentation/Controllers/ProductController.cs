@@ -3,9 +3,7 @@ using ShopNow.Application.Services.Interfaces;
 using ShopNow.Presentation.Models.ProductViewModel;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ShopNow.Shared.Enums;
-using System.Text.Json;
 using ShopNow.Application.DTOs.Prodducts;
-using System.Runtime.InteropServices.Marshalling;
 
 namespace ShopNow.Presentation.Controllers
 {
@@ -16,6 +14,15 @@ namespace ShopNow.Presentation.Controllers
 			return View();
 		}
 
+		[HttpGet("Product/{id:guid}")]
+		public async Task<IActionResult> ProductDetail([FromRoute] Guid id)
+		{
+			var product = await productService.GetProductDetail(id);
+			var productVM = new ProductDetailViewModel() { ProductDetailDTO = product };
+			return View(productVM);
+		}
+
+		#region manage
 		public IActionResult Manage()
 		{
 			ViewData["active"] = "product";
@@ -67,12 +74,13 @@ namespace ShopNow.Presentation.Controllers
 		{
 			model.ProductVariantDTOs.ForEach(p =>
 			{
-			   p.ProductDetail.ProductId = model.ProductId;
+				p.ProductDetail.ProductId = model.ProductId;
 			});
 
 			await productVariantService.AddRangeVariantProduct(model.ProductVariantDTOs);
 
 			return RedirectToAction(nameof(Create), new { step = 2 });
 		}
+		#endregion
 	}
 }

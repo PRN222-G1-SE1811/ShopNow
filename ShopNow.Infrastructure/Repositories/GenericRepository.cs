@@ -244,5 +244,10 @@ namespace ShopNow.Infrastructure.Repositories
 		{
 			await DbContext.Set<TEntity>().AddRangeAsync(entities);
 		}
+
+		public IQueryable<TEntity> GetQueryAble()
+		{
+			return DbContext.Set<TEntity>().AsQueryable();
+		}
 	}
 }

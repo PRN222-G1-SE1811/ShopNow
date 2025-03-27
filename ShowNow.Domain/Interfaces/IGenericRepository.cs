@@ -230,5 +230,11 @@ namespace ShowNow.Domain.Interfaces
 		/// <param name="entities"></param>
 		/// <returns></returns>
 		Task InsertRange(List<TEntity> entities);
+
+		/// <summary>
+		/// Get queryy able
+		/// </summary>
+		/// <returns>query</returns>
+		IQueryable<TEntity> GetQueryAble();
 	}
 }
