@@ -16,7 +16,7 @@ namespace ShopNow.Application.Services.Implements
 				assets.Add(new Asset()
 				{
 					FileName = file.FileName,
-					Path = await storageService.Upload(file, "D:\\2_Learnspace\\2_FPT\\Assets"),
+					Path = await storageService.Upload(file, "wwwroot\\images"),
 					Type = System.IO.Path.GetExtension(file.FileName) switch
 					{
 						".jpg" or ".jpeg" or ".png" => AssetType.Image,
