@@ -1,0 +1,68 @@
+﻿/* Styles for custom progress indicator */
+.custom-progress {
+	display: flex;
+	align-items: center;
+	width: 100%;
+}
+
+.custom-progress-step {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	position: relative;
+}
+
+.custom-progress-line {
+	flex-grow: 1;
+	height: 2px;
+	background-color: #e0e0e0;
+	margin: 0 10px;
+}
+
+	.custom-progress-line.active {
+		background-color: #2196F3;
+	}
+
+.step-icon {
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-weight: bold;
+	color: white;
+	background-color: #e0e0e0;
+}
+
+.custom-progress-step.finished .step-icon,
+.custom-progress-step.in-progress .step-icon {
+	background-color: #2196F3;
+}
+
+.step-content {
+	text-align: center;
+	margin-top: 10px;
+}
+
+	.step-content strong {
+		display: block;
+		margin-bottom: 5px;
+		color: #333;
+	}
+
+	.step-content p {
+		font-size: 0.8em;
+		color: #666;
+		margin: 0;
+	}
+
+/* Additional state-specific styles */
+.custom-progress-step.waiting .step-icon {
+	background-color: #e0e0e0;
+	color: #9e9e9e;
+}
+
+.step {
+	margin: unset !important;
+}

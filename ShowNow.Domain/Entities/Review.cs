@@ -17,8 +17,10 @@ namespace ShowNow.Domain.Entities
 		[Column(TypeName = "text")]
 		public string? Content { get; set; }
 		public DateTime CreatedAt { get; set; }
-		public DateTime UpdatedAt { get; set; }
-		public Product? Product { get; set; }
+		public DateTime? UpdatedAt { get; set; }
+
+		[ForeignKey("ProductId")]
+		public ProductVariant? Product { get; set; }
 		public User? Customer { get; set; }
 	}
 }

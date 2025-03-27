@@ -14,7 +14,7 @@ namespace ShowNow.Domain.Entities
 		public required AssetType Type { get; set; }
 		public double Size { get; set; }
 		public DateTime CreatedAt { get; set; }
-		public DateTime UpdatedAt { get; set; }
+		public DateTime? UpdatedAt { get; set; }
 		public DateTime? DeletedAt { get; set; }
 		public List<ProductAsset>? ProductAssets { get; set; }
 		public List<ProductAssetAttribute>? ProductAssetAttributes { get; set; }

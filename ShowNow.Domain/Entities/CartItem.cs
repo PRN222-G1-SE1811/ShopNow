@@ -12,9 +12,10 @@ namespace ShowNow.Domain.Entities
 		[Column(TypeName = "decimal(8,2)")]
 		public decimal Price { get; set; }
 		public DateTime CreatedAt { get; set; }
-		public DateTime UpdatedAt { get; set; }
+		public DateTime? UpdatedAt { get; set; }
 
-		public Product? Product { get; set; }
+		[ForeignKey("ProductId")]
+		public ProductVariant? Product { get; set; }
 		public Cart? Cart { get; set; }
 	}
 }

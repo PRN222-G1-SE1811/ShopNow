@@ -20,7 +20,7 @@ namespace ShowNow.Domain.Entities
 		[Column(TypeName = "varchar(255)")]
 		public string? Image { get; set; }
 		public CategoryStatus Status { get; set; }
-		public DateTime UpdatedAt { get; set; }
+		public DateTime? UpdatedAt { get; set; }
 		public DateTime CreatedAt { get; set; }
 		public DateTime? DeletedAt { get; set; }
 		public List<Product>? Products { get; set; }

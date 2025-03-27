@@ -50,6 +50,10 @@ if(2 == 1)
 }
 =========
 
+app.MapControllerRoute(
+	name: "default",
+	pattern: "{controller=Home}/{action=Index}/{id?}");
+
 //app.MapControllerRoute(
 //	name: "default",
 //	pattern: "{controller=Home}/{action=Index}/{id?}");
@@ -57,6 +61,5 @@ if(2 == 1)
 app.MapControllerRoute(
 	name: "default",
 	pattern: "{controller=Product}/{action=Manage}");
->>>>>>>>> Temporary merge branch 2
 
 app.Run();
