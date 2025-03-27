@@ -9,6 +9,7 @@ namespace ShopNow.Application.Mappers
 		public ProductMapper()
 		{
 			CreateMap<CreateProductDTO, Product>();
+			CreateMap<Product, ProductDetailDTO>().ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.Category!.Name));
 		}
 	}
 }

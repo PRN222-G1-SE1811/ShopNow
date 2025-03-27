@@ -19,5 +19,9 @@ namespace ShopNow.Application.DTOs.Products
 
 		[Required(ErrorMessage = "Product featured status is required.")]
 		public required ProductFeatured Featured { get; set; }
+
+		[Required]
+		[Range(1, double.MaxValue, ErrorMessage = "Price must be greater than zero.")]
+		public required decimal Price { get; set; }
 	}
 }

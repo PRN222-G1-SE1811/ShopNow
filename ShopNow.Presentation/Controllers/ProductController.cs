@@ -10,10 +10,24 @@ namespace ShopNow.Presentation.Controllers
 {
 	public class ProductController(ICategoryService categoryService, IProductService productService, IProductVariantService productVariantService) : Controller
 	{
+		#region customer side
 		public IActionResult Index()
 		{
 			return View();
 		}
+
+		[HttpGet("Product/{id:guid}")]
+		public async Task<IActionResult> ProductDetail(Guid id)
+		{
+			var productDetail = await productService.GetProductDetail(id);
+			ProductDetailViewModel model = new ProductDetailViewModel()
+			{
+				ProductDetailDTO = productDetail,
+			};
+			return View(model);
+		}
+
+		#endregion
 
 		#region manage
 		public async Task<IActionResult> Manage()

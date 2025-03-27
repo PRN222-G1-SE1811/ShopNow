@@ -4,7 +4,6 @@ using ShopNow.Application.DTOs.Products;
 using ShopNow.Application.Services.Interfaces;
 using ShowNow.Domain.Entities;
 using ShowNow.Domain.Interfaces;
-using System.Linq.Expressions;
 
 namespace ShopNow.Application.Services.Implements
 {
@@ -16,6 +15,15 @@ namespace ShopNow.Application.Services.Implements
 			var createdProduct = unitOfWork.GenericRepository.Insert(productDomain);
 			await unitOfWork.CommitAsync();
 			return createdProduct.Id;
+		}
+
+		public async Task<ProductDetailDTO> GetProductDetail(Guid productId)
+		{
+			var query = unitOfWork.GenericRepository.GetQueryAble();
+			query = query.Include(_ => _.Category)
+				.Include(_ => _.ProductVariants!).ThenInclude(_ => _.Assets);
+			var productDetails = await query.FirstOrDefaultAsync(_ => _.Id == productId && _.Status == Shared.Enums.ProductStatus.Active);
+			return mapper.Map<ProductDetailDTO>(productDetails);
 		}
 	}
 }

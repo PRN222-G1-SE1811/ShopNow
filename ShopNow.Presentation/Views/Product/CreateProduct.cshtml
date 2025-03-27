@@ -23,6 +23,12 @@
 		</div>
 
 		<div class="form-group">
+			<label asp-for="@Model.CreateProductDTO.Price">Price</label>
+			<input asp-for="@Model.CreateProductDTO.Price" min="1" class="form-control" placeholder="Enter product price">
+			<span asp-validation-for="@Model.CreateProductDTO.Price" class="text-danger"></span>
+		</div>
+
+		<div class="form-group">
 			<label asp-for="@Model.CreateProductDTO.Description">Description</label>
 			<textarea asp-for="@Model.CreateProductDTO.Description" class="form-control" rows="3" placeholder="Enter product description"></textarea>
 			<span asp-validation-for="@Model.CreateProductDTO.Description" class="text-danger"></span>
