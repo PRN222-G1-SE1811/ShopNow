@@ -6,6 +6,7 @@ namespace ShopNow.Application.DTOs.Products
 {
 	public class CreateProductVariantDTO
 	{
+
 		[Required(ErrorMessage = "Discount is required.")]
 		[Range(0, 100, ErrorMessage = "Discount must be between 0% and 100%.")]
 		public required decimal Discount { get; set; }
@@ -22,7 +23,7 @@ namespace ShopNow.Application.DTOs.Products
 		[RegularExpression(@"^(S|M|L|XL|XXL|\d{2}|Free)$", ErrorMessage = "Invalid size format. Accepted values: S, M, L, XL, XXL, numbers (38, 39, ...), or 'Free'.")]
 		public required string Size { get; set; }
 
-		[Required(ErrorMessage = "Asset is required.")]
-		public required IFormFile Asset { get; set; }
+		[Required(ErrorMessage = "Assets are required.")]
+		public required List<IFormFile> Assets { get; set; } = new List<IFormFile>();
 	}
 }

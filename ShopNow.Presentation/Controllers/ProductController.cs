@@ -4,10 +4,11 @@ using ShopNow.Presentation.Models.ProductViewModel;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ShopNow.Shared.Enums;
 using ShopNow.Application.DTOs.Categories;
+using ShowNow.Domain.Entities;
 
 namespace ShopNow.Presentation.Controllers
 {
-	public class ProductController(ICategoryService categoryService, IProductService productService) : Controller
+	public class ProductController(ICategoryService categoryService, IProductService productService, IProductVariantService productVariantService) : Controller
 	{
 		public IActionResult Index()
 		{
@@ -24,32 +25,27 @@ namespace ShopNow.Presentation.Controllers
 		[HttpGet]
 		public async Task<IActionResult> CreateProduct([FromQuery] int step = 1)
 		{
+			if (step != 1) step = 1;
 			ViewBag.Step = step;
-			if (step == 1)
-			{
-				var categories = await categoryService.GetSelectListCategories();
-				var status = new List<ProductStatus>()
+
+			var categories = await categoryService.GetSelectListCategories();
+			var status = new List<ProductStatus>()
 				{
 					ProductStatus.Active,
 					ProductStatus.Inactive
 				};
-				var features = new List<ProductFeatured>()
+			var features = new List<ProductFeatured>()
 				{
 					ProductFeatured.Yes,
 					ProductFeatured.No,
 				};
-				CreateProductViewModel model = new CreateProductViewModel()
-				{
-					Categories = new SelectList(categories, nameof(SelectCategoryDTO.Id), nameof(SelectCategoryDTO.Name)),
-					Status = new SelectList(status),
-					Features = new SelectList(features)
-				};
-				return View(model);
-			}
-			else
+			CreateProductViewModel model = new CreateProductViewModel()
 			{
-				
-			}
+				Categories = new SelectList(categories, nameof(SelectCategoryDTO.Id), nameof(SelectCategoryDTO.Name)),
+				Status = new SelectList(status),
+				Features = new SelectList(features)
+			};
+			return View(model);
 		}
 
 		[HttpPost]
@@ -59,28 +55,36 @@ namespace ShopNow.Presentation.Controllers
 			{
 				return RedirectToAction(nameof(CreateProduct), 1);
 			}
+			var productId = await productService.CreateProduct(model.CreateProductDTO);
 
-			return RedirectToAction(nameof(CreateProductVariant), 2);
+			return RedirectToAction(nameof(CreateProductVariant), new { productId });
 		}
 
 		[HttpGet]
-		public IActionResult CreateProductVariant([FromQuery] int step = 2)
+		public IActionResult CreateProductVariant(Guid? productId)
 		{
-			ViewBag.Step = step;
+			if (productId == null) return RedirectToAction(nameof(CreateProduct), 1);
+			ViewBag.Step = 2;
 			CreateProductVariantViewModel model = new CreateProductVariantViewModel();
+			model.ProductId = productId.Value;
 			return View(model);
 		}
 
 		[HttpPost]
-		public IActionResult CreateProductVariant(CreateProductVariantViewModel model)
+		public async Task<IActionResult> CreateProductVariant(CreateProductVariantViewModel model)
 		{
 			if (!ModelState.IsValid)
 			{
-
+				return RedirectToAction(nameof(CreateProductVariant), new { model.ProductId });
 			}
-			return View(model);
-		}
 
+			var isCreated = await productVariantService.CreateProdductVariants(model.ProductId, model.ProductVariantDTOs);
+			if (!isCreated)
+			{
+				return RedirectToAction(nameof(CreateProductVariant), new { model.ProductId });
+			}
+			return RedirectToAction(nameof(Manage));
+		}
 		#endregion
 	}
 }

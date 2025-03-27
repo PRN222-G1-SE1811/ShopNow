@@ -14,7 +14,7 @@ namespace ShowNow.Domain.Entities
 		public DateTime CreatedAt { get; set; }
 		public DateTime? UpdatedAt { get; set; }
 		public Product? Product { get; set; }
-		public List<Asset> Assets { get; set; }
+		public List<Asset>? Assets { get; set; }
 		public List<OrderItem>? OrderItems { get; set; }
 		public List<Review>? Reviews { get; set; }
 		public DateTime? DeletedAt { get; set; }

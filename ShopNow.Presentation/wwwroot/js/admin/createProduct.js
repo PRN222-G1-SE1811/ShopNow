@@ -76,15 +76,16 @@
 								<div class="row">
 									<div class="col-md-12">
 										<div class="form-group">
-											<label for="ProductVariantDTOs_${variantIndex}__Asset">Asset</label>
-											<input name="ProductVariantDTOs[${variantIndex}].Asset"
+											<label for="ProductVariantDTOs_${variantIndex}__Assets">Assets</label>
+											<input name="ProductVariantDTOs[${variantIndex}].Assets"
 												   class="form-control"
 												   type="file"
+												   multiple
 												   required
 												   data-val="true"
-												   data-val-required="Asset is required"/>
+												   data-val-required="Assets are required"/>
 											<span class="text-danger field-validation-valid"
-												  data-valmsg-for="ProductVariantDTOs[${variantIndex}].Asset"
+												  data-valmsg-for="ProductVariantDTOs[${variantIndex}].Assets"
 												  data-valmsg-replace="true"></span>
 										</div>
 									</div>

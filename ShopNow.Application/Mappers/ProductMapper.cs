@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using ShopNow.Application.DTOs.Products;
 using ShowNow.Domain.Entities;
 
 namespace ShopNow.Application.Mappers
@@ -7,6 +8,7 @@ namespace ShopNow.Application.Mappers
 	{
 		public ProductMapper()
 		{
+			CreateMap<CreateProductDTO, Product>();
 		}
 	}
 }

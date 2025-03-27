@@ -7,8 +7,8 @@ namespace ShopNow.Presentation.Models.ProductViewModel
 	public class CreateProductViewModel
 	{
 		public CreateProductDTO CreateProductDTO { get; set; } = null!;
-		public SelectList Categories { get; set; } = null!;
-		public SelectList Status { get; set; } = null!;
-		public SelectList Features { get; set; } = null!;
+		public SelectList? Categories { get; set; } = null!;
+		public SelectList? Status { get; set; } = null!;
+		public SelectList? Features { get; set; } = null!;
 	}
 }

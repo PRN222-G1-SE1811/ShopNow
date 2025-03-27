@@ -7,7 +7,7 @@
 <div class="container mt-4">
 	<partial name="_StateBar" />
 	<h2 class="mb-4">Create Product</h2>
-	<form asp-action="Create" method="post">
+	<form asp-action="CreateProduct" method="post">
 		<div class="form-group">
 			<label asp-for="@Model.CreateProductDTO.Name">Product Name</label>
 			<input asp-for="@Model.CreateProductDTO.Name" class="form-control" placeholder="Enter product name">
