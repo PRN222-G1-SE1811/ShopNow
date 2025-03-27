@@ -87,6 +87,7 @@ namespace ShopNow.Presentation.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(CreateCategoryDTO model)
         {
+
             if (!ModelState.IsValid)
             {
                 var parentCategories = await _categoryService.GetParentCategories();

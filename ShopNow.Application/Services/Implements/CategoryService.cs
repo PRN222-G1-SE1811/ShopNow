@@ -6,16 +6,22 @@ using ShopNow.Infrastructure.Repositories;
 using ShopNow.Shared.Enums;
 using ShowNow.Domain.Entities;
 using ShowNow.Domain.Interfaces;
+using System.Linq.Expressions;
 
 namespace ShopNow.Application.Services.Implements
 {
     public class CategoryService(IUnitOfWork<Category, Guid> unitOfWork, IMapper mapper) : ICategoryService
     {
 
-        public async Task<IEnumerable<SelectCategoryDTO>> GetSelectListCategories()
-        {
-            var categories = await unitOfWork.GenericRepository.GetAllListAsync();
-            return mapper.Map<IEnumerable<SelectCategoryDTO>>(categories);
+        public async Task<IEnumerable<SelectCategoryDTO>> GetSelectListCategories(object? condition = null) { 
+        //{
+        //    var categories = await unitOfWork.GenericRepository.GetAllListAsync();
+        //    return mapper.Map<IEnumerable<SelectCategoryDTO>>(categories);
+            Expression<Func<Category, bool>> predicate = x => (
+                condition == null || (Guid)condition == x.Id
+            );
+        var categories = await unitOfWork.GenericRepository.GetAllListAsync(predicate);
+			return mapper.Map<IEnumerable<SelectCategoryDTO>>(categories);
         }
 
         public async Task<IEnumerable<ListCategoryDTO>> GetListCategories()
@@ -27,11 +33,11 @@ namespace ShopNow.Application.Services.Implements
         {
             var categories = await unitOfWork.GenericRepository
                             .GetAll(c => c.ParentId != null)
-                            .GroupBy(c => c.Name) // Nhóm theo Name để loại bỏ trùng lặp
+                            .GroupBy(c => c.Name) 
                             .Select(g => new SelectCategoryDTO
                             {
-                                Id = g.First().Id, // Lấy Id của phần tử đầu tiên trong nhóm
-                                Name = g.Key // Dùng Key của GroupBy (tức là Name)
+                                Id = g.First().Id, 
+                                Name = g.Key 
                             })
                             .ToListAsync();
 
