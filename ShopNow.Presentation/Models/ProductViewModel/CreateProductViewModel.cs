@@ -1,13 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using ShopNow.Application.DTOs.Prodducts;
+using ShopNow.Application.DTOs.Categories;
+using ShopNow.Application.DTOs.Products;
 
 namespace ShopNow.Presentation.Models.ProductViewModel
 {
 	public class CreateProductViewModel
 	{
-		public SelectList Categories { get; set; }
-		public SelectList Statuses { get; set; }
-		public SelectList Featured { get; set; }
-		public CreateProductDTO CreateProductDTO { get; set; }
+		public CreateProductDTO CreateProductDTO { get; set; } = null!;
+		public SelectList? Categories { get; set; } = null!;
+		public SelectList? Status { get; set; } = null!;
+		public SelectList? Features { get; set; } = null!;
 	}
 }

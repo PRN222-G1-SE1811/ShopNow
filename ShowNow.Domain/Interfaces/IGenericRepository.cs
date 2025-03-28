@@ -223,5 +223,18 @@ namespace ShowNow.Domain.Interfaces
 			int pageSize,
 			Func<IQueryable<TEntity>, IQueryable<TEntity>>? filter = null,
 			Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null);
+
+		/// <summary>
+		/// insert a list of entities
+		/// </summary>
+		/// <param name="entities"></param>
+		/// <returns></returns>
+		Task InsertRange(List<TEntity> entities);
+
+		/// <summary>
+		/// Get queryy able
+		/// </summary>
+		/// <returns>query</returns>
+		IQueryable<TEntity> GetQueryAble();
 	}
 }

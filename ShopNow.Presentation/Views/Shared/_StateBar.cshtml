@@ -1,0 +1,39 @@
+﻿@{
+	int step = ViewBag.Step ?? 1;
+}
+
+<div class="custom-progress">
+	<div class="custom-progress-step @(step >= 1 ? "finished" : "")">
+		<div class="step-icon">
+			@if (step > 1)
+			{
+				<i class="fa fa-check" aria-hidden="true"></i>
+			}
+			else
+			{
+				<p class="step">1</p>
+			}
+		</div>
+		<div class="step-content">
+			<strong>Step 1: Basic Info</strong>
+			<p>Basic information of product.</p>
+		</div>
+	</div>
+	<div class="custom-progress-line @(step >= 2 ? "active" : "")"></div>
+	<div class="custom-progress-step @(step >= 2 ? "in-progress" : "waiting")">
+		<div class="step-icon">
+			@if (step > 2)
+			{
+				<i class="fa fa-check" aria-hidden="true"></i>
+			}
+			else
+			{
+				<p class="step">2</p>
+			}
+		</div>
+		<div class="step-content">
+			<strong>Step 2: Add Details</strong>
+			<p>Attribute of product.</p>
+		</div>
+	</div>
+</div>

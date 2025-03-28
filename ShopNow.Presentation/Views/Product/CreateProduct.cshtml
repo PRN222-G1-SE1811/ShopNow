@@ -1,0 +1,67 @@
+﻿@model ShopNow.Presentation.Models.ProductViewModel.CreateProductViewModel
+
+@{
+	ViewData["Title"] = "Create Product";
+}
+
+<div class="container mt-4">
+	<partial name="_StateBar" />
+	<h2 class="mb-4">Create Product</h2>
+	<form asp-action="CreateProduct" method="post">
+		<div class="form-group">
+			<label asp-for="@Model.CreateProductDTO.Name">Product Name</label>
+			<input asp-for="@Model.CreateProductDTO.Name" class="form-control" placeholder="Enter product name">
+			<span asp-validation-for="@Model.CreateProductDTO.Name" class="text-danger"></span>
+		</div>
+
+		<div class="form-group">
+			<label asp-for="@Model.CreateProductDTO.CategoryId">Category</label>
+			<select asp-for="@Model.CreateProductDTO.CategoryId" asp-items="@Model.Categories" class="form-control">
+				<option selected disabled>-- Select Category --</option>
+			</select>
+			<span asp-validation-for="@Model.CreateProductDTO.CategoryId" class="text-danger"></span>
+		</div>
+
+		<div class="form-group">
+			<label asp-for="@Model.CreateProductDTO.Price">Price</label>
+			<input asp-for="@Model.CreateProductDTO.Price" min="1" class="form-control" placeholder="Enter product price">
+			<span asp-validation-for="@Model.CreateProductDTO.Price" class="text-danger"></span>
+		</div>
+
+		<div class="form-group">
+			<label asp-for="@Model.CreateProductDTO.Description">Description</label>
+			<textarea asp-for="@Model.CreateProductDTO.Description" class="form-control" rows="3" placeholder="Enter product description"></textarea>
+			<span asp-validation-for="@Model.CreateProductDTO.Description" class="text-danger"></span>
+		</div>
+
+		<div class="form-group">
+			<label asp-for="@Model.CreateProductDTO.Status">Status</label>
+			<select asp-for="@Model.CreateProductDTO.Status" asp-items="@Model.Status" class="form-control">
+				<option selected disabled value="">-- Select Status --</option>
+			</select>
+			<span asp-validation-for="@Model.CreateProductDTO.Status" class="text-danger"></span>
+		</div>
+
+		<div class="form-group">
+			<label asp-for="@Model.CreateProductDTO.Featured">Featured</label>
+			<select asp-for="@Model.CreateProductDTO.Featured" asp-items="@Model.Features" class="form-control">
+				<option selected disabled value="">-- Select Featured --</option>
+			</select>
+			<span asp-validation-for="@Model.CreateProductDTO.Featured" class="text-danger"></span>
+		</div>
+
+		<button type="submit" class="btn btn-primary">Create Product</button>
+		<a asp-action="Index" class="btn btn-secondary">Cancel</a>
+	</form>
+</div>
+
+@section Scripts {
+	<partial name="_ValidationScriptsPartial" />
+	<link rel="stylesheet" href="~/css/admin/progressBar.css" type="text/css">
+	<script src="https://cdn.tiny.cloud/1/0vuhsazgiv5rjydoflr0l0zbhd3khd54mgka0cgti58u6pld/tinymce/6/tinymce.min.js"
+			referrerpolicy="origin"></script>
+	<script src="~/js/admin/tinyMCE.js"></script>
+	<script type="text/javascript">
+		loadEditor('#CreateProductDTO_Description')
+	</script>
+}

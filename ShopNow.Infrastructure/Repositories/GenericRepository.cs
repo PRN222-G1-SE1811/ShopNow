@@ -215,6 +215,16 @@ namespace ShopNow.Infrastructure.Repositories
 			return pageResult;
 		}
 
+		public async Task InsertRange(List<TEntity> entities)
+		{
+			await DbContext.Set<TEntity>().AddRangeAsync(entities);
+		}
+
+		public IQueryable<TEntity> GetQueryAble()
+		{
+			return DbContext.Set<TEntity>().AsQueryable();
+		}
+
 		private bool disposed = false;
 
 		protected virtual void Dispose(bool disposing)
