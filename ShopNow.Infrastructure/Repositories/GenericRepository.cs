@@ -215,6 +215,16 @@ namespace ShopNow.Infrastructure.Repositories
 			return pageResult;
 		}
 
+		public async Task InsertRange(List<TEntity> entities)
+		{
+			await DbContext.Set<TEntity>().AddRangeAsync(entities);
+		}
+
+		public IQueryable<TEntity> GetQueryAble()
+		{
+			return DbContext.Set<TEntity>().AsQueryable();
+		}
+
 		private bool disposed = false;
 
 		protected virtual void Dispose(bool disposing)
@@ -238,16 +248,6 @@ namespace ShopNow.Infrastructure.Repositories
 		public IQueryable<TEntity> GetAll(Expression<Func<TEntity, bool>> predicate, bool isAll = true)
 		{
 			return GetAll(isAll).Where(predicate);
-		}
-
-		public async Task InsertRange(List<TEntity> entities)
-		{
-			await DbContext.Set<TEntity>().AddRangeAsync(entities);
-		}
-
-		public IQueryable<TEntity> GetQueryAble()
-		{
-			return DbContext.Set<TEntity>().AsQueryable();
 		}
 	}
 }

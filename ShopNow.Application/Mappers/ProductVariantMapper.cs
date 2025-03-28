@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
-using ShopNow.Application.DTOs.Prodducts;
+using ShopNow.Application.DTOs.Products;
+using ShopNow.Application.DTOs.ProductVariants;
 using ShowNow.Domain.Entities;
 
 namespace ShopNow.Application.Mappers
@@ -8,12 +9,11 @@ namespace ShopNow.Application.Mappers
 	{
 		public ProductVariantMapper()
 		{
-			CreateMap<ProductAttributeDTO, ProductVariant>()
-				.ForMember(dest => dest.Stock, opt => opt.MapFrom(src => src.Quantity))
-				.ForMember(dest => dest.ProductAssets, opt => opt.Ignore());
-
+			CreateMap<CreateProductVariantDTO, ProductVariant>()
+			.ForMember(dest => dest.Assets, opt => opt.Ignore())
+			.ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(_ => DateTime.UtcNow));
 			CreateMap<ProductVariant, ProductVariantDetailDTO>()
-				.ForMember(dest => dest.Images, opt => opt.MapFrom(src => src.ProductAssets!.Select(_ => _.Asset!.Path)));
+				.ForMember(dest => dest.Images, opt => opt.MapFrom(src => src.Assets!.Select(x => x.Path)));
 		}
 	}
 }

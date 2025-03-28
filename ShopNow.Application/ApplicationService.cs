@@ -23,16 +23,12 @@ namespace ShopNow.Application
 			services.AddScoped<IProductVariantService, ProductVariantService>();
 			#endregion
 
-			#region add SKU genrator
-			services.AddScoped<ISKUGenerator, SKUGenerator>();
-			#endregion
-
 			#region add asset service
 			services.AddScoped<IAssetService, AssetService>();
 			#endregion
 
-			#region add attribute service
-			services.AddScoped<IAttributeService, AttributeService>();
+			#region add SKU service
+			services.AddScoped<ISKUGenerator, SKUGenerator>();
 			#endregion
 		}
 	}

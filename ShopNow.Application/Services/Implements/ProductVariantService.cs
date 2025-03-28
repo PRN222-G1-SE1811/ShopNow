@@ -1,67 +1,32 @@
 ﻿using AutoMapper;
-using ShopNow.Application.DTOs.Prodducts;
+using ShopNow.Application.DTOs.Products;
 using ShopNow.Application.Services.Interfaces;
-using ShopNow.Shared.Enums;
 using ShowNow.Domain.Entities;
 using ShowNow.Domain.Interfaces;
-using System;
 
 namespace ShopNow.Application.Services.Implements
 {
-	public class ProductVariantService(IUnitOfWork<ProductVariant, Guid> unitOfWork, IMapper mapper, ISKUGenerator SKUGenerator, IAssetService assetService, IAttributeService attributeService) : IProductVariantService
+	public class ProductVariantService(IUnitOfWork<ProductVariant, Guid> unitOfWork, IAssetService assetService, ISKUGenerator SKUGenerator, IMapper mapper) : IProductVariantService
 	{
-		public async Task CreateVariantProduct(ProductVariantDTO productVariantDTO)
+		public async Task<bool> CreateProdductVariants(Guid id, List<CreateProductVariantDTO> createProductVariantDTOs)
 		{
-			var productVariant = mapper.Map<ProductVariant>(productVariantDTO.ProductDetail);
-			productVariant.SKU = SKUGenerator.GenerateSKU();
-			productVariant.CreatedAt = DateTime.Now;
-			//productVariant.ProductAssets = new List<ProductAsset>() { productVariantDTO };
-			unitOfWork.GenericRepository.Insert(productVariant);
-			await unitOfWork.CommitAsync();
-		}
-
-		public async Task AddRangeVariantProduct(List<ProductVariantDTO> productVariantDTOs)
-		{
-			var productVariants = mapper.Map<List<ProductVariant>>(productVariantDTOs.Select(x => x.ProductDetail).ToList());
-
-			for (int i = 0; i < productVariants.Count; i++)
+			var productVariantDomain = mapper.Map<List<ProductVariant>>(createProductVariantDTOs);
+			foreach (var p in productVariantDomain)
 			{
-				// insert new asset
-				var assetIds = await assetService.AddAssets(productVariantDTOs[i].ProductDetail.Files);
-
-				// insert new attribute
-				var attributeIds = await attributeService.AddAttributes(productVariantDTOs[i].AttributeDTOs);
-
-				productVariants[i].SKU = SKUGenerator.GenerateSKU();
-				productVariants[i].CreatedAt = DateTime.Now;
-				productVariants[i].ProductAssets = new List<ProductAsset>();
-				productVariants[i].ProductAssetAttributes = new List<ProductAssetAttribute>();
-
-				for (var j = 0; j < assetIds.Count; j++)
-				{
-					// Gán asset vào danh sách
-					productVariants[i].ProductAssets.Add(new ProductAsset
-					{
-						ProductId = productVariants[i].Id,
-						AssetId = assetIds[j],
-						Type = ProductAssetType.MainImage
-					});
-
-					// Gán attribute theo kiểu lặp lại (dùng modulo để không bị lỗi out-of-index)
-					var attributeIndex = j % attributeIds.Count;
-					productVariants[i].ProductAssetAttributes.Add(new ProductAssetAttribute
-					{
-						ProductId = productVariants[i].Id,
-						AssetId = assetIds[j],
-						AttributeId = attributeIds[attributeIndex], // Dùng modulo để gán attribute
-						Value = "1920x1080"
-					});
-				}
+				p.ProductId = id;
+				p.Sold = 0;
+				p.SKU = SKUGenerator.GenerateSKU();
+				unitOfWork.GenericRepository.Insert(p);
 			}
-
-			await unitOfWork.GenericRepository.InsertRange(productVariants);
-			await unitOfWork.CommitAsync();
+			
+			var rowChanged = await unitOfWork.CommitAsync();
+			var i = 0;
+			foreach (var productVariant in createProductVariantDTOs)
+			{
+				await assetService.CreateAssetsRange(productVariantDomain[i++].Id, productVariant.Assets);
+			}
+			i = 0;
+			return rowChanged > 0;
 		}
-
 	}
 }

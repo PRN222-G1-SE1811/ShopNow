@@ -1,15 +1,9 @@
-﻿using ShopNow.Application.DTOs.Prodducts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ShopNow.Application.DTOs.Products;
 
 namespace ShopNow.Application.Services.Interfaces
 {
 	public interface IProductVariantService
 	{
-		Task CreateVariantProduct(ProductVariantDTO productVariantDTO);
-		Task AddRangeVariantProduct(List<ProductVariantDTO> productVariantDTOs);
+		Task<bool> CreateProdductVariants(Guid id, List<CreateProductVariantDTO> createProductVariantDTOs);
 	}
 }

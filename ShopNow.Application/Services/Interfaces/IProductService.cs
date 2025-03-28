@@ -1,11 +1,10 @@
-﻿using ShopNow.Application.DTOs.Prodducts;
+﻿using ShopNow.Application.DTOs.Products;
 
 namespace ShopNow.Application.Services.Interfaces
 {
 	public interface IProductService
 	{
-		Task<Guid> CreateBaseProduct(CreateProductDTO createProductDTO);
-
-		Task<ProductDetailDTO> GetProductDetail(Guid id);
+		Task<Guid> CreateProduct(CreateProductDTO createProductDTO);
+		Task<ProductDetailDTO> GetProductDetail(Guid productId);
 	}
 }
