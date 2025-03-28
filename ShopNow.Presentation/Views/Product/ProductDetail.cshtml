@@ -84,7 +84,7 @@
 							hem with elastic side tabs and a front zip fastening with
 							placket.
 						</p>
-						<div class="product__details__option" id="details_option">
+						<div class="product__details__option">
 							<div class="product__details__option__color">
 								<span>Color:</span>
 								@foreach (var p in Model.ProductDetailDTO.ProductVariants)
@@ -94,6 +94,7 @@
 									</label>
 								}
 							</div>
+
 						</div>
 						<div class="product__details__cart__option">
 							<div class="quantity">
@@ -498,9 +499,12 @@
 
 			mapColor.forEach(p => {
 				if (!colorMap[p.color]) {
-					colorMap[p.color] = { sizes: {} };
+					colorMap[p.color] = { sizes: [] };
 				}
-				colorMap[p.color].sizes[p.size] = p.id;
+				// Chỉ thêm size nếu chưa tồn tại trong mảng
+				if (!colorMap[p.color].sizes.includes(p.size)) {
+					colorMap[p.color].sizes.push(p.size);
+				}
 			});
 
 			console.log("Color Map:", colorMap); // Debug kết quả
@@ -510,35 +514,66 @@
 			var selectedSize = null;
 
 			// Khi chọn màu
-			function selectColor(color) {
-				selectedColor = color;
+			function selectColor(colorElement) {
+				// Loại bỏ class active khỏi tất cả các label màu
+				document.querySelectorAll('.product__details__option__color label').forEach(label => {
+					label.classList.remove('active');
+				});
+
+				// Thêm class active cho label màu được chọn
+				colorElement.closest('label').classList.add('active');
+
+				// Lấy màu từ style background-color của label
+				selectedColor = colorElement.closest('label').style.backgroundColor;
 				selectedSize = null; // Reset size khi chọn màu khác
+
 				console.log("Chọn màu:", selectedColor);
 
-				// Lấy phần chứa size (không thay đổi phần chứa màu)
-				var sizeContainer = document.querySelector("#details_option");
+				// Hiển thị size cho màu đã chọn
+				updateSizeOptions(selectedColor);
+			}
 
-				// Xóa danh sách size cũ trước khi thêm mới
-				sizeContainer.innerHTML = `<span>Size:</span>`;
+			// Cập nhật các size có sẵn cho màu đã chọn
+			function updateSizeOptions(color) {
+				// Tìm mã màu phù hợp trong colorMap
+				const matchedColor = Object.keys(colorMap).find(mapColor =>
+					mapColor.toLowerCase() === color.toLowerCase()
+				);
 
-				// Kiểm tra xem màu có tồn tại không
-				if (colorMap[selectedColor]) {
-					Object.keys(colorMap[selectedColor].sizes).forEach(size => {
-						var sizeId = colorMap[selectedColor].sizes[size];
+				// Lấy container size, nếu không tồn tại thì tạo mới
+				let sizeContainer = document.querySelector('.product__details__option__size');
+				if (!sizeContainer) {
+					sizeContainer = document.createElement('div');
+					sizeContainer.className = 'product__details__option__size';
 
-						// Tạo label và input radio cho size
-						var label = document.createElement("label");
-						label.textContent = size;
-						label.setAttribute("for", size);
-						label.onclick = () => selectSize(size, sizeId);
+					// Tìm vị trí để chèn container size
+					const optionContainer = document.querySelector('.product__details__option');
+					if (optionContainer) {
+						optionContainer.appendChild(sizeContainer);
+					} else {
+						console.error('Không tìm thấy container để chèn size');
+						return;
+					}
+				}
 
-						var input = document.createElement("input");
-						input.type = "radio";
-						input.id = size;
-						input.name = "size";
+				// Xóa các size cũ
+				sizeContainer.innerHTML = '<span>Size:</span>';
 
-						label.appendChild(input);
-						sizeContainer.appendChild(label);
+				// Nếu tìm thấy màu
+				if (matchedColor) {
+					// Tạo label size cho từng size có sẵn
+					colorMap[matchedColor].sizes.forEach((size, index) => {
+						const sizeLabel = document.createElement('label');
+						sizeLabel.setAttribute('for', size.toLowerCase());
+						sizeLabel.innerHTML = `<input type="radio" id="${size.toLowerCase()}" name="size" onclick="selectSize('${size}')"/>${size}`;
+
+						// Đánh dấu size đầu tiên là active
+						if (index === 0) {
+							sizeLabel.classList.add('active');
+							selectedSize = size;
+						}
+
+						sizeContainer.appendChild(sizeLabel);
 					});
 				}
 			}
@@ -549,9 +584,21 @@
 					alert("Vui lòng chọn màu trước!");
 					return;
 				}
+
+				// Loại bỏ class active khỏi tất cả các label size
+				const sizeLabels = document.querySelectorAll('.product__details__option__size label');
+				sizeLabels.forEach(label => {
+					label.classList.remove('active');
+				});
+
+				// Thêm class active cho label size được chọn
+				const selectedSizeLabel = document.querySelector(`.product__details__option__size label[for="${size.toLowerCase()}"]`);
+				if (selectedSizeLabel) {
+					selectedSizeLabel.classList.add('active');
+				}
+
 				selectedSize = size;
 				console.log("Chọn size:", selectedSize);
-
 			}
 
 			// Khi ấn "Add to Cart"
@@ -561,17 +608,33 @@
 					return;
 				}
 
-				var productVariantId = colorMap[selectedColor]?.sizes[selectedSize];
+				// Tìm mã màu phù hợp trong colorMap
+				const matchedColor = Object.keys(colorMap).find(mapColor =>
+					mapColor.toLowerCase() === selectedColor.toLowerCase()
+				);
 
-				if (!productVariantId) {
+				const productVariant = mapColor.find(p =>
+					p.color.toLowerCase() === matchedColor.toLowerCase() &&
+					p.size === selectedSize
+				);
+
+				if (!productVariant) {
 					alert("Không tìm thấy sản phẩm!");
 					return;
 				}
 
-				console.log("Thêm vào giỏ hàng, ID:", productVariantId);
+				console.log("Thêm vào giỏ hàng, ID:", productVariant.id);
 
 				// TODO: Gửi ID này đến backend để thêm vào giỏ hàng
 			}
+
+			// Khởi tạo ban đầu nếu có màu được chọn sẵn
+			document.addEventListener('DOMContentLoaded', () => {
+				const initialColorInput = document.querySelector('.product__details__option__color input:checked');
+				if (initialColorInput) {
+					selectColor(initialColorInput);
+				}
+			});
 		</script>
 
 	}
