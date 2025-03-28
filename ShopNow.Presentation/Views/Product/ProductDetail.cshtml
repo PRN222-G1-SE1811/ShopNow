@@ -102,7 +102,7 @@
 									<input type="text" value="1" min="1" />
 								</div>
 							</div>
-							<a href="#" class="primary-btn">add to cart</a>
+							<button onclick="addToCart()" class="primary-btn text-white">add to cart</button>
 						</div>
 						<div class="product__details__btns__option">
 							<a href="#"><i class="fa fa-heart"></i> add to wishlist</a>
@@ -492,26 +492,46 @@
 			// Lấy dữ liệu từ Razor Model
 			var mapColor = @Html.Raw(Json.Serialize(Model.ProductDetailDTO.ProductVariants));
 
-			console.log("Dữ liệu gốc:", mapColor); // Debug dữ liệu từ server
+			// Debugging: Log raw data in detail
+			console.log("Dữ liệu gốc (chi tiết):", JSON.stringify(mapColor, null, 2));
 
 			// Tạo Color Map
 			var colorMap = {};
+			var productVariantStock = {}; // Lưu trữ số lượng tồn kho của từng biến thể
 
 			mapColor.forEach(p => {
+				// Log each product variant for detailed inspection
+				console.log("Processing Variant:", JSON.stringify(p, null, 2));
+
+				// Tạo map màu và size
 				if (!colorMap[p.color]) {
 					colorMap[p.color] = { sizes: [] };
 				}
-				// Chỉ thêm size nếu chưa tồn tại trong mảng
 				if (!colorMap[p.color].sizes.includes(p.size)) {
 					colorMap[p.color].sizes.push(p.size);
 				}
+
+				// Lưu trữ số lượng tồn kho
+				if (!productVariantStock[p.color]) {
+					productVariantStock[p.color] = {};
+				}
+
+				// Thêm log để kiểm tra giá trị stockQuantity
+				console.log(`Color: ${p.color}, Size: ${p.size}, Stock: ${p.quantity}`);
+
+				// Xử lý trường hợp stockQuantity có thể là undefined
+				productVariantStock[p.color][p.size] = p.quantity !== undefined
+					? p.quantity
+					: 0;
 			});
 
-			console.log("Color Map:", colorMap); // Debug kết quả
+			console.log("Color Map:", colorMap);
+			console.log("Product Variant Stock:", productVariantStock);
 
 			// Biến lưu màu và size đã chọn
 			var selectedColor = null;
 			var selectedSize = null;
+			var selectedProductVariant = null;
 
 			// Khi chọn màu
 			function selectColor(colorElement) {
@@ -526,6 +546,7 @@
 				// Lấy màu từ style background-color của label
 				selectedColor = colorElement.closest('label').style.backgroundColor;
 				selectedSize = null; // Reset size khi chọn màu khác
+				selectedProductVariant = null;
 
 				console.log("Chọn màu:", selectedColor);
 
@@ -563,12 +584,20 @@
 				if (matchedColor) {
 					// Tạo label size cho từng size có sẵn
 					colorMap[matchedColor].sizes.forEach((size, index) => {
+						// Kiểm tra số lượng tồn kho
+						const stockQuantity = productVariantStock[matchedColor][size] || 0;
+
 						const sizeLabel = document.createElement('label');
 						sizeLabel.setAttribute('for', size.toLowerCase());
-						sizeLabel.innerHTML = `<input type="radio" id="${size.toLowerCase()}" name="size" onclick="selectSize('${size}')"/>${size}`;
+						sizeLabel.innerHTML = `
+							<input type="radio" id="${size.toLowerCase()}" name="size"
+								   onclick="selectSize('${size}')"
+								   ${stockQuantity === 0 ? 'disabled' : ''}/>${size}
+							${stockQuantity === 0 ? ' (Hết hàng)' : ''}
+						`;
 
-						// Đánh dấu size đầu tiên là active
-						if (index === 0) {
+						// Đánh dấu size đầu tiên là active và có hàng
+						if (index === 0 && stockQuantity > 0) {
 							sizeLabel.classList.add('active');
 							selectedSize = size;
 						}
@@ -585,6 +614,11 @@
 					return;
 				}
 
+				// Tìm mã màu phù hợp trong colorMap
+				const matchedColor = Object.keys(colorMap).find(mapColor =>
+					mapColor.toLowerCase() === selectedColor.toLowerCase()
+				);
+
 				// Loại bỏ class active khỏi tất cả các label size
 				const sizeLabels = document.querySelectorAll('.product__details__option__size label');
 				sizeLabels.forEach(label => {
@@ -598,7 +632,24 @@
 				}
 
 				selectedSize = size;
-				console.log("Chọn size:", selectedSize);
+
+				// Tìm product variant và set max quantity
+				selectedProductVariant = mapColor.find(p =>
+					p.color.toLowerCase() === matchedColor.toLowerCase() &&
+					p.size === selectedSize
+				);
+
+				console.log(selectedProductVariant);
+
+				// Set max quantity cho input
+				const quantityInput = document.querySelector('.pro-qty input');
+				if (quantityInput && selectedProductVariant) {
+					const maxQuantity = selectedProductVariant.quantity || 1;
+					quantityInput.setAttribute('max', maxQuantity);
+					quantityInput.value = 1; // Reset về 1 khi chọn size mới
+				}
+
+				console.log("Chọn size:", selectedSize, "Số lượng tồn:", selectedProductVariant?.quantity || 0);
 			}
 
 			// Khi ấn "Add to Cart"
@@ -608,24 +659,29 @@
 					return;
 				}
 
-				// Tìm mã màu phù hợp trong colorMap
-				const matchedColor = Object.keys(colorMap).find(mapColor =>
-					mapColor.toLowerCase() === selectedColor.toLowerCase()
-				);
-
-				const productVariant = mapColor.find(p =>
-					p.color.toLowerCase() === matchedColor.toLowerCase() &&
-					p.size === selectedSize
-				);
-
-				if (!productVariant) {
-					alert("Không tìm thấy sản phẩm!");
+				if (!selectedProductVariant) {
+					alert("Vui lòng chọn sản phẩm!");
 					return;
 				}
 
-				console.log("Thêm vào giỏ hàng, ID:", productVariant.id);
+				// Lấy số lượng từ input
+				const quantityInput = document.querySelector('.pro-qty input');
+				const quantity = parseInt(quantityInput.value) || 1;
 
-				// TODO: Gửi ID này đến backend để thêm vào giỏ hàng
+				// Kiểm tra số lượng
+				if (quantity > (selectedProductVariant.quantity || 0)) {
+					alert(`Chỉ còn ${selectedProductVariant.quantity || 0} sản phẩm trong kho!`);
+					return;
+				}
+
+				console.log("Thêm vào giỏ hàng:", {
+					productVariantId: selectedProductVariant.id,
+					color: selectedColor,
+					size: selectedSize,
+					quantity: quantity
+				});
+
+				// TODO: Gửi thông tin này đến backend để thêm vào giỏ hàng
 			}
 
 			// Khởi tạo ban đầu nếu có màu được chọn sẵn
@@ -633,6 +689,22 @@
 				const initialColorInput = document.querySelector('.product__details__option__color input:checked');
 				if (initialColorInput) {
 					selectColor(initialColorInput);
+				}
+
+				// Thêm sự kiện cho nút tăng/giảm số lượng
+				const quantityInput = document.querySelector('.pro-qty input');
+				if (quantityInput) {
+					quantityInput.addEventListener('change', function() {
+						const max = parseInt(this.getAttribute('max')) || 1;
+						const value = parseInt(this.value) || 1;
+
+						// Giới hạn số lượng
+						if (value > max) {
+							this.value = max;
+						} else if (value < 1) {
+							this.value = 1;
+						}
+					});
 				}
 			});
 		</script>
