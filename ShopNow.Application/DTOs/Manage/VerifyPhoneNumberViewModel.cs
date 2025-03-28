@@ -11,13 +11,13 @@ namespace App.Areas.Identity.Models.ManageViewModels
 {
     public class VerifyPhoneNumberViewModel
     {
-        [Required(ErrorMessage = "Phải nhập {0}")]
-        [Display(Name = "Mã xác nhận")]
+        [Required(ErrorMessage = "Must input {0}")]
+        [Display(Name = "Code")]
         public string Code { get; set; }
 
-        [Required(ErrorMessage = "Phải nhập {0}")]
+        [Required(ErrorMessage = "Must input {0}")]
         [Phone]
-        [Display(Name = "Số điện thoại")]
+        [Display(Name = "Phone Number")]
         public string PhoneNumber { get; set; }
     }
 }

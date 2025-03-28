@@ -13,7 +13,7 @@ namespace App.Areas.Identity.Models.ManageViewModels
     {
         [Required]
         [Phone]
-        [Display(Name = "Số điện thoại")]
+        [Display(Name = "Phone Number")]
         public string PhoneNumber { get; set; }
     }
 }

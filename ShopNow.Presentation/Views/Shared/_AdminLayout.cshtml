@@ -97,6 +97,9 @@
             </form>
             <ul class="navbar-nav ml-3">
                 <li class="nav-item">
+                    <a href="#" onclick="document.getElementById('logoutForm').submit();">Logout</a>
+                    <form id="logoutForm" asp-controller="Account" asp-action="LogOff" method="post" style="display: none;">
+                    </form>
                     <a class="nav-link" href="#"><i class="fa fa-user-circle-o"></i></a>
                 </li>
             </ul>

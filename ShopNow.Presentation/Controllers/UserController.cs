@@ -27,12 +27,12 @@ namespace ShopNow.Presentation.Controllers
 	public class UserController : Controller
 	{
 		private readonly ILogger<RoleController> _logger;
-		private readonly RoleManager<IdentityRole> _roleManager;
+		private readonly RoleManager<IdentityRole<Guid>> _roleManager;
 		private readonly ShopNowDbContext _context;
 
 		private readonly UserManager<User> _userManager;
 
-		public UserController(ILogger<RoleController> logger, RoleManager<IdentityRole> roleManager, ShopNowDbContext context, UserManager<User> userManager)
+		public UserController(ILogger<RoleController> logger, RoleManager<IdentityRole<Guid>> roleManager, ShopNowDbContext context, UserManager<User> userManager)
 		{
 			_logger = logger;
 			_roleManager = roleManager;

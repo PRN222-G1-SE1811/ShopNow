@@ -11,15 +11,15 @@ namespace App.Areas.Identity.Models.ManageViewModels
 {
     public class SetPasswordViewModel
     {
-        [Required(ErrorMessage = "Phải nhập {0}")]
-        [StringLength(100, ErrorMessage = "{0} dài tối thiểu {2} ký tự.", MinimumLength = 6)]
+        [Required(ErrorMessage = "Must input {0}")]
+        [StringLength(100, ErrorMessage = "{0} has minimun length at least {2} characters.", MinimumLength = 6)]
         [DataType(DataType.Password)]
-        [Display(Name = "Mật khẩu mới")]
+        [Display(Name = "New password")]
         public string NewPassword { get; set; }
 
         [DataType(DataType.Password)]
-        [Display(Name = "Xác nhận mật khẩu")]
-        [Compare("NewPassword", ErrorMessage = "Mật khẩu xác nhận phải trùng với mật khẩu mới")]
+        [Display(Name = "Confirm password")]
+        [Compare("NewPassword", ErrorMessage = "Confirm password have to match with new password")]
         public string ConfirmPassword { get; set; }
     }
 }

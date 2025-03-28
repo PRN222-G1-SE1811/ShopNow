@@ -8,6 +8,7 @@ using ShopNow.Application.Services.Implements;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using System;
 using ShowNow.Domain.Entities;
+using Microsoft.AspNetCore.Mvc.Razor;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -106,6 +107,7 @@ app.UseRouting();
 
 app.UseAuthorization();
 app.UseAuthentication();
+
 
 app.MapControllerRoute(
 	name: "default",
