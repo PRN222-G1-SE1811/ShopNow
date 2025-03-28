@@ -36,7 +36,7 @@
 
 		<div class="form-group">
 			<label asp-for="@Model.CreateProductDTO.Status">Status</label>
-			<select asp-for="@Model.CreateProductDTO.Status" asp-items="@Model.Statuses" class="form-control">
+			<select asp-for="@Model.CreateProductDTO.Status" asp-items="@Model.Status" class="form-control">
 				<option selected disabled value="">-- Select Status --</option>
 			</select>
 			<span asp-validation-for="@Model.CreateProductDTO.Status" class="text-danger"></span>
@@ -44,7 +44,7 @@
 
 		<div class="form-group">
 			<label asp-for="@Model.CreateProductDTO.Featured">Featured</label>
-			<select asp-for="@Model.CreateProductDTO.Featured" asp-items="@Model.Featured" class="form-control">
+			<select asp-for="@Model.CreateProductDTO.Featured" asp-items="@Model.Features" class="form-control">
 				<option selected disabled value="">-- Select Featured --</option>
 			</select>
 			<span asp-validation-for="@Model.CreateProductDTO.Featured" class="text-danger"></span>

@@ -62,8 +62,8 @@ namespace ShopNow.Presentation.Controllers
 			CreateProductViewModel model = new CreateProductViewModel()
 			{
 				Categories = new SelectList(categories, nameof(SelectCategoryDTO.Id), nameof(SelectCategoryDTO.Name)),
-				Statuses = new SelectList(status),
-				Featured = new SelectList(features)
+				Status = new SelectList(status),
+				Features = new SelectList(features)
 			};
 			return View(model);
 		}

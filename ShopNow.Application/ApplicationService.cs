@@ -46,6 +46,10 @@ namespace ShopNow.Application
 			#region add SKU service
 			services.AddScoped<ISKUGenerator, SKUGenerator>();
 			#endregion
+
+			#region add cart service
+			services.AddScoped<ICartService, CartService>();
+			#endregion
 		}
 	}
 }
