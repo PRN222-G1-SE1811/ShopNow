@@ -5,17 +5,21 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using ShopNow.Shared.Enums;
 using ShopNow.Application.DTOs.Categories;
 using ShowNow.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ShopNow.Presentation.Controllers
 {
 	public class ProductController(ICategoryService categoryService, IProductService productService, IProductVariantService productVariantService) : Controller
 	{
 		#region customer side
+
+		[AllowAnonymous]
 		public IActionResult Index()
 		{
 			return View();
 		}
 
+		[AllowAnonymous]
 		[HttpGet("Product/{id:guid}")]
 		public async Task<IActionResult> ProductDetail(Guid id)
 		{
@@ -30,6 +34,7 @@ namespace ShopNow.Presentation.Controllers
 		#endregion
 
 		#region manage
+		[Authorize(Roles = "ADMINISTRATOR")]
 		public async Task<IActionResult> Manage()
 		{
 			ViewData["active"] = "product";
@@ -37,6 +42,7 @@ namespace ShopNow.Presentation.Controllers
 		}
 
 		[HttpGet]
+		[Authorize(Roles = "ADMINISTRATOR")]
 		public async Task<IActionResult> CreateProduct([FromQuery] int step = 1)
 		{
 			if (step != 1) step = 1;
@@ -56,13 +62,14 @@ namespace ShopNow.Presentation.Controllers
 			CreateProductViewModel model = new CreateProductViewModel()
 			{
 				Categories = new SelectList(categories, nameof(SelectCategoryDTO.Id), nameof(SelectCategoryDTO.Name)),
-				Status = new SelectList(status),
-				Features = new SelectList(features)
+				Statuses = new SelectList(status),
+				Featured = new SelectList(features)
 			};
 			return View(model);
 		}
 
 		[HttpPost]
+		[Authorize(Roles = "ADMINISTRATOR")]
 		public async Task<IActionResult> CreateProduct(CreateProductViewModel model)
 		{
 			if (!ModelState.IsValid)
@@ -75,6 +82,7 @@ namespace ShopNow.Presentation.Controllers
 		}
 
 		[HttpGet]
+		[Authorize(Roles = "ADMINISTRATOR")]
 		public IActionResult CreateProductVariant(Guid? productId)
 		{
 			if (productId == null) return RedirectToAction(nameof(CreateProduct), 1);
@@ -85,6 +93,7 @@ namespace ShopNow.Presentation.Controllers
 		}
 
 		[HttpPost]
+		[Authorize(Roles = "ADMINISTRATOR")]
 		public async Task<IActionResult> CreateProductVariant(CreateProductVariantViewModel model)
 		{
 			if (!ModelState.IsValid)
