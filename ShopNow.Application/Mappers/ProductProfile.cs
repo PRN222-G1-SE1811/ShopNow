@@ -4,9 +4,9 @@ using ShowNow.Domain.Entities;
 
 namespace ShopNow.Application.Mappers
 {
-	public class ProductMapper : Profile
+	public class ProductProfile : Profile
 	{
-		public ProductMapper()
+		public ProductProfile()
 		{
 			CreateMap<CreateProductDTO, Product>();
 			CreateMap<Product, ProductDetailDTO>().ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.Category!.Name));

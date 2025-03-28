@@ -77,7 +77,7 @@
 							<i class="fa fa-star-o"></i>
 							<span> - 5 Reviews</span>
 						</div>
-						<h3>@Model.ProductDetailDTO.Price.ToString("#,### VND") <span>70.00</span></h3>
+						<h3 id="product_price">@Model.ProductDetailDTO.Price.ToString("#,### VND")</h3>
 						<p>
 							Coat with quilted lining and an adjustable hood. Featuring
 							long sleeves with adjustable cuff tabs, adjustable asymmetric
@@ -681,7 +681,37 @@
 					quantity: quantity
 				});
 
-				// TODO: Gửi thông tin này đến backend để thêm vào giỏ hàng
+				let priceElement = document.getElementById("product_price");
+				let priceText = priceElement.textContent.trim(); // Get full text content
+				let price = parseFloat(priceText.replace(/[^\d.]/g, ''));
+
+				// Send to backend
+				$.ajax({
+					url: "/Cart/AddToCart",
+					type: "POST",
+					contentType: "application/json",
+					data: JSON.stringify({
+						// Wrap the item in the correct ViewModel structure
+						Item: {
+							productVariantId: selectedProductVariant.id,
+							quantity: quantity,
+							price: price
+						}
+					}),
+					dataType: 'json',
+					success: function(response) {
+						alert(response.message);
+						window.location.reload();
+					},
+					error: function(xhr, status, error) {
+						console.error("Error details:", {
+							status: xhr.status,
+							responseText: xhr.responseText,
+							error: error
+						});
+						alert("An error occurred while adding to cart.");
+					}
+				});
 			}
 
 			// Khởi tạo ban đầu nếu có màu được chọn sẵn

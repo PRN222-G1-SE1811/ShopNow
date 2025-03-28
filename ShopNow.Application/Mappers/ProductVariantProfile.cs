@@ -5,9 +5,9 @@ using ShowNow.Domain.Entities;
 
 namespace ShopNow.Application.Mappers
 {
-	public class ProductVariantMapper : Profile
+	public class ProductVariantProfile : Profile
 	{
-		public ProductVariantMapper()
+		public ProductVariantProfile()
 		{
 			CreateMap<CreateProductVariantDTO, ProductVariant>()
 			.ForMember(dest => dest.Assets, opt => opt.Ignore())
