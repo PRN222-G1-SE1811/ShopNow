@@ -37,7 +37,7 @@
 
     <div class="form-group">
         <label asp-for="Description"></label>
-        <textarea asp-for="Description" class="form-control"></textarea>
+        <textarea asp-for="Description" id="Description" class="form-control"></textarea>
     </div>
 
     <div class="form-group">
@@ -57,3 +57,12 @@
     <a asp-action="Manage" class="btn btn-secondary">Back to List</a>
 
 </form>
+
+@section Scripts {
+    <script src="https://cdn.tiny.cloud/1/0vuhsazgiv5rjydoflr0l0zbhd3khd54mgka0cgti58u6pld/tinymce/6/tinymce.min.js"
+            referrerpolicy="origin"></script>
+    <script src="~/js/admin/tinyMCE.js"></script>
+    <script type="text/javascript">
+        loadEditor('#Description');
+    </script>
+}

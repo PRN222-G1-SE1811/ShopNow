@@ -1,4 +1,4 @@
-﻿@model ShopNow.Application.DTOs.Categories.CreateCategoryDTO
+﻿@model ShopNow.Presentation.Models.CategoryViewModel.CategoriesViewModels
 
 <h2>Create Category</h2>
 
@@ -9,43 +9,43 @@
 
 <form asp-action="Create" method="post">
     <div class="form-group">
-        <label asp-for="Name"></label>
-        <input asp-for="Name" class="form-control" required />
-        <span asp-validation-for="Name" class="text-danger"></span>
+        <label asp-for="@Model.CreateCategoryDTO.Name"></label>
+        <input asp-for="@Model.CreateCategoryDTO.Name" class="form-control" required />
+        <span asp-validation-for="@Model.CreateCategoryDTO.Name" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label asp-for="Slug"></label>
-        <input asp-for="Slug" class="form-control" />
-        <span asp-validation-for="Slug" class="text-danger"></span>
+        <label asp-for="@Model.CreateCategoryDTO.Slug"></label>
+        <input asp-for="@Model.CreateCategoryDTO.Slug" class="form-control" />
+        <span asp-validation-for="@Model.CreateCategoryDTO.Slug" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label asp-for="ParentId">Parent Category</label>
-        <select asp-for="ParentId" class="form-control">
+        <label asp-for="CreateCategoryDTO.ParentId">Parent Category</label>
+        <select asp-for="CreateCategoryDTO.ParentId" asp-items="Model.ParentCategories" class="form-control">
             <option value="">-- Select Parent Category --</option>
-            @foreach (var category in ViewBag.ParentCategories)
-            {
-                <option value="@category.Id">@category.Name</option>
-            }
         </select>
+        <span asp-validation-for="CreateCategoryDTO.ParentId" class="text-danger"></span>
     </div>
 
+
+
     <div class="form-group">
-        <label asp-for="Description"></label>
-        <textarea asp-for="Description" class="form-control"></textarea>
+        <label asp-for="@Model.CreateCategoryDTO.Description"></label>
+        <textarea asp-for="@Model.CreateCategoryDTO.Description" class="form-control"></textarea>
+        <span asp-validation-for="@Model.CreateCategoryDTO.Description" class="text-danger"></span>
     </div>
 
  
 
     <div class="form-group">
-        <label asp-for="Image"></label>
-        <input asp-for="Image" class="form-control" />
+        <label asp-for="@Model.CreateCategoryDTO.Image"></label>
+        <input asp-for="@Model.CreateCategoryDTO.Image" class="form-control" />
     </div>
 
     <div class="form-group">
-        <label asp-for="Status"></label>
-        <select asp-for="Status" class="form-control">
+        <label asp-for="@Model.CreateCategoryDTO.Status"></label>
+        <select asp-for="@Model.CreateCategoryDTO.Status" class="form-control">
             <option value="0">Inactive</option>
             <option value="1">Active</option>
         </select>
@@ -55,3 +55,13 @@
     <a asp-action="Manage" class="btn btn-secondary">Back to List</a>
 
 </form>
+@section Scripts {
+    @{
+        <script src="https://cdn.tiny.cloud/1/0vuhsazgiv5rjydoflr0l0zbhd3khd54mgka0cgti58u6pld/tinymce/6/tinymce.min.js"
+                referrerpolicy="origin"></script>
+        <script src="~/js/admin/tinyMCE.js"></script>
+        <script type="text/javascript">
+            loadEditor('#CreateCategoryDTO_Description')
+        </script>
+    }
+}

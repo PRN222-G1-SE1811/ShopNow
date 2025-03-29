@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using ShopNow.Application.DTOs.Categories;
 using ShopNow.Application.Services.Implements;
 using ShopNow.Application.Services.Interfaces;
+using ShopNow.Presentation.Models.CategoryViewModel;
 
 namespace ShopNow.Presentation.Controllers
 {
@@ -75,41 +76,39 @@ namespace ShopNow.Presentation.Controllers
 
         [HttpGet]
         public async Task<IActionResult> Create()
-        {            
-            ViewBag.ParentCategories = await _categoryService.GetParentCategories();
+        {
+            var parentCategories = await _categoryService.GetParentCategories();
 
-            return View(new CreateCategoryDTO());
+            var viewModel = new CategoriesViewModels
+            {
+                ParentCategories = new SelectList(parentCategories, "Id", "Name")
+            };
+
+            return View(viewModel);
         }
 
-
-
-
         [HttpPost]
-        public async Task<IActionResult> Create(CreateCategoryDTO model)
+        public async Task<IActionResult> Create(CategoriesViewModels model)
         {
-
             if (!ModelState.IsValid)
             {
-                var parentCategories = await _categoryService.GetParentCategories();
-                ViewBag.ParentCategories = new SelectList(parentCategories, "Id", "Name");
+                model.ParentCategories = new SelectList(await _categoryService.GetParentCategories(), "Id", "Name");
                 return View(model);
             }
 
-            var result = await _categoryService.CreateCategory(model);
+            var result = await _categoryService.CreateCategory(model.CreateCategoryDTO);
 
             if (result)
             {
                 TempData["Success"] = "Category created successfully.";
                 return RedirectToAction("Manage");
             }
-            else
-            {
-                TempData["Error"] = "Failed to create category.";
-                var parentCategories = await _categoryService.GetParentCategories();
-                ViewBag.ParentCategories = new SelectList(parentCategories, "Id", "Name");
-                return View(model);
-            }
+
+            TempData["Error"] = "Failed to create category.";
+            model.ParentCategories = new SelectList(await _categoryService.GetParentCategories(), "Id", "Name");
+            return View(model);
         }
+
 
         [HttpGet]
         public async Task<IActionResult> Edit(Guid id)
