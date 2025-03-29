@@ -1,5 +1,19 @@
 ﻿@* @inject UserManager<User> UserManager
 
 @{
-    Layout = "_Layout";
+    var user = await UserManager.GetUserAsync(User);
+    var isAdmin = user != null && await UserManager.IsInRoleAsync(user, "ADMINISTRATOR");
+} *@
+
+@{
+    if (User.IsInRole("Administrator"))
+    {
+        Layout = "_AdminLayout";
+    }
+    else
+    {
+        Layout = "_Layout";
+    }
 }
+
+
