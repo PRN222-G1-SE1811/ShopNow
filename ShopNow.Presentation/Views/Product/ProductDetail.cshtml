@@ -745,26 +745,38 @@
 				let priceElement = document.getElementById("product_price");
 				let priceText = priceElement.textContent.trim(); // Get full text content
 				let price = parseFloat(priceText.replace(/[^\d.]/g, ''));
-				let productName = document.getElementById("product_name").innerText();
-
+				let productName = document.getElementById("product_name").innerText;
+							console.log(JSON.stringify({
+				Items: [
+					{
+						productVariantId: selectedProductVariant.id,
+						productName: productName,
+						quantity: quantity,
+						price: price
+					}
+				]
+			}));
 				// Send to backend
 				$.ajax({
-					url: "",
+					url: "/CheckOut/Index",
 					type: "POST",
 					contentType: "application/json",
 					data: JSON.stringify({
 						// Wrap the item in the correct ViewModel structure
-						Item: {
-							productVariantId: selectedProductVariant.id,
-							productName: productName,
-							quantity: quantity,
-							price: price
-						}
+						Items: [
+							{
+								ProductVariantId: selectedProductVariant.id,
+								ProductName: productName,
+								Quantity: quantity,
+								Price: price
+							}
+						]
 					}),
 					dataType: 'json',
 					success: function(response) {
-						toastr.success(response.message);
-						// window.location.reload();
+						if(response.redirectUrl !== null) {
+							window.location.href = response.redirectUrl;
+						}
 					},
 					error: function(xhr, status, error) {
 						console.error("Error details:", {
