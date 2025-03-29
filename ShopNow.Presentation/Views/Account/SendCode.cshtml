@@ -1,0 +1,35 @@
+﻿@using App.Areas.Identity.Models.AccountViewModels
+@model SendCodeViewModel
+@{
+    ViewData["Title"] = "Gửi mã xác thực";
+}
+
+@* <h1>@ViewData["Title"].</h1> *@
+
+<form asp-controller="Account" asp-action="SendCode" asp-route-returnurl="@Model.ReturnUrl"
+      method="post" class="p-4 shadow-lg rounded bg-white"
+      style="max-width: 450px; margin: auto; border-radius: 12px; margin-bottom: 250px">
+
+    <h4 class="mb-3 text-center text-primary fw-bold">Two-Factor Authentication</h4>
+    <p class="text-center text-muted">Select a method to receive your security code.</p>
+    <hr class="mb-4" />
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <label class="form-label fw-semibold mb-0">Verification Method:</label>
+        <select asp-for="SelectedProvider" asp-items="Model.Providers"
+                class="form-select shadow-sm rounded-pill w-50 text-end"></select>
+    </div>
+
+    <div class="text-center mt-4">
+        <button type="submit" class="btn btn-success btn-lg px-4 py-2 shadow-sm rounded-pill">
+            <i class="bi bi-send-check"></i> Send Code
+        </button>
+    </div>
+</form>
+
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}

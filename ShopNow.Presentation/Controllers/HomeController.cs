@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using ShopNow.Presentation.Models;
 using System.Diagnostics;
 
@@ -15,8 +16,15 @@ namespace ShopNow.Presentation.Controllers
 
 		public IActionResult Index()
 		{
-			return View();
-		}
+            if (User.IsInRole("Administrator"))
+            {
+                return RedirectToAction("Manage", "Product");
+            }
+            else
+            {
+                return View();
+            }
+        }
 
 		public IActionResult Privacy()
 		{

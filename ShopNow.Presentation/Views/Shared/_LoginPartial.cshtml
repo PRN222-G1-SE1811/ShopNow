@@ -1,0 +1,17 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using ShowNow.Domain.Entities
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
+@if (SignInManager.IsSignedIn(User))
+{
+	<a asp-controller="Manage" asp-action="Index" title="Manage">Xin chào @UserManager.GetUserName(User)!</a>
+	<a href="#" onclick="document.getElementById('logoutForm').submit();">Logout</a>
+	<form id="logoutForm" asp-controller="Account" asp-action="LogOff" method="post" style="display: none;">
+	</form>
+}
+else
+{
+	<a asp-controller="Account" asp-action="Register">Register</a>
+	<a asp-controller="Account" asp-action="Login">Login</a>
+}

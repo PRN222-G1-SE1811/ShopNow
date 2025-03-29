@@ -1,4 +1,4 @@
-﻿using ShopNow.Application.DTOs.Prodducts;
+﻿using ShopNow.Application.DTOs.Products;
 
 namespace ShopNow.Presentation.Models.ProductViewModel
 {

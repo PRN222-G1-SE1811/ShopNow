@@ -1,0 +1,50 @@
+@using App.Areas.Identity.Models.ManageViewModels
+@model EditExtraProfileModel
+@{
+    ViewData["Title"] = "Hồ sơ cá nhân";
+}
+
+@* <h4>@ViewData["Title"]</h4> *@
+
+<partial name="_StatusMessage" />
+
+<div class="row justify-content-center">
+    <div class="col-md-6 bg-white p-5 rounded shadow-lg border">
+        <h3 class="text-primary fw-bold text-center mb-4">Update Profile Information</h3>
+        <form id="profile-form" method="post">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+            <div class="mb-4">
+                <label asp-for="UserName" class="form-label fw-semibold">Username</label>
+                <input asp-for="UserName" class="form-control bg-light text-dark" disabled />
+            </div>
+
+            <div class="mb-4">
+                <label asp-for="UserEmail" class="form-label fw-semibold">Email</label>
+                <input asp-for="UserEmail" class="form-control bg-light text-dark" disabled />
+            </div>
+
+            <div class="mb-4">
+                <label asp-for="PhoneNumber" class="form-label fw-semibold">Phone Number</label>
+                <input asp-for="PhoneNumber" class="form-control bg-light text-dark" disabled />
+            </div>
+
+            <div class="mb-4">
+                <label asp-for="HomeAdress" class="form-label fw-semibold">Home Address</label>
+                <textarea asp-for="HomeAdress" class="form-control" rows="3" placeholder="Enter your home address..."></textarea>
+                <span asp-validation-for="HomeAdress" class="text-danger"></span>
+            </div>
+
+            <div class="text-center">
+                <button id="update-profile-button" type="submit" class="btn btn-primary px-5 py-2 shadow-sm">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+
+

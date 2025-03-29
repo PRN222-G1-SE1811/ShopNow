@@ -1,30 +1,29 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using ShopNow.Application.DTOs.Prodducts;
+using ShopNow.Application.DTOs.Products;
 using ShopNow.Application.Services.Interfaces;
 using ShowNow.Domain.Entities;
 using ShowNow.Domain.Interfaces;
-using System.Linq.Expressions;
 
 namespace ShopNow.Application.Services.Implements
 {
 	public class ProductService(IUnitOfWork<Product, Guid> unitOfWork, IMapper mapper) : IProductService
 	{
-		public async Task<Guid> CreateBaseProduct(CreateProductDTO createProductDTO)
+		public async Task<Guid> CreateProduct(CreateProductDTO createProductDTO)
 		{
-			var product = mapper.Map<Product>(createProductDTO);
-			unitOfWork.GenericRepository.Insert(product);
+			var productDomain = mapper.Map<Product>(createProductDTO);
+			var createdProduct = unitOfWork.GenericRepository.Insert(productDomain);
 			await unitOfWork.CommitAsync();
-			return product.Id;
+			return createdProduct.Id;
 		}
 
-		public async Task<ProductDetailDTO> GetProductDetail(Guid id)
+		public async Task<ProductDetailDTO> GetProductDetail(Guid productId)
 		{
 			var query = unitOfWork.GenericRepository.GetQueryAble();
-			query = query.Include(_ => _.ProductVariants!).ThenInclude(_ => _.ProductAssets!).ThenInclude(_ => _.Asset)
-				.Include(_ => _.ProductVariants!).ThenInclude(_ => _.ProductAssetAttributes!).ThenInclude(_ => _.Attribute);
-			var product = await query.FirstOrDefaultAsync(_ => _.Id == id);
-			return mapper.Map<ProductDetailDTO>(product);
+			query = query.Include(_ => _.Category)
+				.Include(_ => _.ProductVariants!).ThenInclude(_ => _.Assets);
+			var productDetails = await query.FirstOrDefaultAsync(_ => _.Id == productId && _.Status == Shared.Enums.ProductStatus.Active);
+			return mapper.Map<ProductDetailDTO>(productDetails);
 		}
 	}
 }

@@ -162,9 +162,6 @@ namespace ShopNow.Infrastructure.Data.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("FileName")
                         .IsRequired()
                         .HasColumnType("varchar(255)");
@@ -173,37 +170,20 @@ namespace ShopNow.Infrastructure.Data.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(255)");
 
+                    b.Property<Guid>("ProductVariantId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<double>("Size")
                         .HasColumnType("float");
 
                     b.Property<int>("Type")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
                     b.HasKey("Id");
+
+                    b.HasIndex("ProductVariantId");
 
                     b.ToTable("Assets");
-                });
-
-            modelBuilder.Entity("ShowNow.Domain.Entities.Attribute", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Attributes");
                 });
 
             modelBuilder.Entity("ShowNow.Domain.Entities.Cart", b =>
@@ -432,27 +412,6 @@ namespace ShopNow.Infrastructure.Data.Migrations
                     b.ToTable("OrderItems");
                 });
 
-            modelBuilder.Entity("ShowNow.Domain.Entities.OrderItemAttributes", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("AttributeId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("OrderItemId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AttributeId");
-
-                    b.HasIndex("OrderItemId");
-
-                    b.ToTable("OrderItemAttributes");
-                });
-
             modelBuilder.Entity("ShowNow.Domain.Entities.Product", b =>
                 {
                     b.Property<Guid>("Id")
@@ -478,6 +437,9 @@ namespace ShopNow.Infrastructure.Data.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(255)");
 
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
@@ -491,53 +453,15 @@ namespace ShopNow.Infrastructure.Data.Migrations
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("ShowNow.Domain.Entities.ProductAsset", b =>
-                {
-                    b.Property<Guid>("ProductId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("AssetId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("int");
-
-                    b.HasKey("ProductId", "AssetId");
-
-                    b.HasIndex("AssetId");
-
-                    b.ToTable("ProductAsset");
-                });
-
-            modelBuilder.Entity("ShowNow.Domain.Entities.ProductAssetAttribute", b =>
-                {
-                    b.Property<Guid>("ProductId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("AssetId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("AttributeId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("ProductId", "AssetId", "AttributeId");
-
-                    b.HasIndex("AssetId");
-
-                    b.HasIndex("AttributeId");
-
-                    b.ToTable("ProductAssetAttribute");
-                });
-
             modelBuilder.Entity("ShowNow.Domain.Entities.ProductVariant", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Color")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -548,20 +472,21 @@ namespace ShopNow.Infrastructure.Data.Migrations
                     b.Property<float?>("Discount")
                         .HasColumnType("real");
 
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<Guid>("ProductId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
 
                     b.Property<string>("SKU")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Sold")
-                        .HasColumnType("int");
+                    b.Property<string>("Size")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Stock")
+                    b.Property<int>("Sold")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdatedAt")
@@ -571,7 +496,7 @@ namespace ShopNow.Infrastructure.Data.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductVariant");
+                    b.ToTable("ProductVariants");
                 });
 
             modelBuilder.Entity("ShowNow.Domain.Entities.Review", b =>
@@ -757,6 +682,17 @@ namespace ShopNow.Infrastructure.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("ShowNow.Domain.Entities.Asset", b =>
+                {
+                    b.HasOne("ShowNow.Domain.Entities.ProductVariant", "ProductVariant")
+                        .WithMany("Assets")
+                        .HasForeignKey("ProductVariantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ProductVariant");
+                });
+
             modelBuilder.Entity("ShowNow.Domain.Entities.Cart", b =>
                 {
                     b.HasOne("ShowNow.Domain.Entities.User", "Customer")
@@ -832,25 +768,6 @@ namespace ShopNow.Infrastructure.Data.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("ShowNow.Domain.Entities.OrderItemAttributes", b =>
-                {
-                    b.HasOne("ShowNow.Domain.Entities.Attribute", "Attribute")
-                        .WithMany()
-                        .HasForeignKey("AttributeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ShowNow.Domain.Entities.OrderItem", "OrderItem")
-                        .WithMany()
-                        .HasForeignKey("OrderItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Attribute");
-
-                    b.Navigation("OrderItem");
-                });
-
             modelBuilder.Entity("ShowNow.Domain.Entities.Product", b =>
                 {
                     b.HasOne("ShowNow.Domain.Entities.Category", "Category")
@@ -860,52 +777,6 @@ namespace ShopNow.Infrastructure.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Category");
-                });
-
-            modelBuilder.Entity("ShowNow.Domain.Entities.ProductAsset", b =>
-                {
-                    b.HasOne("ShowNow.Domain.Entities.Asset", "Asset")
-                        .WithMany("ProductAssets")
-                        .HasForeignKey("AssetId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ShowNow.Domain.Entities.ProductVariant", "Product")
-                        .WithMany("ProductAssets")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Asset");
-
-                    b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("ShowNow.Domain.Entities.ProductAssetAttribute", b =>
-                {
-                    b.HasOne("ShowNow.Domain.Entities.Asset", "Asset")
-                        .WithMany("ProductAssetAttributes")
-                        .HasForeignKey("AssetId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ShowNow.Domain.Entities.Attribute", "Attribute")
-                        .WithMany("ProductAssetAttributes")
-                        .HasForeignKey("AttributeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ShowNow.Domain.Entities.ProductVariant", "Product")
-                        .WithMany("ProductAssetAttributes")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Asset");
-
-                    b.Navigation("Attribute");
-
-                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("ShowNow.Domain.Entities.ProductVariant", b =>
@@ -938,18 +809,6 @@ namespace ShopNow.Infrastructure.Data.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("ShowNow.Domain.Entities.Asset", b =>
-                {
-                    b.Navigation("ProductAssetAttributes");
-
-                    b.Navigation("ProductAssets");
-                });
-
-            modelBuilder.Entity("ShowNow.Domain.Entities.Attribute", b =>
-                {
-                    b.Navigation("ProductAssetAttributes");
-                });
-
             modelBuilder.Entity("ShowNow.Domain.Entities.Cart", b =>
                 {
                     b.Navigation("CartItems");
@@ -974,11 +833,9 @@ namespace ShopNow.Infrastructure.Data.Migrations
 
             modelBuilder.Entity("ShowNow.Domain.Entities.ProductVariant", b =>
                 {
+                    b.Navigation("Assets");
+
                     b.Navigation("OrderItems");
-
-                    b.Navigation("ProductAssetAttributes");
-
-                    b.Navigation("ProductAssets");
 
                     b.Navigation("Reviews");
                 });

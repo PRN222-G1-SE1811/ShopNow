@@ -3,83 +3,110 @@ using ShopNow.Application.Services.Interfaces;
 using ShopNow.Presentation.Models.ProductViewModel;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ShopNow.Shared.Enums;
-using ShopNow.Application.DTOs.Prodducts;
+using ShopNow.Application.DTOs.Categories;
+using ShowNow.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ShopNow.Presentation.Controllers
 {
 	public class ProductController(ICategoryService categoryService, IProductService productService, IProductVariantService productVariantService) : Controller
 	{
+		#region customer side
+
+		[AllowAnonymous]
 		public IActionResult Index()
 		{
 			return View();
 		}
 
+		[AllowAnonymous]
 		[HttpGet("Product/{id:guid}")]
-		public async Task<IActionResult> ProductDetail([FromRoute] Guid id)
+		public async Task<IActionResult> ProductDetail(Guid id)
 		{
-			var product = await productService.GetProductDetail(id);
-			var productVM = new ProductDetailViewModel() { ProductDetailDTO = product };
-			return View(productVM);
+			var productDetail = await productService.GetProductDetail(id);
+			ProductDetailViewModel model = new ProductDetailViewModel()
+			{
+				ProductDetailDTO = productDetail,
+			};
+			return View(model);
 		}
 
+		#endregion
+
 		#region manage
-		public IActionResult Manage()
+		[Authorize(Roles = "ADMINISTRATOR")]
+		public async Task<IActionResult> Manage()
 		{
 			ViewData["active"] = "product";
 			return View();
 		}
 
-		public async Task<IActionResult> Create(int step = 0, Guid? productId = null)
+		[HttpGet]
+		[Authorize(Roles = "ADMINISTRATOR")]
+		public async Task<IActionResult> CreateProduct([FromQuery] int step = 1)
 		{
+			if (step != 1) step = 1;
 			ViewBag.Step = step;
-			if (step == 0)
-			{
-				CreateProductBaseInfoViewModel model = new CreateProductBaseInfoViewModel();
-				model.Categories = new SelectList(await categoryService.GetSelectListCategories(), "Id", "Name");
-				model.Featured = new SelectList(new ProductFeatured[] { ProductFeatured.No, ProductFeatured.Yes });
-				return View("CreateBaseInfo", model);
-			}
 
-			if (step == 1)
-			{
-				CreateAttributeViewModel model = new CreateAttributeViewModel();
-				model.ProductVariantDTOs = new List<ProductVariantDTO>()
+			var categories = await categoryService.GetSelectListCategories();
+			var status = new List<ProductStatus>()
 				{
-					new ProductVariantDTO() {
-						AttributeDTOs = new List<AttributeDTO>()
-						{
-							new AttributeDTO()
-						},
-						ProductDetail = new ProductAttributeDTO()
-					}
+					ProductStatus.Active,
+					ProductStatus.Inactive
 				};
-				ViewBag.ProductId = productId;
-				return View("CreateAttribute", model);
+			var features = new List<ProductFeatured>()
+				{
+					ProductFeatured.Yes,
+					ProductFeatured.No,
+				};
+			CreateProductViewModel model = new CreateProductViewModel()
+			{
+				Categories = new SelectList(categories, nameof(SelectCategoryDTO.Id), nameof(SelectCategoryDTO.Name)),
+				Status = new SelectList(status),
+				Features = new SelectList(features)
+			};
+			return View(model);
+		}
+
+		[HttpPost]
+		[Authorize(Roles = "ADMINISTRATOR")]
+		public async Task<IActionResult> CreateProduct(CreateProductViewModel model)
+		{
+			if (!ModelState.IsValid)
+			{
+				return RedirectToAction(nameof(CreateProduct), 1);
+			}
+			var productId = await productService.CreateProduct(model.CreateProductDTO);
+
+			return RedirectToAction(nameof(CreateProductVariant), new { productId });
+		}
+
+		[HttpGet]
+		[Authorize(Roles = "ADMINISTRATOR")]
+		public IActionResult CreateProductVariant(Guid? productId)
+		{
+			if (productId == null) return RedirectToAction(nameof(CreateProduct), 1);
+			ViewBag.Step = 2;
+			CreateProductVariantViewModel model = new CreateProductVariantViewModel();
+			model.ProductId = productId.Value;
+			return View(model);
+		}
+
+		[HttpPost]
+		[Authorize(Roles = "ADMINISTRATOR")]
+		public async Task<IActionResult> CreateProductVariant(CreateProductVariantViewModel model)
+		{
+			if (!ModelState.IsValid)
+			{
+				return RedirectToAction(nameof(CreateProductVariant), new { model.ProductId });
 			}
 
-			return RedirectToAction(nameof(Manage));
-		}
-
-		[HttpPost]
-		public async Task<IActionResult> Create(CreateProductBaseInfoViewModel model)
-		{
-			model.CreateProductDTO.CreatedAt = DateTime.Now;
-			model.CreateProductDTO.Status = ProductStatus.MissingAttribute;
-			var productId = await productService.CreateBaseProduct(model.CreateProductDTO);
-			return RedirectToAction(nameof(Create), new { step = 1, productId = productId });
-		}
-
-		[HttpPost]
-		public async Task<IActionResult> CreateAttribute(CreateAttributeViewModel model)
-		{
-			model.ProductVariantDTOs.ForEach(p =>
+			var isCreated = await productVariantService.CreateProdductVariants(model.ProductId, model.ProductVariantDTOs);
+			if (!isCreated)
 			{
-				p.ProductDetail.ProductId = model.ProductId;
-			});
-
-			await productVariantService.AddRangeVariantProduct(model.ProductVariantDTOs);
-
-			return RedirectToAction(nameof(Create), new { step = 2 });
+				return RedirectToAction(nameof(CreateProductVariant), new { model.ProductId });
+			}
+			return RedirectToAction(nameof(Manage));
 		}
 		#endregion
 	}

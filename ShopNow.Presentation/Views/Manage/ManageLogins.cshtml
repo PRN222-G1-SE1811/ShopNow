@@ -1,0 +1,65 @@
+﻿@model ManageLoginsViewModel
+@using App.Areas.Identity.Models.ManageViewModels
+@using Microsoft.AspNetCore.Authentication
+@{
+    ViewData["Title"] = "Liên kết tài khoản";
+}
+
+@* <h1>@ViewData["Title"].</h1> *@
+
+<p class="text-success">@ViewData["StatusMessage"]</p>
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card shadow-sm p-4">
+                <h4 class="mb-3">Linked Accounts</h4>
+                <hr />
+                @if (Model.CurrentLogins.Count > 0)
+                {
+                    <table class="table table-striped table-bordered">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Provider</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (var index = 0; index < Model.CurrentLogins.Count; index++)
+                            {
+                                <tr>
+                                    <td>@Model.CurrentLogins[index].ProviderDisplayName</td>
+                                    <td>
+                                        @if ((bool)ViewData["ShowRemoveButton"])
+                                        {
+                                            <form asp-controller="Manage" asp-action="RemoveLogin" method="post" class="d-inline">
+                                                <input asp-for="@Model.CurrentLogins[index].LoginProvider" name="LoginProvider" type="hidden" />
+                                                <input asp-for="@Model.CurrentLogins[index].ProviderKey" name="ProviderKey" type="hidden" />
+                                                <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+                                            </form>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                @if (Model.OtherLogins.Count > 0)
+                {
+                    <h4 class="mt-4">Link Another Account</h4>
+                    <hr />
+                    <form asp-controller="Manage" asp-action="LinkLogin" method="post">
+                        <div class="d-flex flex-wrap gap-2">
+                            @foreach (var provider in Model.OtherLogins)
+                            {
+                                <button type="submit" class="btn btn-primary btn-sm" name="provider" value="@provider.Name">
+                                    Link @provider.DisplayName
+                                </button>
+                            }
+                        </div>
+                    </form>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
