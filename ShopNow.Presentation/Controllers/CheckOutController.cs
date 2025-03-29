@@ -37,6 +37,7 @@ namespace ShopNow.Presentation.Controllers
 				Items = order!.Items
 			};
 			var totalShip = await shippingService.CalculateShippingFee();
+			var provinces = await shippingService.GetProvinces();
 			return View(model);
 		}
 	}

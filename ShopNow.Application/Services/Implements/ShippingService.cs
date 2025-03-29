@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using ShopNow.Application.DTOs.Shipping;
 using ShopNow.Application.Services.Interfaces;
 using System.Net.Http.Headers;
 using System.Text;
@@ -30,8 +31,6 @@ namespace ShopNow.Application.Services.Implements
 			var requestData = new
 			{
 				service_type_id = 2,  // Dùng `service_type_id` thay vì `service_id`
-				from_district_id = 1442,
-				from_ward_code = "21211",
 				to_district_id = 1820,
 				to_ward_code = "030712",
 				weight = 3000,
@@ -65,5 +64,43 @@ namespace ShopNow.Application.Services.Implements
 
 			return 0;
 		}
+
+		public async Task<List<Province>> GetProvinces()
+		{
+			var ghnToken = configuration["Shipping:GHN:API_Token"];
+
+			if (string.IsNullOrEmpty(ghnToken))
+			{
+				throw new Exception("GHN API Token is missing in configuration.");
+			}
+
+			using var client = new HttpClient();
+			client.DefaultRequestHeaders.Add("Token", ghnToken);
+
+			var apiUrl = "https://online-gateway.ghn.vn/shiip/public-api/master-data/province";
+
+			HttpResponseMessage response = await client.GetAsync(apiUrl, HttpCompletionOption.ResponseHeadersRead);
+			if (!response.IsSuccessStatusCode)
+			{
+				throw new Exception($"GHN API Error: {response.StatusCode} - {await response.Content.ReadAsStringAsync()}");
+			}
+
+			string responseData = await response.Content.ReadAsStringAsync();
+
+			var responseJson = JsonConvert.DeserializeObject<Dictionary<string, object>>(responseData);
+			if (responseJson == null || !responseJson.ContainsKey("data"))
+			{
+				throw new Exception("GHN API response does not contain expected 'data' field.");
+			}
+
+			var data = responseJson["data"];
+			if (data is Newtonsoft.Json.Linq.JArray jsonArray)
+			{
+				return jsonArray.ToObject<List<Province>>() ?? new List<Province>();
+			}
+
+			return new List<Province>();
+		}
+
 	}
 }
