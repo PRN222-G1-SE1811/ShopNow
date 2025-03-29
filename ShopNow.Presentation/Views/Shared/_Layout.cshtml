@@ -10,6 +10,7 @@
 	<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
 
 	<!-- Css Styles -->
+	
 	<link rel="stylesheet" href="~/css/bootstrap.min.css" type="text/css">
 	<link rel="stylesheet" href="~/css/font-awesome.min.css" type="text/css">
 	<link rel="stylesheet" href="~/css/elegant-icons.css" type="text/css">
@@ -18,6 +19,7 @@
 	<link rel="stylesheet" href="~/css/owl.carousel.min.css" type="text/css">
 	<link rel="stylesheet" href="~/css/slicknav.min.css" type="text/css">
 	<link rel="stylesheet" href="~/css/style.css" type="text/css">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
 
 	@RenderSection("HeadScripts", required: false)
 </head>
@@ -49,8 +51,7 @@
 		<div class="offcanvas__nav__option">
 			<a href="#" class="search-switch"><img src="~/img/icon/search.png" alt=""></a>
 			<a href="#"><img src="~/img/icon/heart.png" alt=""></a>
-			<a href="#"><img src="~/img/icon/cart.png" alt=""> <span>0</span></a>
-			<div class="price">$0.00</div>
+			<a asp-controller="Cart" asp-action="Index"><img src="~/img/icon/cart.png" alt=""></a>
 		</div>
 		<div id="mobile-menu-wrap"></div>
 		<div class="offcanvas__text">
@@ -126,11 +127,10 @@
 				<div class="col-lg-3 col-md-3">
 					<div class="header__nav__option">
 						<a href="#" class="search-switch"><img src="~/img/icon/search.png" alt=""></a>
-						<a href="#"><img src="~/img/icon/heart.png" alt=""></a>
-						<a href="@Url.Action("Cart", "Shopping")">
-							<img src="~/img/icon/cart.png" alt=""> <span>0</span>
+						@* <a href="#"><img src="~/img/icon/heart.png" alt=""></a> *@
+						<a asp-controller="Cart" asp-action="Index">
+							<img src="~/img/icon/cart.png" alt="">
 						</a>
-						<div class="price">$0.00</div>
 					</div>
 				</div>
 			</div>
@@ -223,7 +223,8 @@
 	<script src="~/js/mixitup.min.js"></script>
 	<script src="~/js/owl.carousel.min.js"></script>
 	<script src="~/js/main.js"></script>
-
+	<script src="~/js/"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 	@RenderSection("Scripts", required: false)
 </body>
 </html>
