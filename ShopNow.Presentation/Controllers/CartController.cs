@@ -7,11 +7,15 @@ using System.Security.Claims;
 
 namespace ShopNow.Presentation.Controllers
 {
+	//[Authorize(Roles = RoleName.Member)]
 	public class CartController(ICartService cartService) : Controller
 	{
-		public IActionResult Index()
+		public async Task<IActionResult> Index()
 		{
-			return View();
+			var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+			var cart = await cartService.GetCart(Guid.Parse(userId!));
+			CartViewModel model = new CartViewModel() { CartDTO = cart};
+			return View(model);
 		}
 
 		//[Authorize(Roles = RoleName.Member)]
