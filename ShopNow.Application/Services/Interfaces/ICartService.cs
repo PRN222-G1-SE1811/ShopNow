@@ -6,5 +6,6 @@ namespace ShopNow.Application.Services.Interfaces
 	public interface ICartService
 	{
 		Task<bool> AddToCart(Guid userId, AddCartItemDTO addCartItemDTO);
+		Task<CartDTO> GetCart(Guid userId);
 	}
 }

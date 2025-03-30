@@ -16,19 +16,19 @@ namespace ShopNow.Application
 
 			#region add category service
 			services.AddScoped<ICategoryService, CategoryService>();
-            #endregion
+			#endregion
 
-            #region send mail
-            //Dang ki mail
-            services.AddOptions();
-            var mailsetting = configuration.GetSection("MailSettings");
-            services.Configure<MailSettings>(mailsetting);
-            services.AddSingleton<IEmailSender, SendMailService>();
-            #endregion
+			#region send mail
+			//Dang ki mail
+			services.AddOptions();
+			var mailsetting = configuration.GetSection("MailSettings");
+			services.Configure<MailSettings>(mailsetting);
+			services.AddSingleton<IEmailSender, SendMailService>();
+			#endregion
 
-            #region send mail
-            //IdentityErrorServices
-            services.AddSingleton<IdentityErrorDescriber, AppIdentityErrorDescriber>();
+			#region send mail
+			//IdentityErrorServices
+			services.AddSingleton<IdentityErrorDescriber, AppIdentityErrorDescriber>();
 			#endregion
 
 			#region add product service
@@ -49,6 +49,14 @@ namespace ShopNow.Application
 
 			#region add cart service
 			services.AddScoped<ICartService, CartService>();
+			#endregion
+
+			#region add user user service
+			services.AddScoped<IUserService, UserService>();
+			#endregion
+
+			#region add shipping service
+			services.AddScoped<IShippingService, ShippingService>();
 			#endregion
 		}
 	}

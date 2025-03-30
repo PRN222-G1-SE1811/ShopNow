@@ -27,7 +27,7 @@ builder.Services.AddInfrastructureService();
 builder.Services.AddApplicationService(builder.Configuration);
 #endregion
 
-
+builder.Services.AddSession();
 
 #region Identity
 //Dang ki Identity
@@ -91,7 +91,7 @@ builder.Services.AddAuthentication()
 #endregion
 
 var app = builder.Build();
-
+app.UseSession();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
@@ -109,6 +109,10 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
 	name: "default",
-	pattern: "{controller=Product}/{action=Manage}");
+	pattern: "{controller=Home}/{action=Index}");
+
+//app.MapControllerRoute(
+//	name: "default",
+//	pattern: "{controller=Product}/{action=Manage}");
 
 app.Run();
