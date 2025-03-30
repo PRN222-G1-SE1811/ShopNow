@@ -9,7 +9,7 @@ namespace ShopNow.Application.Services.Implements
 {
 	public class ShippingService(IConfiguration configuration) : IShippingService
 	{
-		public async Task<decimal> CalculateShippingFee()
+		public async Task<decimal> CalculateShippingFee(int districtId, int wardCode)
 		{
 			var ghnToken = configuration["Shipping:GHN:API_Token"];
 			var shopId = configuration["Shipping:GHN:Shop_Id"];
@@ -31,9 +31,9 @@ namespace ShopNow.Application.Services.Implements
 			var requestData = new
 			{
 				service_type_id = 2,  // Dùng `service_type_id` thay vì `service_id`
-				to_district_id = 1820,
-				to_ward_code = "030712",
-				weight = 3000,
+				to_district_id = districtId,
+				to_ward_code = wardCode.ToString(),
+				weight = 500,
 				insurance_value = 0,
 			};
 

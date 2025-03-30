@@ -2587,6 +2587,24 @@ ol {
 .checkout__input input::placeholder {
 	color: #b7b7b7;
 }
+/*select */
+.nice-select {
+	border-radius: 0 !important;
+	width: 100% !important;
+	height: 50px !important;
+}
+
+.nice-select open {
+	border-radius: 0 !important;
+	width: 100% !important;
+	height: 50px !important;
+}
+
+.nice-select .list {
+    max-height: 200px !important; /* Giới hạn chiều cao dropdown */
+    overflow-y: auto !important; /* Bật thanh cuộn dọc */
+    overflow-x: hidden !important; /* Ẩn thanh cuộn ngang */
+}
 
 .checkout__input__checkbox label {
 	font-size: 15px;

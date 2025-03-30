@@ -6,7 +6,7 @@ namespace ShopNow.Presentation.Models.CheckOutViewModel
 {
 	public class ConfirmationViewModel
 	{
-		public IEnumerable<CheckOutItemDTO> Items { get; set; } = null!;
+		public List<CheckOutItemDTO> Items { get; set; } = null!;
 		public UserDetailDTO UserDetailDTO { get; set; } = null!;
 	}
 }
