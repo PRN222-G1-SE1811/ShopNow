@@ -1,0 +1,192 @@
+﻿@model IEnumerable<ShopNow.Application.DTOs.Categories.ListCategoryDTO>
+
+@{
+    ViewData["Title"] = "Manage Category";
+}
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["Success"]
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="mb-0">Manage Categories</h3>
+        <a asp-controller="Category" asp-action="Create" class="btn btn-success">+ Add Category</a>
+    </div>
+
+    <!-- Filter & Search -->
+    <form method="get" class="mb-3 d-flex align-items-center gap-2" style="gap: 10px;">
+        <input type="text" name="search" class="form-control flex-grow-1"
+               placeholder="Search Name..." value="@Context.Request.Query["search"]">
+
+        <select name="sortByDate" class="form-select flex-grow-1">
+            <option value="">Sort by Date</option>
+            <option value="CreatedAt" selected="@(Context.Request.Query["sortByDate"] == "CreatedAt")">Created At</option>
+            <option value="UpdatedAt" selected="@(Context.Request.Query["sortByDate"] == "UpdatedAt")">Updated At</option>
+        </select>
+
+        <button type="submit" class="btn btn-primary">Sort</button>
+    </form>
+
+
+    <!-- Category Table -->
+    <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
+        <table class="table table-bordered text-center align-middle">
+            <thead class="table-dark text-white" style="position: sticky; top: 0; z-index: 1;">
+                <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Slug</th>
+                    <th>Parent</th>
+                    <th>Description</th>
+                    <th>Image</th>
+                    <th>Status</th>
+                    <th>Updated</th>
+                    <th>Created</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Any())
+                {
+                    @foreach (var category in Model)
+                    {
+                        <tr>
+                            <td>@category.Id.ToString().Substring(0, 5)...</td>
+                            <td>@category.Name</td>
+                            <td>@category.Slug</td>
+                            <td>@category.ParentCategoryName</td>
+                            <td>@Html.Raw(category.Description)</td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(category.Image))
+                                {
+                                    <img src="@category.Image" alt="Category Image" class="img-thumbnail" style="width: 40px; height: 40px; object-fit: cover;" />
+                                }
+                                else
+                                {
+                                    <span class="text-muted">No Image</span>
+                                }
+                            </td>
+                            <td>@category.Status.ToString()</td>
+                            <td>@category.UpdatedAt.ToString("yyyy-MM-dd")</td>
+                            <td>@category.CreatedAt.ToString("yyyy-MM-dd")</td>
+                            <td class="d-flex justify-content-center gap-2">
+                                <a asp-controller="Category" asp-action="Detail" asp-route-id="@category.Id" class="btn btn-info btn-sm">View</a>
+                                <a asp-action="Edit" asp-route-id="@category.Id" class="btn btn-primary btn-sm">Edit</a>
+                               @*  <form asp-action="Delete" method="post" onsubmit="return confirm('Are you sure you want to delete this category?');" class="d-inline">
+                                    <input type="hidden" name="id" value="@category.Id" />
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                </form> *@
+
+                                <button type="button" class="btn btn-danger btn-sm" onclick="showDeleteModal('@category.Id')">
+                                    Delete
+                                </button>
+
+                                <!-- Delete Confirmation Modal -->
+                                <div class="modal fade" id="deleteCategoryModal" tabindex="-1" aria-labelledby="deleteCategoryModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="deleteCategoryModalLabel">Confirm Deletion</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                Are you sure you want to delete this category?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <form asp-action="Delete" method="post">
+                                                    <input type="hidden" name="id" id="deleteCategoryId" />
+                                                    <button type="submit" class="btn btn-danger">Yes, Delete</button>
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="10" class="text-center text-muted">No categories found.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <div class="d-flex justify-content-center mt-3 mb-4">
+            <nav>
+                <ul class="pagination">
+                    @if (ViewData["CurrentPage"] != null && (int)ViewData["CurrentPage"] > 1)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" asp-action="Manage"
+                               asp-route-search="@ViewData["CurrentSearch"]"
+                               asp-route-sortByDate="@ViewData["CurrentSort"]"
+                               asp-route-page="@(Convert.ToInt32(ViewData["CurrentPage"]) - 1)">
+                                ❮ Previous
+                            </a>
+                        </li>
+                    }
+
+                    <li class="page-item disabled">
+                        <span class="page-link bg-light text-dark fw-bold">
+                            Page @(ViewData["CurrentPage"]) of @(ViewData["TotalPages"])
+                        </span>
+                    </li>
+
+                    @if (ViewData["CurrentPage"] != null && ViewData["TotalPages"] != null
+                    && (int)ViewData["CurrentPage"] < (int)ViewData["TotalPages"])
+                    {
+                        <li class="page-item">
+                            <a class="page-link" asp-action="Manage"
+                               asp-route-search="@ViewData["CurrentSearch"]"
+                               asp-route-sortByDate="@ViewData["CurrentSort"]"
+                               asp-route-page="@(Convert.ToInt32(ViewData["CurrentPage"]) + 1)">
+                                Next ❯
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        let deleteModal;
+
+        function showDeleteModal(categoryId) {
+            var inputElement = document.getElementById("deleteCategoryId");
+            if (!inputElement) {
+                console.error("deleteCategoryId input not found!");
+                return;
+            }
+
+            inputElement.value = categoryId;
+
+            // Lấy modal và hiển thị nó
+            deleteModal = new bootstrap.Modal(document.getElementById('deleteCategoryModal'));
+            deleteModal.show();
+        }
+
+        // Đóng modal khi nhấn Cancel
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelector('[data-bs-dismiss="modal"]').addEventListener("click", function () {
+                if (deleteModal) {
+                    deleteModal.hide();
+                }
+            });
+        });
+    </script>
+}
+
