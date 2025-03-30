@@ -31,5 +31,5 @@ namespace ShopNow.Application.Services.Implements
 			await unitOfWork.GenericRepository.InsertRange(assets);
 			return await unitOfWork.CommitAsync();
 		}
-	}
+    }
 }

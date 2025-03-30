@@ -1,0 +1,60 @@
+﻿@model ShopNow.Application.DTOs.Categories.ListCategoryDTO
+
+@{
+    ViewData["Title"] = "Category Detail";
+}
+
+<div class="container mt-4">
+    <div class="card shadow-lg">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Category Details</h4>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <!-- Hình ảnh danh mục -->
+                <div class="col-md-4 text-center">
+                    @if (!string.IsNullOrEmpty(Model.Image))
+                    {
+                        <img src="@Model.Image" alt="Category Image" class="img-fluid rounded shadow" style="max-width: 100%; height: auto;">
+                    }
+                    else
+                    {
+                        <span class="text-muted">No image available</span>
+                    }
+                </div>
+
+                <!-- Thông tin danh mục -->
+                <div class="col-md-8">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item"><strong>ID:</strong> @Model.Id</li>
+                        <li class="list-group-item"><strong>Name:</strong> @Model.Name</li>
+                        <li class="list-group-item"><strong>Slug:</strong> @Model.Slug</li>
+                        <li class="list-group-item"><strong>Parent Category:</strong> @Model.ParentCategoryName</li>
+                        <li class="list-group-item"><strong>Description:</strong> @Model.Description</li>
+                        <li class="list-group-item">
+                            <strong>Status:</strong>
+                            @if ((int)Model.Status == 1)
+                            {
+                                <span class="badge bg-success">🟢 Active</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">🔴 Inactive</span>
+                            }
+
+                        </li>
+                        <li class="list-group-item"><strong>Created At:</strong> @Model.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")</li>
+                        <li class="list-group-item"><strong>Updated At:</strong> @Model.UpdatedAt.ToString("yyyy-MM-dd HH:mm:ss")</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Nút điều hướng -->
+            <div class="mt-3 text-end">
+                <a asp-action="Manage" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left-circle"></i> Back to List
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
