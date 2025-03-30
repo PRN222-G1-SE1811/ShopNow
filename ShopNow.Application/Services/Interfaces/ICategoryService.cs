@@ -1,4 +1,5 @@
 ﻿using ShopNow.Application.DTOs.Categories;
+using ShopNow.Shared.Paginators;
 using ShowNow.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -18,7 +19,6 @@ namespace ShopNow.Application.Services.Interfaces
 		public Task<bool> UpdateCategory(UpdateCategoryDTO dto);
 		public Task<UpdateCategoryDTO> GetCategoryUpdateById(Guid id);
         public Task<bool> DeleteCategory(Guid id);
-
-
+      public  Task<PageResult<ListCategoryDTO>> GetPaginatedCategories(string? search, string? sortByDate, int page, int pageSize);
     }
 }

@@ -1,67 +1,105 @@
 ﻿@model ShopNow.Presentation.Models.CategoryViewModel.CategoriesViewModels
 
-<h2>Create Category</h2>
+<div class="container mt-4">
+    <div class="card shadow-lg">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Create Category</h4>
+        </div>
+        <div class="card-body">
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger">@TempData["Error"]</div>
+            }
 
-@if (TempData["Error"] != null)
-{
-    <div class="alert alert-danger">@TempData["Error"]</div>
-}
+            <form asp-action="Create" method="post" enctype="multipart/form-data">
+                <div class="row">
+                    <!-- Name -->
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="@Model.CreateCategoryDTO.Name" class="form-label fw-bold">Category Name</label>
+                        <input asp-for="@Model.CreateCategoryDTO.Name" class="form-control" required />
+                        <span asp-validation-for="@Model.CreateCategoryDTO.Name" class="text-danger"></span>
+                    </div>
 
-<form asp-action="Create" method="post">
-    <div class="form-group">
-        <label asp-for="@Model.CreateCategoryDTO.Name"></label>
-        <input asp-for="@Model.CreateCategoryDTO.Name" class="form-control" required />
-        <span asp-validation-for="@Model.CreateCategoryDTO.Name" class="text-danger"></span>
+                    <!-- Slug -->
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="@Model.CreateCategoryDTO.Slug" class="form-label fw-bold">Slug</label>
+                        <input asp-for="@Model.CreateCategoryDTO.Slug" class="form-control" />
+                        <span asp-validation-for="@Model.CreateCategoryDTO.Slug" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <!-- Parent Category -->
+                    <div class="col-md-6 mb-3">
+                        <div class="d-flex align-items-center gap-2">
+                            <label asp-for="CreateCategoryDTO.ParentId" class="col-form-label fw-bold" style="margin:10px">Parent Category</label>
+                            
+                            <select asp-for="CreateCategoryDTO.ParentId" asp-items="Model.ParentCategories" class="form-select">
+                                <option value="">-- Select Parent Category --</option>
+                            </select>
+                        </div>
+                        <span asp-validation-for="CreateCategoryDTO.ParentId" class="text-danger"></span>
+                    </div>
+
+                    <!-- Status -->
+                    <div class="col-md-6 mb-3">
+                        <div class="d-flex align-items-center gap-2">
+                            <label asp-for="@Model.CreateCategoryDTO.Status" class="col-form-label fw-bold" style="margin:10px">Status</label>
+                            <select asp-for="@Model.CreateCategoryDTO.Status" class="form-select">
+                                <option value="0" class="text-danger">🔴 Inactive</option>
+                                <option value="1" class="text-success">🟢 Active</option>
+                            </select>
+                        </div>
+                        <span asp-validation-for="@Model.CreateCategoryDTO.Status" class="text-danger"></span>
+                    </div>
+                </div>
+
+
+                <!-- Description -->
+                <div class="mb-3">
+                    <label asp-for="@Model.CreateCategoryDTO.Description" class="form-label fw-bold">Description</label>
+                    <textarea asp-for="@Model.CreateCategoryDTO.Description" class="form-control" rows="3"></textarea>
+                    <span asp-validation-for="@Model.CreateCategoryDTO.Description" class="text-danger"></span>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label asp-for="CreateCategoryDTO.ImageFile" class="form-label fw-bold">Category Image</label>
+                            <input asp-for="CreateCategoryDTO.ImageFile"
+                                   class="form-control"
+                                   type="file"
+                                   required
+                                   data-val="true"
+                                   data-val-required="Category image is required" />
+                            <span class="text-danger field-validation-valid"
+                                  data-valmsg-for="CreateCategoryDTO.ImageFile"
+                                  data-valmsg-replace="true"></span>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Buttons -->
+                <div class="d-flex justify-content-between">
+                    <a asp-action="Manage" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left-circle"></i> Back to List
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-save"></i> Create
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
+</div>
 
-    <div class="form-group">
-        <label asp-for="@Model.CreateCategoryDTO.Slug"></label>
-        <input asp-for="@Model.CreateCategoryDTO.Slug" class="form-control" />
-        <span asp-validation-for="@Model.CreateCategoryDTO.Slug" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="CreateCategoryDTO.ParentId">Parent Category</label>
-        <select asp-for="CreateCategoryDTO.ParentId" asp-items="Model.ParentCategories" class="form-control">
-            <option value="">-- Select Parent Category --</option>
-        </select>
-        <span asp-validation-for="CreateCategoryDTO.ParentId" class="text-danger"></span>
-    </div>
-
-
-
-    <div class="form-group">
-        <label asp-for="@Model.CreateCategoryDTO.Description"></label>
-        <textarea asp-for="@Model.CreateCategoryDTO.Description" class="form-control"></textarea>
-        <span asp-validation-for="@Model.CreateCategoryDTO.Description" class="text-danger"></span>
-    </div>
-
- 
-
-    <div class="form-group">
-        <label asp-for="@Model.CreateCategoryDTO.Image"></label>
-        <input asp-for="@Model.CreateCategoryDTO.Image" class="form-control" />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="@Model.CreateCategoryDTO.Status"></label>
-        <select asp-for="@Model.CreateCategoryDTO.Status" class="form-control">
-            <option value="0">Inactive</option>
-            <option value="1">Active</option>
-        </select>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Create</button>
-    <a asp-action="Manage" class="btn btn-secondary">Back to List</a>
-
-</form>
 @section Scripts {
-    @{
-        <script src="https://cdn.tiny.cloud/1/0vuhsazgiv5rjydoflr0l0zbhd3khd54mgka0cgti58u6pld/tinymce/6/tinymce.min.js"
-                referrerpolicy="origin"></script>
-        <script src="~/js/admin/tinyMCE.js"></script>
-        <script type="text/javascript">
-            loadEditor('#CreateCategoryDTO_Description')
-        </script>
-    }
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+
+    <script src="https://cdn.tiny.cloud/1/0vuhsazgiv5rjydoflr0l0zbhd3khd54mgka0cgti58u6pld/tinymce/6/tinymce.min.js"
+            referrerpolicy="origin"></script>
+    <script src="~/js/admin/tinyMCE.js"></script>
+    <script type="text/javascript">
+        loadEditor('#CreateCategoryDTO_Description')
+    </script>
 }

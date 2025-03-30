@@ -20,45 +20,20 @@ namespace ShopNow.Presentation.Controllers
         {
             return View();
         }
-
-        public async Task<IActionResult> Manage(string? search, string? sortByDate)
+        
+        public async Task<IActionResult> Manage(string? search, string? sortByDate, int page = 1, int pageSize = 3)
         {
-            var categories = await _categoryService.GetListCategories();
-
-            // Gán tên danh mục cha ngay trong Manage()
-            var categoryList = categories.Select(c => new ListCategoryDTO
-            {
-                Id = c.Id,
-                Name = c.Name,
-                ParentId = c.ParentId,
-                ParentCategoryName = categories.FirstOrDefault(p => p.Id == c.ParentId)?.Name ?? "N/A",
-                Slug = c.Slug,
-                Description = c.Description,
-                Image = c.Image,
-                Status = c.Status,
-                CreatedAt = c.CreatedAt,
-                UpdatedAt = c.UpdatedAt
-            }).ToList();
-
-            // Lọc theo tên nếu có tìm kiếm
-            if (!string.IsNullOrEmpty(search))
-            {
-                categoryList = categoryList
-                    .Where(c => c.Name.Contains(search, StringComparison.OrdinalIgnoreCase))
-                    .ToList();
-            }
-
-            // Sắp xếp theo CreatedAt hoặc UpdatedAt
-            categoryList = sortByDate switch
-            {
-                "CreatedAt" => categoryList.OrderByDescending(c => c.CreatedAt).ToList(),
-                "UpdatedAt" => categoryList.OrderByDescending(c => c.UpdatedAt).ToList(),
-                _ => categoryList
-            };
+            var paginatedCategories = await _categoryService.GetPaginatedCategories(search, sortByDate, page, pageSize);
 
             ViewData["active"] = "category";
-            return View(categoryList);
+            ViewData["CurrentPage"] = page;
+            ViewData["TotalPages"] = paginatedCategories.TotalPages;
+            ViewData["CurrentSearch"] = search ?? "";
+            ViewData["CurrentSort"] = sortByDate ?? "";
+
+            return View(paginatedCategories.Items);
         }
+
 
         public async Task<IActionResult> Detail(Guid id)
         {
