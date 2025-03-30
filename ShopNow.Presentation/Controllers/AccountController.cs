@@ -92,11 +92,11 @@ namespace ShopNow.Presentation.Controllers
 
                 if (result.IsLockedOut)
                 {
-                    _logger.LogWarning(2, "Tài khoản bị khóa");
+                    _logger.LogWarning(2, "Account is locked!");
                     return View("Lockout");
                 }
 
-                ModelState.AddModelError(string.Empty, "Không đăng nhập được.");
+                ModelState.AddModelError(string.Empty, "Can't login.");
             }
 
             return View(model);
@@ -140,7 +140,7 @@ namespace ShopNow.Presentation.Controllers
         public async Task<IActionResult> LogOff()
         {
             await _signInManager.SignOutAsync();
-            _logger.LogInformation("User đăng xuất");
+            _logger.LogInformation("User logout");
             return RedirectToAction("Index", "Home", new { area = "" });
         }
         //
@@ -179,7 +179,7 @@ namespace ShopNow.Presentation.Controllers
 
                 if (result.Succeeded)
                 {
-                    _logger.LogInformation("Đã tạo user mới.");
+                    _logger.LogInformation("New user is created.");
 
                     // Phát sinh token để xác nhận email
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -198,10 +198,25 @@ namespace ShopNow.Presentation.Controllers
                         protocol: Request.Scheme);
 
                     await _emailSender.SendEmailAsync(model.Email,
-                        "Xác nhận địa chỉ email",
-                        @$"Bạn đã đăng ký tài khoản trên RazorWeb, 
-                           hãy <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>bấm vào đây</a> 
-                           để kích hoạt tài khoản.");
+    "Email Address Confirmation",
+    @$"
+    <div style='font-family: Arial, sans-serif; text-align: center; padding: 20px; background-color: #f8f9fa;'>
+        <div style='max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);'>
+            <h2 style='color: #007bff;'>Confirm Your Email</h2>
+            <p style='font-size: 16px; color: #333;'>
+                Thank you for registering on <strong>ShopNow</strong>.  
+                Please confirm your email by clicking the button below.
+            </p>
+            <a href='{HtmlEncoder.Default.Encode(callbackUrl)}' 
+               style='display: inline-block; padding: 10px 20px; margin: 20px 0; color: white; background-color: #007bff; text-decoration: none; border-radius: 5px; font-weight: bold;'>
+                Verify Email
+            </a>
+            <p style='color: #666; font-size: 14px;'>
+                If you did not request this, please ignore this email.
+            </p>
+        </div>
+    </div>");
+
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
@@ -270,7 +285,7 @@ namespace ShopNow.Presentation.Controllers
             returnUrl ??= Url.Content("~/");
             if (remoteError != null)
             {
-                ModelState.AddModelError(string.Empty, $"Lỗi sử dụng dịch vụ ngoài: {remoteError}");
+                ModelState.AddModelError(string.Empty, $"Error when using external service: {remoteError}");
                 return View(nameof(Login));
             }
             var info = await _signInManager.GetExternalLoginInfoAsync();
@@ -315,7 +330,7 @@ namespace ShopNow.Presentation.Controllers
         public async Task<IActionResult> ExternalLoginConfirmation(ExternalLoginConfirmationViewModel model, string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
-;
+            ;
             if (ModelState.IsValid)
             {
                 // Get the information about the user from the external login provider
@@ -364,7 +379,7 @@ namespace ShopNow.Presentation.Controllers
                             info => user1 (mail1@abc.com)
                                  => user2 (mail2@abc.com)
                         */
-                        ModelState.AddModelError(string.Empty, "Không liên kết được tài khoản, hãy sử dụng email khác");
+                        ModelState.AddModelError(string.Empty, "Can't link to this account, Let's use another account");
                         return View();
                     }
                 }
@@ -372,7 +387,7 @@ namespace ShopNow.Presentation.Controllers
 
                 if ((externalEmailUser != null) && (registeredUser == null))
                 {
-                    ModelState.AddModelError(string.Empty, "Không hỗ trợ tạo tài khoản mới - có email khác email từ dịch vụ ngoài");
+                    ModelState.AddModelError(string.Empty, "Don't support create new account - your email don't match with email of external service");
                     return View();
                 }
 
@@ -405,7 +420,7 @@ namespace ShopNow.Presentation.Controllers
                     }
                     else
                     {
-                        ModelState.AddModelError("Không tạo được tài khoản mới");
+                        ModelState.AddModelError("Can't create new account");
                         return View();
                     }
                 }
@@ -477,9 +492,26 @@ namespace ShopNow.Presentation.Controllers
 
 
                 await _emailSender.SendEmailAsync(
-                    model.Email,
-                    "Reset Password",
-                    $"Hãy bấm <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>vào đây</a> để đặt lại mật khẩu.");
+    model.Email,
+    "Reset Your Password",
+    @$"
+    <div style='font-family: Arial, sans-serif; text-align: center; padding: 20px; background-color: #f8f9fa;'>
+        <div style='max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);'>
+            <h2 style='color: #dc3545;'>Password Reset Request</h2>
+            <p style='font-size: 16px; color: #333;'>
+                We received a request to reset your password.  
+                Click the button below to proceed.
+            </p>
+            <a href='{HtmlEncoder.Default.Encode(callbackUrl)}' 
+               style='display: inline-block; padding: 10px 20px; margin: 20px 0; color: white; background-color: #dc3545; text-decoration: none; border-radius: 5px; font-weight: bold;'>
+                Reset Password
+            </a>
+            <p style='color: #666; font-size: 14px;'>
+                If you did not request this, please ignore this email.
+            </p>
+        </div>
+    </div>");
+
 
                 return RedirectToAction(nameof(ForgotPasswordConfirmation));
 
@@ -588,7 +620,23 @@ namespace ShopNow.Presentation.Controllers
                 return View("Error");
             }
 
-            var message = "Your security code is: " + code;
+            var message = @$"
+    <div style='font-family: Arial, sans-serif; text-align: center; padding: 20px; background-color: #f8f9fa;'>
+        <div style='max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);'>
+            <h2 style='color: #007bff;'>Security Code</h2>
+            <p style='font-size: 16px; color: #333;'>
+                Your one-time security code is:
+            </p>
+            <div style='display: inline-block; padding: 10px 20px; font-size: 20px; font-weight: bold; color: #fff; background-color: #007bff; border-radius: 5px;'>
+                {code}
+            </div>
+            <p style='color: #666; font-size: 14px; margin-top: 10px;'>
+                Please use this code to complete your verification.  
+                If you did not request this, please ignore this email.
+            </p>
+        </div>
+    </div>";
+
             if (model.SelectedProvider == "Email")
             {
                 await _emailSender.SendEmailAsync(await _userManager.GetEmailAsync(user), "Security Code", message);
@@ -691,7 +739,7 @@ namespace ShopNow.Presentation.Controllers
             }
             else
             {
-                ModelState.AddModelError(string.Empty, "Mã sai.");
+                ModelState.AddModelError(string.Empty, "Wrong code.");
                 return View(model);
             }
         }
@@ -718,10 +766,10 @@ namespace ShopNow.Presentation.Controllers
         public async Task<IActionResult> UseRecoveryCode(UseRecoveryCodeViewModel model)
         {
             model.ReturnUrl ??= Url.Content("~/");
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
+            //if (!ModelState.IsValid)
+            //{
+            //    return View(model);
+            //}
 
             var result = await _signInManager.TwoFactorRecoveryCodeSignInAsync(model.Code);
             if (result.Succeeded)
@@ -730,7 +778,7 @@ namespace ShopNow.Presentation.Controllers
             }
             else
             {
-                ModelState.AddModelError(string.Empty, "Sai mã phục hồi.");
+                ModelState.AddModelError(string.Empty, "Wrong recovery code.");
                 return View(model);
             }
         }

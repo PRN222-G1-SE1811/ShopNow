@@ -1,10 +1,8 @@
 ﻿@{
-    ViewData["Title"] = "Có lỗi";
+    ViewData["Title"] = "Error";
 }
 
-<h1>@ViewData["Title"]</h1>
-<div>
-    <p>
-        Lỗi không hoàn thành được tác vụ
-    </p>
+<h1 class="text-danger text-center">@ViewData["Title"]</h1>
+<div class="text-center mt-4">
+    <p class="text-muted">An error occurred, and the task could not be completed.</p>
 </div>

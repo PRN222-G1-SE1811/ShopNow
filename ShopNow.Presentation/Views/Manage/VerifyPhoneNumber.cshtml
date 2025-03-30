@@ -1,31 +1,38 @@
 ﻿@using App.Areas.Identity.Models.ManageViewModels
 @model VerifyPhoneNumberViewModel
 @{
-    ViewData["Title"] = "Xác nhận số điện thoại";
+	ViewData["Title"] = "Phone Number Verification";
 }
 
-<h1>@ViewData["Title"].</h1>
+<h1 class="text-center">@ViewData["Title"]</h1>
 
-<form asp-controller="Manage" asp-action="VerifyPhoneNumber" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal" role="form">
-    <input asp-for="PhoneNumber" type="hidden" />
-    <h4>Thêm số điện thoại.</h4>
-    <h5>@ViewData["Status"]</h5>
-    <hr />
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <div class="form-group">
-        <label asp-for="Code" class="col-md-2 control-label"></label>
-        <div class="col-md-10">
-            <input asp-for="Code" class="form-control" />
-            <span asp-validation-for="Code" class="text-danger"></span>
-        </div>
-    </div>
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <button type="submit" class="btn btn-primary">Gửi</button>
-        </div>
-    </div>
-</form>
+<div class="container d-flex justify-content-center" style="margin-top: 120px">
+	<div class="w-50">
+		<form asp-controller="Manage" asp-action="VerifyPhoneNumber" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="bg-light p-4 rounded shadow">
+			<input asp-for="PhoneNumber" type="hidden" />
+
+			<h4 class="text-primary text-center">Add Your Phone Number</h4>
+			<h5 class="text-center text-muted">@ViewData["Status"]</h5>
+			<hr />
+
+			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+			<div class="form-group">
+				<label asp-for="Code" class="fw-bold">Verification Code</label>
+				<input asp-for="Code" class="form-control" placeholder="Enter verification code" />
+				<span asp-validation-for="Code" class="text-danger"></span>
+			</div>
+
+			<div class="text-center mt-3">
+				<button type="submit" class="btn btn-primary">Verify</button>
+			</div>
+		</form>
+	</div>
+</div>
+
 
 @section Scripts {
-    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
 }

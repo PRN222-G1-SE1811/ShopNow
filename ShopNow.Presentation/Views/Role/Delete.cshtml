@@ -1,24 +1,35 @@
 @using Microsoft.AspNetCore.Identity
-@model IdentityRole
+@model IdentityRole<Guid>
 @{
-    ViewData["Title"] = "Xóa role";
+    ViewData["Title"] = "Delete role";
 }
 <h2>@ViewData["Title"]</h2>
 <partial name="_StatusMessage"></partial>
 
 <hr>
 
-<div class="row">
+<div class="row justify-content-center">
     <div class="col-md-6">
-        <form method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-         
-            <p>Bạn có chắc chắn xóa <strong>@Model.Name</strong></p>
-            <div class="form-group">
-                <input type="submit" value="Đồng ý" class="btn btn-danger" />
-                <a class="btn btn-primary" asp-action="Index">Danh sách các role</a>
+        <div class="card shadow-lg border-danger">
+            <div class="card-body text-center">
+                <h3 class="card-title text-danger">Confirm Deletion</h3>
+                <p class="mb-4">Are you sure you want to delete the role <strong>@Model.Name</strong>?</p>
+
+                <form method="post">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                    <div class="d-flex justify-content-center gap-3">
+                        <button type="submit" class="btn btn-danger">
+                            Confirm
+                        </button>
+                        &nbsp;&nbsp;
+                        <a class="btn btn-secondary" asp-action="Index">
+                             Back to Roles
+                        </a>
+                    </div>
+                </form>
             </div>
-        </form>
+        </div>
     </div>
 </div>
 

@@ -2,13 +2,13 @@
 
 @model UserListModel
 @{
-    ViewData["Title"] = "Danh sách các thành viên";
+    ViewData["Title"] = "List of user";
 }
 <h2>@ViewData["Title"]</h2>
 <partial name="_StatusMessage"></partial>
-<p>Tổng số thành viên: @Model.totalUsers</p>
+<p>Total of user: @Model.totalUsers</p>
 
-<table class="table">
+@* <table class="table">
     <tr>
         <th>Tên user</th>
         <th>Vai trò (role)</th>
@@ -33,7 +33,42 @@
             </td>
         </tr>
     }
-</table>
+</table> *@
+
+<!-- Scrollable Table -->
+<div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+    <table class="table table-bordered table-hover">
+        <thead class="table-success" style="position: sticky; top: 0; z-index: 1;">
+            <tr>
+                <th onclick="alert('?')">User Name<i class="fa fa-sort-amount-asc" aria-hidden="true"></i></th>
+                <th onclick="alert('?')">Role<i class="fa fa-sort-amount-asc" aria-hidden="true"></i></th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="userTable">
+            @foreach (var user in Model.users)
+            {
+                <tr>
+                    <td>@user.UserName</td>
+                    <td>
+                        @if (string.IsNullOrEmpty(user.RoleNames))
+                        {
+                            <a class="text-dark" asp-action="AddRole" asp-route-id="@user.Id">+ Add roles</a>
+                        }
+                        else
+                        {
+                            <a asp-action="AddRole" asp-route-id="@user.Id">@user.RoleNames</a>
+                        }
+                    </td>
+                    <td>
+                        <a class="btn btn-success btn-sm" asp-action="SetPassword" asp-route-id="@user.Id">Set Password</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
 @{
     var pagingmodel = new PagingModel()
     {

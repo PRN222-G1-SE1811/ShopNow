@@ -4,20 +4,34 @@
     ViewData["Title"] = "Mã phục hồi";
 }
 
-<h1>@ViewData["Title"].</h1>
+@* <h1>@ViewData["Title"].</h1> *@
 <p class="text-success">@ViewData["StatusMessage"]</p>
 
-<div>
-    <h4>Đây là các mã phục hồi của bạn</h4>
-    <p>Lưu trữ các mã này đề phòng khi đăng nhập cần xác thực hai yếu tố</p>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>Codes:</dt>
-        @foreach (var code in Model.Codes)
-        {
-        <dd>
-            <text>@code</text>
-        </dd>
-        }
-    </dl>
+<div class="min-vh-100">
+    <div class="container d-flex justify-content-center">
+        <div class="card shadow-lg border-0 rounded-4 p-4 mx-auto" style="max-width: 500px;">
+            <h4 class="text-center mb-3 text-primary fw-bold">Your Recovery Codes</h4>
+            <p class="text-center text-muted">
+                Store these codes safely in case you need them for two-factor authentication.
+            </p>
+            <hr />
+
+            <div class="bg-light p-3 rounded">
+                <h6 class="fw-bold text-secondary">Codes:</h6>
+                <ul class="list-group">
+                    @foreach (var code in Model.Codes)
+                    {
+                        <li class="list-group-item text-monospace bg-white border rounded p-2">
+                            <i class="bi bi-key text-primary"></i> @code
+                        </li>
+                    }
+                </ul>
+            </div>
+
+            <div class="text-center mt-3">
+                <small class="text-muted">Keep these codes in a secure place. You won't be able to view them again.</small>
+            </div>
+        </div>
+    </div>
 </div>
+
