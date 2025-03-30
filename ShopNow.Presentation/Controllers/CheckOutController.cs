@@ -38,10 +38,9 @@ namespace ShopNow.Presentation.Controllers
 				UserDetailDTO = user,
 				Items = order!.Items
 			};
-			var totalShip = await shippingService.CalculateShippingFee();
-			var provinces = await shippingService.GetProvinces();
-			var districts = await shippingService.GetDistrictsByProvince(201);
-			var wards = await shippingService.GetWardsByDistrict(1566);
+			//var provinces = await shippingService.GetProvinces();
+			//var districts = await shippingService.GetDistrictsByProvince(201);
+			//var wards = await shippingService.GetWardsByDistrict(1566);
 			return View(model);
 		}
 

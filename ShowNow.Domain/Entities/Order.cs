@@ -16,6 +16,7 @@ namespace ShowNow.Domain.Entities
 		[Column(TypeName = "decimal(18,2)")]
 		public required decimal TotalCost { get; set; }
 		public required PaymentMethod PaymentMethod { get; set; }
+		public required string ShippingAddress { get; set; }
 		public Guid? CouponId { get; set; }
 		public required DateTime CreatedAt { get; set; }
 		public DateTime? CancelledAt { get; set; }
