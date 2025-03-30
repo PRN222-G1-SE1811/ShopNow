@@ -1,4 +1,5 @@
-﻿using ShopNow.Application.DTOs.CheckOut;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using ShopNow.Application.DTOs.CheckOut;
 using ShopNow.Application.DTOs.User;
 
 namespace ShopNow.Presentation.Models.CheckOutViewModel

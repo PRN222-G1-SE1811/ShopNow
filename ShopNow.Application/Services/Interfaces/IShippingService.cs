@@ -6,5 +6,7 @@ namespace ShopNow.Application.Services.Interfaces
 	{
 		Task<decimal> CalculateShippingFee();
 		Task<List<Province>> GetProvinces();
+		Task<List<Ward>> GetWardsByDistrict(int districtId);
+		Task<List<District>> GetDistrictsByProvince(int provinceId);
 	}
 }

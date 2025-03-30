@@ -102,5 +102,78 @@ namespace ShopNow.Application.Services.Implements
 			return new List<Province>();
 		}
 
+		public async Task<List<District>> GetDistrictsByProvince(int provinceId)
+		{
+			var ghnToken = configuration["Shipping:GHN:API_Token"];
+
+			if (string.IsNullOrEmpty(ghnToken))
+			{
+				throw new Exception("GHN API Token is missing in configuration.");
+			}
+
+			using var client = new HttpClient();
+			client.DefaultRequestHeaders.Add("Token", ghnToken);
+
+			var apiUrl = $"https://online-gateway.ghn.vn/shiip/public-api/master-data/district?province_id={provinceId}";
+
+			HttpResponseMessage response = await client.GetAsync(apiUrl);
+			string responseData = await response.Content.ReadAsStringAsync();
+
+			if (!response.IsSuccessStatusCode)
+			{
+				throw new Exception($"GHN API Error: {response.StatusCode} - {responseData}");
+			}
+
+			var responseJson = JsonConvert.DeserializeObject<Dictionary<string, object>>(responseData);
+			if (responseJson != null && responseJson.ContainsKey("data"))
+			{
+				var districts = JsonConvert.DeserializeObject<List<District>>(responseJson["data"].ToString()!);
+				return districts ?? new List<District>();
+			}
+
+			return new List<District>();
+		}
+
+
+		public async Task<List<Ward>> GetWardsByDistrict(int districtId)
+		{
+			var ghnToken = configuration["Shipping:GHN:API_Token"];
+
+			if (string.IsNullOrEmpty(ghnToken))
+			{
+				throw new Exception("GHN API Token is missing in configuration.");
+			}
+
+			using var client = new HttpClient();
+			client.DefaultRequestHeaders.Add("Token", ghnToken);
+
+			var apiUrl = $"https://online-gateway.ghn.vn/shiip/public-api/master-data/ward?district_id={districtId}";
+
+			var requestBody = new { district_id = districtId };
+			var content = new StringContent(JsonConvert.SerializeObject(requestBody), Encoding.UTF8, "application/json");
+
+			HttpResponseMessage response = await client.PostAsync(apiUrl, content);
+			string responseData = await response.Content.ReadAsStringAsync();
+
+			if (!response.IsSuccessStatusCode)
+			{
+				throw new Exception($"GHN API Error: {response.StatusCode} - {responseData}");
+			}
+
+			var responseJson = JsonConvert.DeserializeObject<Dictionary<string, object>>(responseData);
+			if (responseJson == null || !responseJson.ContainsKey("data"))
+			{
+				throw new Exception("GHN API response does not contain expected 'data' field.");
+			}
+
+			var data = responseJson["data"];
+			if (data is Newtonsoft.Json.Linq.JArray jsonArray)
+			{
+				return jsonArray.ToObject<List<Ward>>() ?? new List<Ward>();
+			}
+
+			return new List<Ward>();
+		}
+
 	}
 }

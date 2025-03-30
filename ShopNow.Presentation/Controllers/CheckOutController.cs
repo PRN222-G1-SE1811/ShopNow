@@ -10,16 +10,18 @@ namespace ShopNow.Presentation.Controllers
 {
 	public class CheckOutController(IUserService userService, IShippingService shippingService) : Controller
 	{
+		[HttpPost]
 		public IActionResult Index([FromBody] CheckOutViewModel model)
 		{
 			if (!ModelState.IsValid)
 			{
-				
+
 			}
 			HttpContext.Session.SetString("CheckOutData", JsonConvert.SerializeObject(model));
 			return Json(new { redirectUrl = Url.Action("Confirmation", "CheckOut") });
 		}
 
+		[HttpGet]
 		public async Task<IActionResult> Confirmation()
 		{
 			var checkoutJson = HttpContext.Session.GetString("CheckOutData");
@@ -38,7 +40,19 @@ namespace ShopNow.Presentation.Controllers
 			};
 			var totalShip = await shippingService.CalculateShippingFee();
 			var provinces = await shippingService.GetProvinces();
+			var districts = await shippingService.GetDistrictsByProvince(201);
+			var wards = await shippingService.GetWardsByDistrict(1566);
 			return View(model);
+		}
+
+		[HttpPost]
+		public async Task<IActionResult> Confirmation(ConfirmationViewModel model)
+		{
+			if (!ModelState.IsValid)
+			{
+				return RedirectToAction(nameof(Confirmation));
+			}
+			return View();
 		}
 	}
 }
