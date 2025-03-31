@@ -51,13 +51,13 @@ namespace ShopNow.Presentation.Controllers
 			{
 				return RedirectToAction(nameof(Confirmation));
 			}
-			
+
 			var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 			model.UserDetailDTO.Id = Guid.Parse(userId!);
 			var id = await orderService.CreateOrder(model.Items, model.UserDetailDTO, model.PaymentMethod, model.ShippingFee);
 			if (model.PaymentMethod == Shared.Enums.PaymentMethod.VNPay)
 			{
-				return RedirectToAction("CreatePaymentUrl", "Payment", new { id = id });
+				return RedirectToRoute("CreatePaymentUrl", new { id = id });
 			}
 			return View();
 		}
