@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using ShopNow.Application.DTOs.CheckOut;
 using ShopNow.Application.DTOs.Orders;
 using ShopNow.Application.DTOs.User;
@@ -21,6 +22,14 @@ namespace ShopNow.Application.Services.Implements
 		{
 			var order = unitOfWork.GenericRepository.GetById(id);
 			return mapper.Map<OrderDTO>(order);
+		}
+
+		public async Task<OrderDetailDTO> GetOrderDetailReport(Guid id)
+		{
+			var query = unitOfWork.GenericRepository.GetQueryAble();
+			query = query.Include(_ => _.OrderItems);
+			var order = await query.FirstOrDefaultAsync(x => x.Id == id);
+			return mapper.Map<OrderDetailDTO>(order);
 		}
 
 		public async Task<bool> UpdateOrderStatus(Guid id, OrderStatus status)

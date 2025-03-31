@@ -10,5 +10,7 @@ namespace ShopNow.Application.Services.Interfaces
 		Task<Guid> CreateOrder(List<CheckOutItemDTO> items, UserDetailDTO userDetail, PaymentMethod paymentMethod, decimal shippingFee);
 		OrderDTO GetOrderDetail(Guid id);
 		Task<bool> UpdateOrderStatus(Guid id, OrderStatus status);
+
+		Task<OrderDetailDTO> GetOrderDetailReport(Guid id);		
 	}
 }
