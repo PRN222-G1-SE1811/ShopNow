@@ -783,7 +783,7 @@ namespace ShopNow.Presentation.Controllers
             }
         }
 
-        [Route("/khongduoctruycap.html")]
+        [Route("/accessdenied.html")]
         [AllowAnonymous]
         public IActionResult AccessDenied()
         {

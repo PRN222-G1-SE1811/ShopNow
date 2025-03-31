@@ -21,9 +21,10 @@ using App.Areas.Identity.Models.UserViewModels;
 
 namespace ShopNow.Presentation.Controllers
 {
-    //[Authorize(Roles = "Administrator,Editor")]
-    //[Area("Identity")]
-    [Route("/ManageUser/[action]")]
+    [Authorize(Roles = RoleName.Administrator)]
+
+	//[Area("Identity")]
+	[Route("/ManageUser/[action]")]
 	public class UserController : Controller
 	{
 		private readonly ILogger<RoleController> _logger;
@@ -45,9 +46,9 @@ namespace ShopNow.Presentation.Controllers
 		[TempData]
 		public string StatusMessage { get; set; }
 
-		//
-		// GET: /ManageUser/Index
-		[HttpGet]
+        //
+        // GET: /ManageUser/Index
+        [HttpGet]
 		public async Task<IActionResult> Index([FromQuery(Name = "p")] int currentPage)
 		{
 			var model = new UserListModel();
@@ -88,8 +89,8 @@ namespace ShopNow.Presentation.Controllers
 			return View(model);
 		}
 
-		// GET: /ManageUser/AddRole/id
-		[HttpGet("{id}")]
+        // GET: /ManageUser/AddRole/id
+        [HttpGet("{id}")]
 		public async Task<IActionResult> AddRoleAsync(string id)
 		{
 			// public SelectList allRoles { get; set; }
