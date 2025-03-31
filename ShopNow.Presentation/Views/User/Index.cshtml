@@ -8,40 +8,18 @@
 <partial name="_StatusMessage"></partial>
 <p>Total of user: @Model.totalUsers</p>
 
-@* <table class="table">
-    <tr>
-        <th>Tên user</th>
-        <th>Vai trò (role)</th>
-        <th>Tác vụ</th>
-    </tr>
-    @foreach (var user in Model.users)
-    {
-        <tr>
-            <td>@user.UserName</td>
-            <td>
-                @if (string.IsNullOrEmpty(user.RoleNames))
-                {
-                    <a class="text-dark" asp-action="AddRole" asp-route-id="@user.Id">+ Thêm roles</a>
-                }
-                else
-                {
-                    <a asp-action="AddRole" asp-route-id="@user.Id">@user.RoleNames</a>
-                }
-            </td>
-            <td>
-                <a class="btn btn-success btn-sm" asp-action="SetPassword" asp-route-id="@user.Id">Đặt mật khẩu</a>
-            </td>
-        </tr>
-    }
-</table> *@
-
+<div class="d-flex gap-2 mb-3" style="margin-right: 50%;">
+    <input type="text" id="searchInput" placeholder="Search by username..." class="form-control">
+    &nbsp;&nbsp;
+    <button id="searchButton" class="btn btn-primary">Search</button>
+</div>
 <!-- Scrollable Table -->
 <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
     <table class="table table-bordered table-hover">
         <thead class="table-success" style="position: sticky; top: 0; z-index: 1;">
             <tr>
-                <th onclick="alert('?')">User Name<i class="fa fa-sort-amount-asc" aria-hidden="true"></i></th>
-                <th onclick="alert('?')">Role<i class="fa fa-sort-amount-asc" aria-hidden="true"></i></th>
+                <th onclick="sortTable(0)">User Name <i class="fa fa-sort" aria-hidden="true"></i></th>
+                <th onclick="sortTable(1)">Role <i class="fa fa-sort" aria-hidden="true"></i></th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -71,11 +49,55 @@
 
 @{
     var pagingmodel = new PagingModel()
-    {
-        currentpage = Model.currentPage,
-        countpages = Model.countPages,
-        generateUrl = (int? p) => Url.Action("Index", new { p = p})
-    };
+            {
+                currentpage = Model.currentPage,
+                countpages = Model.countPages,
+                generateUrl = (int? p) => Url.Action("Index", new { p = p, q = Context.Request.Query["q"] }) // Keep search query in pagination
+            };
 }
+
+<script>
+    // Function to get query parameter value
+    function getQueryParam(name) {
+        let params = new URLSearchParams(window.location.search);
+        return params.get(name) || "";
+    }
+
+    // Preserve search input value on reload
+    document.getElementById("searchInput").value = getQueryParam("q");
+
+    // Search button click event
+    document.getElementById("searchButton").addEventListener("click", function () {
+        let searchValue = document.getElementById("searchInput").value.trim();
+        let currentUrl = new URL(window.location.href);
+
+        if (searchValue) {
+            currentUrl.searchParams.set("q", searchValue);
+        } else {
+            currentUrl.searchParams.delete("q"); // Remove query if empty
+        }
+
+        currentUrl.searchParams.set("p", "1"); // Reset to first page
+        window.location.href = currentUrl.toString();
+    });
+
+    // Sorting function
+    function sortTable(columnIndex) {
+        let table = document.querySelector(".table tbody");
+        let rows = Array.from(table.rows);
+
+        let ascending = table.getAttribute("data-sort") !== "asc";
+        table.setAttribute("data-sort", ascending ? "asc" : "desc");
+
+        rows.sort((rowA, rowB) => {
+            let cellA = rowA.cells[columnIndex].innerText.trim().toLowerCase();
+            let cellB = rowB.cells[columnIndex].innerText.trim().toLowerCase();
+            return ascending ? cellA.localeCompare(cellB) : cellB.localeCompare(cellA);
+        });
+
+        table.innerHTML = "";
+        rows.forEach(row => table.appendChild(row));
+    }
+</script>
 
 <partial name="_PagingXTL" model="@pagingmodel" />

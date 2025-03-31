@@ -20,7 +20,7 @@ using App.Areas.Identity.Models.RoleViewModels;
 
 namespace ShopNow.Presentation.Controllers
 {
-	//[Authorize(Roles = "Administrator")]
+	[Authorize(Roles = "Administrator")]
 	//[Area("Identity")]
 	[Route("/Role/[action]")]
 	public class RoleController : Controller

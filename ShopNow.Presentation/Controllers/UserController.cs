@@ -21,8 +21,7 @@ using App.Areas.Identity.Models.UserViewModels;
 
 namespace ShopNow.Presentation.Controllers
 {
-    [Authorize(Roles = RoleName.Administrator)]
-
+    [Authorize(Roles = $"{RoleName.Administrator},{RoleName.Editor}")]
 	//[Area("Identity")]
 	[Route("/ManageUser/[action]")]
 	public class UserController : Controller
@@ -49,47 +48,56 @@ namespace ShopNow.Presentation.Controllers
         //
         // GET: /ManageUser/Index
         [HttpGet]
-		public async Task<IActionResult> Index([FromQuery(Name = "p")] int currentPage)
-		{
-			var model = new UserListModel();
-			model.currentPage = currentPage;
+        public async Task<IActionResult> Index([FromQuery(Name = "p")] int currentPage, [FromQuery(Name = "q")] string searchTerm)
+        {
+            var model = new UserListModel();
+            model.currentPage = currentPage;
 
-			var qr = _userManager.Users.OrderBy(u => u.UserName);
+            var qr = _userManager.Users.AsQueryable();
 
-			model.totalUsers = await qr.CountAsync();
-			model.countPages = (int)Math.Ceiling((double)model.totalUsers / model.ITEMS_PER_PAGE);
+            // Filter by search term
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                qr = qr.Where(u => u.UserName.Contains(searchTerm));
+            }
 
-			if (model.currentPage < 1)
-				model.currentPage = 1;
-			if (model.currentPage > model.countPages)
-				model.currentPage = model.countPages;
+            qr = qr.OrderBy(u => u.UserName);
 
-			var qr1 = qr.Skip((model.currentPage - 1) * model.ITEMS_PER_PAGE)
-						.Take(model.ITEMS_PER_PAGE)
-						.Select(u => new UserAndRole()
-						{
-							Id = u.Id,
-							UserName = u.UserName,
-							Avatar = null,
-							FirstName = null,
-							LastName = null,
-							Address = null,
-							City = null,
-							Country = null
-						});
+            model.totalUsers = await qr.CountAsync();
+            model.countPages = (int)Math.Ceiling((double)model.totalUsers / model.ITEMS_PER_PAGE);
 
-			model.users = await qr1.ToListAsync();
+            if (model.currentPage < 1)
+                model.currentPage = 1;
+            if (model.currentPage > model.countPages)
+                model.currentPage = model.countPages;
 
-			foreach (var user in model.users)
-			{
-				var roles = await _userManager.GetRolesAsync(user);
-				user.RoleNames = string.Join(",", roles);
-			}
+            var qr1 = qr.Skip((model.currentPage - 1) * model.ITEMS_PER_PAGE)
+                        .Take(model.ITEMS_PER_PAGE)
+                        .Select(u => new UserAndRole()
+                        {
+                            Id = u.Id,
+                            UserName = u.UserName,
+                            Avatar = null,
+                            FirstName = null,
+                            LastName = null,
+                            Address = null,
+                            City = null,
+                            Country = null
+                        });
 
-			return View(model);
-		}
+            model.users = await qr1.ToListAsync();
+
+            foreach (var user in model.users)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+                user.RoleNames = string.Join(",", roles);
+            }
+
+            return View(model);
+        }
 
         // GET: /ManageUser/AddRole/id
+        [Authorize(Roles = RoleName.Administrator)]
         [HttpGet("{id}")]
 		public async Task<IActionResult> AddRoleAsync(string id)
 		{
