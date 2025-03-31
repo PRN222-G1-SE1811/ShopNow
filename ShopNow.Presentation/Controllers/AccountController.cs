@@ -90,14 +90,14 @@ namespace ShopNow.Presentation.Controllers
 					return RedirectToAction(nameof(SendCode), new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
 				}
 
-				if (result.IsLockedOut)
-				{
-					_logger.LogWarning(2, "Tài khoản bị khóa");
-					return View("Lockout");
-				}
+                if (result.IsLockedOut)
+                {
+                    _logger.LogWarning(2, "Account is locked!");
+                    return View("Lockout");
+                }
 
-				ModelState.AddModelError(string.Empty, "Không đăng nhập được.");
-			}
+                ModelState.AddModelError(string.Empty, "Can't login.");
+            }
 
 			return View(model);
 		}
@@ -135,52 +135,52 @@ namespace ShopNow.Presentation.Controllers
 		}
 
 
-		// POST: /Account/LogOff
-		[HttpPost("/logout/")]
-		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> LogOff()
-		{
-			await _signInManager.SignOutAsync();
-			_logger.LogInformation("User đăng xuất");
-			return RedirectToAction("Index", "Home", new { area = "" });
-		}
-		//
-		// GET: /Account/Register
-		[HttpGet]
-		[AllowAnonymous]
-		public IActionResult Register(string returnUrl = null)
-		{
-			returnUrl ??= Url.Content("~/");
-			ViewData["ReturnUrl"] = returnUrl;
-			return View();
-		}
-		//
-		// POST: /Account/Register
-		[HttpPost]
-		[AllowAnonymous]
-		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
-		{
-			returnUrl ??= Url.Content("~/");
-			ViewData["ReturnUrl"] = returnUrl;
-			if (ModelState.IsValid)
-			{
-				var user = new User
-				{
-					UserName = model.UserName,
-					Email = model.Email,
-					Avatar = "",
-					FirstName = "",
-					LastName = "",
-					Address = "",
-					City = "",
-					Country = ""
-				};
-				var result = await _userManager.CreateAsync(user, model.Password);
+        // POST: /Account/LogOff
+        [HttpPost("/logout/")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> LogOff()
+        {
+            await _signInManager.SignOutAsync();
+            _logger.LogInformation("User logout");
+            return RedirectToAction("Index", "Home", new { area = "" });
+        }
+        //
+        // GET: /Account/Register
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult Register(string returnUrl = null)
+        {
+            returnUrl ??= Url.Content("~/");
+            ViewData["ReturnUrl"] = returnUrl;
+            return View();
+        }
+        //
+        // POST: /Account/Register
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
+        {
+            returnUrl ??= Url.Content("~/");
+            ViewData["ReturnUrl"] = returnUrl;
+            if (ModelState.IsValid)
+            {
+                var user = new User
+                {
+                    UserName = model.UserName,
+                    Email = model.Email,
+                    Avatar = "",
+                    FirstName = "",
+                    LastName = "",
+                    Address = "",
+                    City = "",
+                    Country = ""
+                };
+                var result = await _userManager.CreateAsync(user, model.Password);
 
-				if (result.Succeeded)
-				{
-					_logger.LogInformation("Đã tạo user mới.");
+                if (result.Succeeded)
+                {
+                    _logger.LogInformation("New user is created.");
 
 					// Phát sinh token để xác nhận email
 					var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -198,11 +198,26 @@ namespace ShopNow.Presentation.Controllers
 							},
 						protocol: Request.Scheme);
 
-					await _emailSender.SendEmailAsync(model.Email,
-						"Xác nhận địa chỉ email",
-						@$"Bạn đã đăng ký tài khoản trên RazorWeb, 
-                           hãy <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>bấm vào đây</a> 
-                           để kích hoạt tài khoản.");
+                    await _emailSender.SendEmailAsync(model.Email,
+    "Email Address Confirmation",
+    @$"
+    <div style='font-family: Arial, sans-serif; text-align: center; padding: 20px; background-color: #f8f9fa;'>
+        <div style='max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);'>
+            <h2 style='color: #007bff;'>Confirm Your Email</h2>
+            <p style='font-size: 16px; color: #333;'>
+                Thank you for registering on <strong>ShopNow</strong>.  
+                Please confirm your email by clicking the button below.
+            </p>
+            <a href='{HtmlEncoder.Default.Encode(callbackUrl)}' 
+               style='display: inline-block; padding: 10px 20px; margin: 20px 0; color: white; background-color: #007bff; text-decoration: none; border-radius: 5px; font-weight: bold;'>
+                Verify Email
+            </a>
+            <p style='color: #666; font-size: 14px;'>
+                If you did not request this, please ignore this email.
+            </p>
+        </div>
+    </div>");
+
 
 					if (_userManager.Options.SignIn.RequireConfirmedAccount)
 					{
@@ -250,35 +265,35 @@ namespace ShopNow.Presentation.Controllers
 			return View(result.Succeeded ? "ConfirmEmail" : "ErrorConfirmEmail");
 		}
 
-		//
-		// POST: /Account/ExternalLogin
-		[HttpPost]
-		[AllowAnonymous]
-		[ValidateAntiForgeryToken]
-		public IActionResult ExternalLogin(string provider, string returnUrl = null)
-		{
-			returnUrl ??= Url.Content("~/");
-			var redirectUrl = Url.Action("ExternalLoginCallback", "Account", new { ReturnUrl = returnUrl });
-			var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
-			return Challenge(properties, provider);
-		}
-		//
-		// GET: /Account/ExternalLoginCallback
-		[HttpGet]
-		[AllowAnonymous]
-		public async Task<IActionResult> ExternalLoginCallback(string returnUrl = null, string remoteError = null)
-		{
-			returnUrl ??= Url.Content("~/");
-			if (remoteError != null)
-			{
-				ModelState.AddModelError(string.Empty, $"Lỗi sử dụng dịch vụ ngoài: {remoteError}");
-				return View(nameof(Login));
-			}
-			var info = await _signInManager.GetExternalLoginInfoAsync();
-			if (info == null)
-			{
-				return RedirectToAction(nameof(Login));
-			}
+        //
+        // POST: /Account/ExternalLogin
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public IActionResult ExternalLogin(string provider, string returnUrl = null)
+        {
+            returnUrl ??= Url.Content("~/");
+            var redirectUrl = Url.Action("ExternalLoginCallback", "Account", new { ReturnUrl = returnUrl });
+            var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
+            return Challenge(properties, provider);
+        }
+        //
+        // GET: /Account/ExternalLoginCallback
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> ExternalLoginCallback(string returnUrl = null, string remoteError = null)
+        {
+            returnUrl ??= Url.Content("~/");
+            if (remoteError != null)
+            {
+                ModelState.AddModelError(string.Empty, $"Error when using external service: {remoteError}");
+                return View(nameof(Login));
+            }
+            var info = await _signInManager.GetExternalLoginInfoAsync();
+            if (info == null)
+            {
+                return RedirectToAction(nameof(Login));
+            }
 
 			// Sign in the user with this external login provider if the user already has a login.
 			var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false);
@@ -308,23 +323,23 @@ namespace ShopNow.Presentation.Controllers
 			}
 		}
 
-		//
-		// POST: /Account/ExternalLoginConfirmation
-		[HttpPost]
-		[AllowAnonymous]
-		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> ExternalLoginConfirmation(ExternalLoginConfirmationViewModel model, string returnUrl = null)
-		{
-			returnUrl ??= Url.Content("~/");
-			;
-			if (ModelState.IsValid)
-			{
-				// Get the information about the user from the external login provider
-				var info = await _signInManager.GetExternalLoginInfoAsync();
-				if (info == null)
-				{
-					return View("ExternalLoginFailure");
-				}
+        //
+        // POST: /Account/ExternalLoginConfirmation
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ExternalLoginConfirmation(ExternalLoginConfirmationViewModel model, string returnUrl = null)
+        {
+            returnUrl ??= Url.Content("~/");
+            ;
+            if (ModelState.IsValid)
+            {
+                // Get the information about the user from the external login provider
+                var info = await _signInManager.GetExternalLoginInfoAsync();
+                if (info == null)
+                {
+                    return View("ExternalLoginFailure");
+                }
 
 				// Input.Email
 				var registeredUser = await _userManager.FindByEmailAsync(model.Email);
@@ -365,17 +380,17 @@ namespace ShopNow.Presentation.Controllers
                             info => user1 (mail1@abc.com)
                                  => user2 (mail2@abc.com)
                         */
-						ModelState.AddModelError(string.Empty, "Không liên kết được tài khoản, hãy sử dụng email khác");
-						return View();
-					}
-				}
+                        ModelState.AddModelError(string.Empty, "Can't link to this account, Let's use another account");
+                        return View();
+                    }
+                }
 
 
-				if ((externalEmailUser != null) && (registeredUser == null))
-				{
-					ModelState.AddModelError(string.Empty, "Không hỗ trợ tạo tài khoản mới - có email khác email từ dịch vụ ngoài");
-					return View();
-				}
+                if ((externalEmailUser != null) && (registeredUser == null))
+                {
+                    ModelState.AddModelError(string.Empty, "Don't support create new account - your email don't match with email of external service");
+                    return View();
+                }
 
 				if ((externalEmailUser == null) && (externalEmail == model.Email))
 				{
@@ -403,13 +418,13 @@ namespace ShopNow.Presentation.Controllers
 
 						return LocalRedirect(returnUrl);
 
-					}
-					else
-					{
-						ModelState.AddModelError("Không tạo được tài khoản mới");
-						return View();
-					}
-				}
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("Can't create new account");
+                        return View();
+                    }
+                }
 
 
 				var user = new User
@@ -477,10 +492,27 @@ namespace ShopNow.Presentation.Controllers
 					protocol: Request.Scheme);
 
 
-				await _emailSender.SendEmailAsync(
-					model.Email,
-					"Reset Password",
-					$"Hãy bấm <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>vào đây</a> để đặt lại mật khẩu.");
+                await _emailSender.SendEmailAsync(
+    model.Email,
+    "Reset Your Password",
+    @$"
+    <div style='font-family: Arial, sans-serif; text-align: center; padding: 20px; background-color: #f8f9fa;'>
+        <div style='max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);'>
+            <h2 style='color: #dc3545;'>Password Reset Request</h2>
+            <p style='font-size: 16px; color: #333;'>
+                We received a request to reset your password.  
+                Click the button below to proceed.
+            </p>
+            <a href='{HtmlEncoder.Default.Encode(callbackUrl)}' 
+               style='display: inline-block; padding: 10px 20px; margin: 20px 0; color: white; background-color: #dc3545; text-decoration: none; border-radius: 5px; font-weight: bold;'>
+                Reset Password
+            </a>
+            <p style='color: #666; font-size: 14px;'>
+                If you did not request this, please ignore this email.
+            </p>
+        </div>
+    </div>");
+
 
 				return RedirectToAction(nameof(ForgotPasswordConfirmation));
 
@@ -589,15 +621,31 @@ namespace ShopNow.Presentation.Controllers
 				return View("Error");
 			}
 
-			var message = "Your security code is: " + code;
-			if (model.SelectedProvider == "Email")
-			{
-				await _emailSender.SendEmailAsync(await _userManager.GetEmailAsync(user), "Security Code", message);
-			}
-			else if (model.SelectedProvider == "Phone")
-			{
-				await _emailSender.SendSmsAsync(await _userManager.GetPhoneNumberAsync(user), message);
-			}
+            var message = @$"
+    <div style='font-family: Arial, sans-serif; text-align: center; padding: 20px; background-color: #f8f9fa;'>
+        <div style='max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);'>
+            <h2 style='color: #007bff;'>Security Code</h2>
+            <p style='font-size: 16px; color: #333;'>
+                Your one-time security code is:
+            </p>
+            <div style='display: inline-block; padding: 10px 20px; font-size: 20px; font-weight: bold; color: #fff; background-color: #007bff; border-radius: 5px;'>
+                {code}
+            </div>
+            <p style='color: #666; font-size: 14px; margin-top: 10px;'>
+                Please use this code to complete your verification.  
+                If you did not request this, please ignore this email.
+            </p>
+        </div>
+    </div>";
+
+            if (model.SelectedProvider == "Email")
+            {
+                await _emailSender.SendEmailAsync(await _userManager.GetEmailAsync(user), "Security Code", message);
+            }
+            else if (model.SelectedProvider == "Phone")
+            {
+                await _emailSender.SendSmsAsync(await _userManager.GetPhoneNumberAsync(user), message);
+            }
 
 			return RedirectToAction(nameof(VerifyCode), new { Provider = model.SelectedProvider, ReturnUrl = model.ReturnUrl, RememberMe = model.RememberMe });
 		}
@@ -677,70 +725,70 @@ namespace ShopNow.Presentation.Controllers
 			//	return View(model);
 			//}
 
-			// The following code protects for brute force attacks against the two factor codes.
-			// If a user enters incorrect codes for a specified amount of time then the user account
-			// will be locked out for a specified amount of time.
-			var result = await _signInManager.TwoFactorAuthenticatorSignInAsync(model.Code, model.RememberMe, model.RememberBrowser);
-			if (result.Succeeded)
-			{
-				return LocalRedirect(model.ReturnUrl);
-			}
-			if (result.IsLockedOut)
-			{
-				_logger.LogWarning(7, "User account locked out.");
-				return View("Lockout");
-			}
-			else
-			{
-				ModelState.AddModelError(string.Empty, "Mã sai.");
-				return View(model);
-			}
-		}
-		//
-		// GET: /Account/UseRecoveryCode
-		[HttpGet]
-		[AllowAnonymous]
-		public async Task<IActionResult> UseRecoveryCode(string returnUrl = null)
-		{
-			// Require that the user has already logged in via username/password or external login
-			var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
-			if (user == null)
-			{
-				return View("Error");
-			}
-			return View(new UseRecoveryCodeViewModel { ReturnUrl = returnUrl });
-		}
+            // The following code protects for brute force attacks against the two factor codes.
+            // If a user enters incorrect codes for a specified amount of time then the user account
+            // will be locked out for a specified amount of time.
+            var result = await _signInManager.TwoFactorAuthenticatorSignInAsync(model.Code, model.RememberMe, model.RememberBrowser);
+            if (result.Succeeded)
+            {
+                return LocalRedirect(model.ReturnUrl);
+            }
+            if (result.IsLockedOut)
+            {
+                _logger.LogWarning(7, "User account locked out.");
+                return View("Lockout");
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Wrong code.");
+                return View(model);
+            }
+        }
+        //
+        // GET: /Account/UseRecoveryCode
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> UseRecoveryCode(string returnUrl = null)
+        {
+            // Require that the user has already logged in via username/password or external login
+            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
+            if (user == null)
+            {
+                return View("Error");
+            }
+            return View(new UseRecoveryCodeViewModel { ReturnUrl = returnUrl });
+        }
 
-		//
-		// POST: /Account/UseRecoveryCode
-		[HttpPost]
-		[AllowAnonymous]
-		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> UseRecoveryCode(UseRecoveryCodeViewModel model)
-		{
-			model.ReturnUrl ??= Url.Content("~/");
-			if (!ModelState.IsValid)
-			{
-				return View(model);
-			}
+        //
+        // POST: /Account/UseRecoveryCode
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UseRecoveryCode(UseRecoveryCodeViewModel model)
+        {
+            model.ReturnUrl ??= Url.Content("~/");
+            //if (!ModelState.IsValid)
+            //{
+            //    return View(model);
+            //}
 
-			var result = await _signInManager.TwoFactorRecoveryCodeSignInAsync(model.Code);
-			if (result.Succeeded)
-			{
-				return LocalRedirect(model.ReturnUrl);
-			}
-			else
-			{
-				ModelState.AddModelError(string.Empty, "Sai mã phục hồi.");
-				return View(model);
-			}
-		}
+            var result = await _signInManager.TwoFactorRecoveryCodeSignInAsync(model.Code);
+            if (result.Succeeded)
+            {
+                return LocalRedirect(model.ReturnUrl);
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Wrong recovery code.");
+                return View(model);
+            }
+        }
 
-		[Route("/khongduoctruycap.html")]
-		[AllowAnonymous]
-		public IActionResult AccessDenied()
-		{
-			return View();
-		}
-	}
+        [Route("/accessdenied.html")]
+        [AllowAnonymous]
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
+    }
 }

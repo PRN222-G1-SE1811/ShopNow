@@ -137,16 +137,16 @@
 								Select payment method
 							</p>
 							<div class="checkout__input__checkbox">
-								<label for="payment">
+								<label asp-for="@Model.PaymentMethod" for="payment">
 									COD
-									<input name="payment_method" type="radio" id="payment">
+									<input asp-for="@Model.PaymentMethod" type="radio" id="payment" value="CashOnDelivery">
 									<span class="checkmark"></span>
 								</label>
 							</div>
 							<div class="checkout__input__checkbox">
-								<label for="paypal">
+								<label asp-for="@Model.PaymentMethod" for="paypal">
 									VN Pay
-									<input name="payment_method" type="radio" id="paypal">
+									<input asp-for="@Model.PaymentMethod" type="radio" id="paypal" value="VNPay">
 									<span class="checkmark"></span>
 								</label>
 							</div>
@@ -154,6 +154,7 @@
 						</div>
 					</div>
 				</div>
+				<input type="hidden" asp-for="@Model.ShippingFee" />
 				@for (int i = 0; i < Model.Items.Count; i++)
 				{
 					<input type="hidden" asp-for="Items[i].ProductVariantId" />

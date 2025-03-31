@@ -6,7 +6,7 @@
 } *@
 
 @{
-    if (User.IsInRole("Administrator"))
+    if (User.IsInRole("Administrator") || User.IsInRole("Editor"))
     {
         Layout = "_AdminLayout";
     }

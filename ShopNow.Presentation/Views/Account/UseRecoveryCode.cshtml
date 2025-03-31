@@ -4,25 +4,29 @@
     ViewData["Title"] = "Sử dụng mã phục hồi";
 }
 
-<h1>@ViewData["Title"].</h1>
+@* <h1>@ViewData["Title"].</h1> *@
 
-<form asp-controller="Account" asp-action="UseRecoveryCode" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal" role="form">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <h4>@ViewData["Status"]</h4>
-    <hr />
-    <div class="form-group">
-        <label asp-for="Code" class="col-md-10 control-label"></label>
-        <div class="col-md-10">
-            <input asp-for="Code" class="form-control" />
-            <span asp-validation-for="Code" class="text-danger"></span>
-        </div>
+<div class="container d-flex justify-content-center" style="margin-top: 150px; margin-bottom:150px">
+    <div class="w-50">
+        <form asp-controller="Account" asp-action="UseRecoveryCode" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal bg-light p-4 rounded shadow">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <h2>Recover Code</h2>
+            <h4 class="text-primary text-center">@ViewData["Status"]</h4>
+            <hr />
+
+            <div class="form-group">
+                <label asp-for="Code" class="control-label">Recovery Code</label>
+                <input asp-for="Code" class="form-control" placeholder="Enter your recovery code" />
+                <span asp-validation-for="Code" class="text-danger"></span>
+            </div>
+
+            <div class="form-group text-center">
+                <button type="submit" class="btn btn-success">Submit</button>
+            </div>
+        </form>
     </div>
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <button type="submit" class="btn btn-success">Gửi</button>
-        </div>
-    </div>
-</form>
+</div>
+
 
 @section Scripts {
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }

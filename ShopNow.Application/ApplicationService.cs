@@ -11,8 +11,13 @@ namespace ShopNow.Application
 	{
 		public static void AddApplicationService(this IServiceCollection services, IConfiguration configuration)
 		{
+			#region add storage service
 			services.AddScoped<IStorageService, StorageService>();
+			#endregion
+
+			#region add automapper
 			services.AddAutoMapper(typeof(ApplicationService));
+			#endregion
 
 			#region add category service
 			services.AddScoped<ICategoryService, CategoryService>();
@@ -57,6 +62,10 @@ namespace ShopNow.Application
 
 			#region add shipping service
 			services.AddScoped<IShippingService, ShippingService>();
+			#endregion
+
+			#region add order service
+			services.AddScoped<IOrderService, OrderService>();
 			#endregion
 		}
 	}

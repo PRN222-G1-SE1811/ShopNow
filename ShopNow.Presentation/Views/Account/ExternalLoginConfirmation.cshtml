@@ -1,34 +1,37 @@
 ﻿@using App.Areas.Identity.Models.AccountViewModels
 @model ExternalLoginConfirmationViewModel
 @{
-    ViewData["Title"] = "Đăng ký";
+    ViewData["Title"] = "Sign Up";
 }
 
-<h1>@ViewData["Title"].</h1>
-<h3>Thực hiện liên kết với tài khoản @ViewData["ProviderDisplayName"].</h3>
+<h1 class="text-center">@ViewData["Title"]</h1>
+<h3 class="text-center">Link your account with @ViewData["ProviderDisplayName"]</h3>
 
-<form asp-controller="Account" asp-action="ExternalLoginConfirmation" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal" role="form">
-    <h4>Thông tin liên kết</h4>
-    <hr />
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<div class="container d-flex justify-content-center min-vh-100" style="margin-top: 120px">
+    <div class="w-50">
+        <form asp-controller="Account" asp-action="ExternalLoginConfirmation" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal bg-light p-4 rounded shadow">
+            <h4 class="text-primary text-center">Account Link Information</h4>
+            <hr />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-    <p class="text-info">
-        Bạn đã xác thực liên kết với <strong>@ViewData["ProviderDisplayName"]</strong>.
-        Hãy nhập địa chỉ email để liên kết hoặc tạo tài khoản.
-    </p>
-    <div class="form-group">
-        <label asp-for="Email" class="col-md-2 control-label"></label>
-        <div class="col-md-10">
-            <input asp-for="Email" class="form-control" />
-            <span asp-validation-for="Email" class="text-danger"></span>
-        </div>
+            <p class="text-info text-center">
+                You have successfully authenticated with <strong>@ViewData["ProviderDisplayName"]</strong>.
+                Please enter your email address to link or create an account.
+            </p>
+
+            <div class="form-group">
+                <label asp-for="Email" class="control-label">Email Address</label>
+                <input asp-for="Email" class="form-control" placeholder="Enter your email" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="form-group text-center">
+                <button type="submit" class="btn btn-primary">Sign Up</button>
+            </div>
+        </form>
     </div>
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <button type="submit" class="btn btn-default">Đăng ký</button>
-        </div>
-    </div>
-</form>
+</div>
+
 
 @section Scripts {
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }

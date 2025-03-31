@@ -8,7 +8,7 @@ using System.Security.Claims;
 
 namespace ShopNow.Presentation.Controllers
 {
-	public class CheckOutController(IUserService userService, IShippingService shippingService) : Controller
+	public class CheckOutController(IUserService userService, IOrderService orderService) : Controller
 	{
 		[HttpPost]
 		public IActionResult Index([FromBody] CheckOutViewModel model)
@@ -51,7 +51,28 @@ namespace ShopNow.Presentation.Controllers
 			{
 				return RedirectToAction(nameof(Confirmation));
 			}
+			
+			var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+			model.UserDetailDTO.Id = Guid.Parse(userId!);
+			await orderService.CreateOrder(model.Items, model.UserDetailDTO, model.PaymentMethod, model.ShippingFee);
+			if (model.PaymentMethod == Shared.Enums.PaymentMethod.VNPay)
+			{
+				return RedirectToAction("CreatePaymentUrl", "Payment");
+			}
 			return View();
 		}
+
+		[HttpGet]
+		public IActionResult PaymentFailed()
+		{
+			return View("/Views/Error/PaymentFailed.cshtml");
+		}
+
+		//[HttpGet]
+		//public IActionResult PaymentSuccesed()
+		//{
+
+		//}
+
 	}
 }

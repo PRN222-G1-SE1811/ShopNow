@@ -1,9 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System.ComponentModel.DataAnnotations;
 
 namespace ShopNow.Application.DTOs.User
 {
 	public class UserDetailDTO
 	{
+		[BindNever]
+		public Guid Id { get; set; }
+
 		[Required(ErrorMessage = "First name is required.")]
 		public string FirstName { get; set; } = null!;
 
@@ -27,7 +31,8 @@ namespace ShopNow.Application.DTOs.User
 		public string Email { get; set; } = null!;
 
 		[Required(ErrorMessage = "Phone number is required.")]
-		[Phone(ErrorMessage = "Invalid phone number format.")]
+		[RegularExpression(@"^(0|\+84)(3[2-9]|5[2689]|7[06-9]|8[1-9]|9[0-9])\d{7}$",
+		ErrorMessage = "Invalid Vietnamese phone number format.")]
 		public string PhoneNumber { get; set; } = null!;
 	}
 }

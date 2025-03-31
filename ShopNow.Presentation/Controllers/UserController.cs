@@ -21,7 +21,7 @@ using App.Areas.Identity.Models.UserViewModels;
 
 namespace ShopNow.Presentation.Controllers
 {
-	//[Authorize(Roles = RoleName.Administrator)]
+    [Authorize(Roles = $"{RoleName.Administrator},{RoleName.Editor}")]
 	//[Area("Identity")]
 	[Route("/ManageUser/[action]")]
 	public class UserController : Controller
@@ -43,65 +43,74 @@ namespace ShopNow.Presentation.Controllers
 		[TempData]
 		public string StatusMessage { get; set; }
 
-		//
-		// GET: /ManageUser/Index
-		[HttpGet]
-		public async Task<IActionResult> Index([FromQuery(Name = "p")] int currentPage)
-		{
-			var model = new UserListModel();
-			model.currentPage = currentPage;
+        //
+        // GET: /ManageUser/Index
+        [HttpGet]
+        public async Task<IActionResult> Index([FromQuery(Name = "p")] int currentPage, [FromQuery(Name = "q")] string searchTerm)
+        {
+            var model = new UserListModel();
+            model.currentPage = currentPage;
 
-			var qr = _userManager.Users.OrderBy(u => u.UserName);
+            var qr = _userManager.Users.AsQueryable();
 
-			model.totalUsers = await qr.CountAsync();
-			model.countPages = (int)Math.Ceiling((double)model.totalUsers / model.ITEMS_PER_PAGE);
+            // Filter by search term
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                qr = qr.Where(u => u.UserName.Contains(searchTerm));
+            }
 
-			if (model.currentPage < 1)
-				model.currentPage = 1;
-			if (model.currentPage > model.countPages)
-				model.currentPage = model.countPages;
+            qr = qr.OrderBy(u => u.UserName);
 
-			var qr1 = qr.Skip((model.currentPage - 1) * model.ITEMS_PER_PAGE)
-						.Take(model.ITEMS_PER_PAGE)
-						.Select(u => new UserAndRole()
-						{
-							Id = u.Id,
-							UserName = u.UserName,
-							Avatar = null,
-							FirstName = null,
-							LastName = null,
-							Address = null,
-							City = null,
-							Country = null
-						});
+            model.totalUsers = await qr.CountAsync();
+            model.countPages = (int)Math.Ceiling((double)model.totalUsers / model.ITEMS_PER_PAGE);
 
-			model.users = await qr1.ToListAsync();
+            if (model.currentPage < 1)
+                model.currentPage = 1;
+            if (model.currentPage > model.countPages)
+                model.currentPage = model.countPages;
 
-			foreach (var user in model.users)
-			{
-				var roles = await _userManager.GetRolesAsync(user);
-				user.RoleNames = string.Join(",", roles);
-			}
+            var qr1 = qr.Skip((model.currentPage - 1) * model.ITEMS_PER_PAGE)
+                        .Take(model.ITEMS_PER_PAGE)
+                        .Select(u => new UserAndRole()
+                        {
+                            Id = u.Id,
+                            UserName = u.UserName,
+                            Avatar = null,
+                            FirstName = null,
+                            LastName = null,
+                            Address = null,
+                            City = null,
+                            Country = null
+                        });
 
-			return View(model);
-		}
+            model.users = await qr1.ToListAsync();
 
-		// GET: /ManageUser/AddRole/id
-		[HttpGet("{id}")]
+            foreach (var user in model.users)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+                user.RoleNames = string.Join(",", roles);
+            }
+
+            return View(model);
+        }
+
+        // GET: /ManageUser/AddRole/id
+        [Authorize(Roles = RoleName.Administrator)]
+        [HttpGet("{id}")]
 		public async Task<IActionResult> AddRoleAsync(string id)
 		{
 			// public SelectList allRoles { get; set; }
 			var model = new AddUserRoleModel();
 			if (string.IsNullOrEmpty(id))
 			{
-				return NotFound($"Không có user");
+				return NotFound($"User doesn't existed");
 			}
 
 			model.user = await _userManager.FindByIdAsync(id);
 
 			if (model.user == null)
 			{
-				return NotFound($"Không thấy user, id = {id}.");
+				return NotFound($"User doesn't existed, id = {id}.");
 			}
 
 			model.RoleNames = (await _userManager.GetRolesAsync(model.user)).ToArray<string>();
@@ -121,14 +130,14 @@ namespace ShopNow.Presentation.Controllers
 		{
 			if (string.IsNullOrEmpty(id))
 			{
-				return NotFound($"Không có user");
+				return NotFound($"User doesn't existed");
 			}
 
 			model.user = await _userManager.FindByIdAsync(id);
 
 			if (model.user == null)
 			{
-				return NotFound($"Không thấy user, id = {id}.");
+				return NotFound($"User doesn't existed, id = {id}.");
 			}
 			await GetClaims(model);
 
@@ -156,7 +165,7 @@ namespace ShopNow.Presentation.Controllers
 			}
 
 
-			StatusMessage = $"Vừa cập nhật role cho user: {model.user.UserName}";
+			StatusMessage = $"You just update role for user: {model.user.UserName}";
 
 			return RedirectToAction("Index");
 		}
@@ -166,7 +175,7 @@ namespace ShopNow.Presentation.Controllers
 		{
 			if (string.IsNullOrEmpty(id))
 			{
-				return NotFound($"Không có user");
+				return NotFound($"User doesn't existed");
 			}
 
 			var user = await _userManager.FindByIdAsync(id);
@@ -174,7 +183,7 @@ namespace ShopNow.Presentation.Controllers
 
 			if (user == null)
 			{
-				return NotFound($"Không thấy user, id = {id}.");
+				return NotFound($"User doesn't existed, id = {id}.");
 			}
 
 			return View();
@@ -186,7 +195,7 @@ namespace ShopNow.Presentation.Controllers
 		{
 			if (string.IsNullOrEmpty(id))
 			{
-				return NotFound($"Không có user");
+				return NotFound($"User doesn't existed");
 			}
 
 			var user = await _userManager.FindByIdAsync(id);
@@ -194,7 +203,7 @@ namespace ShopNow.Presentation.Controllers
 
 			if (user == null)
 			{
-				return NotFound($"Không thấy user, id = {id}.");
+				return NotFound($"User doesn't existed, id = {id}.");
 			}
 
 			if (!ModelState.IsValid)
@@ -214,7 +223,7 @@ namespace ShopNow.Presentation.Controllers
 				return View(model);
 			}
 
-			StatusMessage = $"Vừa cập nhật mật khẩu cho user: {user.UserName}";
+			StatusMessage = $"You just update password for user: {user.UserName}";
 
 			return RedirectToAction("Index");
 		}
@@ -225,7 +234,7 @@ namespace ShopNow.Presentation.Controllers
 		{
 
 			var user = await _userManager.FindByIdAsync(userid);
-			if (user == null) return NotFound("Không tìm thấy user");
+			if (user == null) return NotFound("User doesn't existed");
 			ViewBag.user = user;
 			return View();
 		}
@@ -236,19 +245,19 @@ namespace ShopNow.Presentation.Controllers
 		{
 
 			var user = await _userManager.FindByIdAsync(userid);
-			if (user == null) return NotFound("Không tìm thấy user");
+			if (user == null) return NotFound("User doesn't existed");
 			ViewBag.user = user;
 			if (!ModelState.IsValid) return View(model);
 			var claims = _context.UserClaims.Where(c => c.UserId == user.Id);
 
 			if (claims.Any(c => c.ClaimType == model.ClaimType && c.ClaimValue == model.ClaimValue))
 			{
-				ModelState.AddModelError(string.Empty, "Đặc tính này đã có");
+				ModelState.AddModelError(string.Empty, "Claims is existed");
 				return View(model);
 			}
 
 			await _userManager.AddClaimAsync(user, new Claim(model.ClaimType, model.ClaimValue));
-			StatusMessage = "Đã thêm đặc tính cho user";
+			StatusMessage = "Claim for user is added";
 
 			return RedirectToAction("AddRole", new { id = user.Id });
 		}
@@ -259,7 +268,7 @@ namespace ShopNow.Presentation.Controllers
 			var userclaim = _context.UserClaims.Where(c => c.Id == claimid).FirstOrDefault();
 			var user = await _userManager.FindByIdAsync(userclaim.UserId.ToString());
 
-			if (user == null) return NotFound("Không tìm thấy user");
+			if (user == null) return NotFound("User doesn't existed");
 
 			var model = new AddUserClaimModel()
 			{
@@ -277,7 +286,7 @@ namespace ShopNow.Presentation.Controllers
 		{
 			var userclaim = _context.UserClaims.Where(c => c.Id == claimid).FirstOrDefault();
 			var user = await _userManager.FindByIdAsync(userclaim.UserId.ToString());
-			if (user == null) return NotFound("Không tìm thấy user");
+			if (user == null) return NotFound("User doesn't existed");
 
 			if (!ModelState.IsValid) return View("AddClaim", model);
 
@@ -286,7 +295,7 @@ namespace ShopNow.Presentation.Controllers
 				&& c.ClaimValue == model.ClaimValue
 				&& c.Id != userclaim.Id))
 			{
-				ModelState.AddModelError("Claim này đã có");
+				ModelState.AddModelError("Claim is existed");
 				return View("AddClaim", model);
 			}
 
@@ -295,7 +304,7 @@ namespace ShopNow.Presentation.Controllers
 			userclaim.ClaimValue = model.ClaimValue;
 
 			await _context.SaveChangesAsync();
-			StatusMessage = "Bạn vừa cập nhật claim";
+			StatusMessage = "You just update claim";
 
 
 			ViewBag.user = user;
@@ -309,11 +318,11 @@ namespace ShopNow.Presentation.Controllers
 			var userclaim = _context.UserClaims.Where(c => c.Id == claimid).FirstOrDefault();
 			var user = await _userManager.FindByIdAsync(userclaim.UserId.ToString());
 
-			if (user == null) return NotFound("Không tìm thấy user");
+			if (user == null) return NotFound("User doesn't existed");
 
 			await _userManager.RemoveClaimAsync(user, new Claim(userclaim.ClaimType, userclaim.ClaimValue));
 
-			StatusMessage = "Bạn đã xóa claim";
+			StatusMessage = "You just delete claim";
 
 			return RedirectToAction("AddRole", new { id = user.Id });
 		}

@@ -4,35 +4,39 @@
     ViewData["Title"] = "Xác thực";
 }
 
-<h1>@ViewData["Title"].</h1>
+@* <h1>@ViewData["Title"].</h1> *@
 
-<form asp-controller="Account" asp-action="VerifyCode" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal" role="form">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <input asp-for="Provider" type="hidden" />
-    <input asp-for="RememberMe" type="hidden" />
-    <h4>@ViewData["Status"]</h4>
-    <hr />
-    <div class="form-group">
-        <label asp-for="Code" class="col-md-2 control-label"></label>
-        <div class="col-md-10">
-            <input asp-for="Code" class="form-control" />
-            <span asp-validation-for="Code" class="text-danger"></span>
-        </div>
-    </div>
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <div class="checkbox">
-                <input asp-for="RememberBrowser" />
-                <label asp-for="RememberBrowser"></label>
+<div class="container d-flex justify-content-center" style="margin-top: 150px; margin-bottom:150px">
+    <div class="w-50">
+        <!-- Adjust width as needed -->
+        <form asp-controller="Account" asp-action="VerifyCode" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal bg-light p-4 rounded shadow">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input asp-for="Provider" type="hidden" />
+            <input asp-for="RememberMe" type="hidden" />
+            <h2>Verify Code</h2>
+            <h4 class="text-primary text-center">@ViewData["Status"]</h4>
+            <hr />
+
+            <div class="form-group">
+                <label asp-for="Code" class="control-label">Verification Code</label>
+                <input asp-for="Code" class="form-control" placeholder="Enter your verification code" />
+                <span asp-validation-for="Code" class="text-danger"></span>
             </div>
-        </div>
+
+            <div class="form-group form-check">
+                <input asp-for="RememberBrowser" class="form-check-input" id="rememberBrowserCheckbox" />
+                <label for="rememberBrowserCheckbox" class="form-check-label">Remember this device</label>
+            </div>
+
+            <div class="form-group text-center">
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+        </form>
     </div>
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <button type="submit" class="btn btn-warning">Gửi</button>
-        </div>
-    </div>
-</form>
+</div>
+
+
+
 
 @section Scripts {
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }

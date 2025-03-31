@@ -1,30 +1,41 @@
 @using App.Areas.Identity.Models.RoleViewModels
 @model CreateRoleModel
 @{
-    ViewData["Title"] = "Tạo role mới";
+    ViewData["Title"] = "Create new role";
 }
 <h2>@ViewData["Title"]</h2>
 <partial name="_StatusMessage"></partial>
 
 <hr>
 
-<div class="row">
+<div class="row justify-content-center">
     <div class="col-md-6">
-        <form method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
+        <div class="card shadow-lg">
+            <div class="card-body">
+                <h3 class="card-title text-center mb-4">Create New Role</h3>
+                <form method="post">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
 
-            <div class="form-group">
-                <input type="submit" value="Tạo mới" class="btn btn-primary" />
-                <a class="btn btn-primary" asp-action="Index">Danh sách các role</a>
+                    <div class="mb-3">
+                        <label asp-for="Name" class="form-label fw-bold">Role Name</label>
+                        <input asp-for="Name" class="form-control" placeholder="Enter role name" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <button type="submit" class="btn btn-primary">
+                             Create
+                        </button>
+                        <a class="btn btn-secondary" asp-action="Index">
+                             View Roles
+                        </a>
+                    </div>
+                </form>
             </div>
-        </form>
+        </div>
     </div>
 </div>
+
 
 
 @section Scripts {
