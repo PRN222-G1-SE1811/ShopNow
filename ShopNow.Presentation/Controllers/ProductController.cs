@@ -20,6 +20,14 @@ namespace ShopNow.Presentation.Controllers
 			return View();
 		}
 
+        [AllowAnonymous]
+        public async Task<IActionResult> Shop()
+        {
+			var product = await productService.GetAllProductsAsync();
+            return View(product);
+        }
+
+
         public async Task<IActionResult> Manage(string? search, string? category, string? sortBy, int pageIndex = 1, int pageSize = 10)
         {
             // Lấy danh sách categories

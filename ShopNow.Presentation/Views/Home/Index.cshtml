@@ -1,7 +1,7 @@
 ﻿@{
 	ViewData["Title"] = "Home Page";
 }
-
+@model IEnumerable<ShopNow.Application.DTOs.Products.ProductDTO>
 @{
 	ViewBag.Title = "Home";
 }
@@ -95,20 +95,48 @@
 <!-- Banner Section End -->
 <!-- Product Section Begin -->
 <section class="product spad">
-	<div class="container">
-		<div class="row">
-			<div class="col-lg-12">
-				<ul class="filter__controls">
-					<li class="active" data-filter="*">Best Sellers</li>
-					<li data-filter=".new-arrivals">New Arrivals</li>
-					<li data-filter=".hot-sales">Hot Sales</li>
-				</ul>
-			</div>
-		</div>
-		<div class="row product__filter">
-			@* @await Html.PartialAsync("_ProductPartial", Model.Products) *@
-		</div>
-	</div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <ul class="filter__controls">
+                    <li class="active" data-filter="*">Best Sellers</li>
+                    <li data-filter=".new-arrivals">New Arrivals</li>
+                    <li data-filter=".hot-sales">Hot Sales</li>
+                </ul>
+            </div>
+        </div>
+        <div class="row product__filter">
+            @foreach(var r in Model)
+            {
+                string JPath = r.Id.ToString() +".jpg";
+                string setting = r.Status > 0 ? "hot-sales" : "new-arrivals";  
+
+                <div class="col-lg-3 col-md-6 col-sm-6 col-md-6 col-sm-6 mix @setting">
+                    <div class="product__item">
+           <div class="product__item__pic set-bg" data-setbg="images/products/@JPath">       
+                            <ul class="product__hover">
+                                <li><a href="#"><img src="img/icon/heart.png" alt=""></a></li>
+                                <li><a href="#"><img src="img/icon/compare.png" alt=""> <span>Compare</span></a></li>
+                                <li><a href="#"><img src="img/icon/search.png" alt=""></a></li>
+                            </ul>
+                        </div>
+                        <div class="product__item__text">
+                            <h6>@r.Name</h6>
+                            <a href="Product/@r.Id" class="add-cart">Product Details</a>
+                            <div class="rating">
+                                <i class="fa fa-star-o"></i>
+                                <i class="fa fa-star-o"></i>
+                                <i class="fa fa-star-o"></i>
+                                <i class="fa fa-star-o"></i>
+                                <i class="fa fa-star-o"></i>
+                            </div>
+                            <h5>@r.Price.ToString("#,### VND")</h5>
+                        </div>
+                    </div>
+                </div>
+                        }
+                    </div>
+                </div>
 </section>
 <!-- Product Section End -->
 <!-- Categories Section Begin -->
