@@ -68,11 +68,11 @@ namespace ShopNow.Presentation.Controllers
 			return View("/Views/Error/PaymentFailed.cshtml");
 		}
 
-		[HttpGet]
-		public IActionResult PaymentSuccesed()
-		{
+		//[HttpGet]
+		//public IActionResult PaymentSuccesed()
+		//{
 
-		}
+		//}
 
 	}
 }
