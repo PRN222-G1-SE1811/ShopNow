@@ -11,9 +11,10 @@ namespace ShopNow.Application.Mappers
 		{
 			CreateMap<CreateOrderDTO, Order>();
 			CreateMap<CheckOutItemDTO, OrderItem>()
-				.ForMember(dest => dest.ProductId, opt => opt.MapFrom(src =>  src.ProductVariantId))
+				.ForMember(dest => dest.ProductId, opt => opt.MapFrom(src => src.ProductVariantId))
 				.ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.ProductName))
 				.ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => DateTime.Now));
+			CreateMap<OrderDTO, Order>().ReverseMap();
 		}
 	}
 }

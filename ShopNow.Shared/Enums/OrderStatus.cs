@@ -11,6 +11,11 @@
 		Processing,
 
 		/// <summary>
+		/// Order is paid
+		/// </summary>
+		Paid,
+
+		/// <summary>
 		/// Order has been shipped to the customer.
 		/// </summary>
 		Shipped,

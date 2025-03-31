@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ShopNow.Application.DTOs.CheckOut;
+using ShopNow.Application.DTOs.Orders;
 using ShopNow.Application.DTOs.User;
 using ShopNow.Application.Services.Interfaces;
 using ShopNow.Shared.Enums;
@@ -13,6 +14,20 @@ namespace ShopNow.Application.Services.Implements
 		public async Task CreateOrder(List<CheckOutItemDTO> items, UserDetailDTO userDetail, PaymentMethod paymentMethod, decimal shippingFee)
 		{
 			await InsertOrder(items, userDetail, paymentMethod, shippingFee);
+		}
+
+		public OrderDTO GetOrderDetail(Guid id)
+		{
+			var order = unitOfWork.GenericRepository.GetById(id);
+			return mapper.Map<OrderDTO>(order);
+		}
+
+		public async Task<bool> UpdateOrderStatus(Guid id, OrderStatus status)
+		{
+			var order = unitOfWork.GenericRepository.GetById(id);
+			order.OrderStatus = status;
+			unitOfWork.GenericRepository.Update(order);
+			return await unitOfWork.CommitAsync() > 0;
 		}
 
 		private async Task<bool> InsertOrder(List<CheckOutItemDTO> items, UserDetailDTO userDetail, PaymentMethod paymentMethod, decimal shippingFee)
