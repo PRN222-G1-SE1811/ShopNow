@@ -1,0 +1,56 @@
+﻿@model ShopNow.Presentation.Models.CartViewModel.CartViewModel
+
+<section class="update-cart spad">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="section-title">
+                    <h2>Update Cart</h2>
+                </div>
+                <div class="shopping__cart__table">
+                    <form method="post" action="/Cart/SaveUpdates">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Quantity</th>
+                                    <th>Total</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.CartDTO.CartItems)
+                                {
+                                    <tr>
+                                        <td class="product__cart__item">
+                                            <div class="product__cart__item__pic">
+                                                <img width="50" src="@item.ProductImage" alt="">
+                                            </div>
+                                            <div class="product__cart__item__text">
+                                                <h6>@item.ProductName</h6>
+                                                <h5>@item.Price.ToString("#,### VND")</h5>
+                                            </div>
+                                        </td>
+                                        <td class="quantity__item">
+                                            <div class="quantity">
+                                                <input type="number" name="quantities[@item.ProductId]" value="@item.Quantity" min="1">
+                                            </div>
+                                        </td>
+                                        <td class="cart__price">@item.TotalPrice.ToString("#,### VND")</td>
+                                        <td class="cart__action">
+                                            <a href="/Cart/Remove?productId=@item.ProductId" class="btn btn-danger">Remove</a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                        <div class="cart__btns">
+                            <a href="/Cart" class="primary-btn cart-btn">Back to Cart</a>
+                            <button type="submit" class="primary-btn cart-btn cart-btn-right">Save Updates</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
