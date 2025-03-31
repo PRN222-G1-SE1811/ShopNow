@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using System;
 using ShowNow.Domain.Entities;
 using Microsoft.AspNetCore.Mvc.Razor;
+using VNPAY.NET;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,8 +19,12 @@ builder.Services.AddControllersWithViews();
 #region configure db connection
 builder.Services.AddDbContext<ShopNowDbContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+	options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+#endregion
+
+#region add VnPayService
+builder.Services.AddSingleton<IVnpay, Vnpay>();
 #endregion
 
 #region configure layer
@@ -105,9 +110,9 @@ app.UseSession();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
+	app.UseExceptionHandler("/Home/Error");
+	// The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+	app.UseHsts();
 }
 
 app.UseHttpsRedirection();
