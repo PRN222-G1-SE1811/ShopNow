@@ -1,0 +1,53 @@
+﻿@{
+    ViewBag.Title = "Order Details";
+}
+
+<div class="container mt-5">
+    <div class="order-container card p-4 shadow-sm">
+        <h1 class="order-title text-center mb-4">Order Details</h1>
+
+        <div class="order-info">
+            <p><strong>Order ID:</strong> #12345</p>
+            <p><strong>Date:</strong> August 14, 2024</p>
+            <p><strong>Status:</strong> <span class="status pending">Pending</span></p>
+        </div>
+
+        <h2 class="order-section-title">Customer Information</h2>
+        <div class="customer-info">
+            <p><strong>Name:</strong> John Doe</p>
+            <p><strong>Email:</strong> johndoe@example.com</p>
+            <p><strong>Phone:</strong> +1 234 567 890</p>
+        </div>
+
+        <h2 class="order-section-title">Shipping Address</h2>
+        <div class="shipping-info">
+            <p>123 Street Name, City, Country</p>
+        </div>
+
+        <h2 class="order-section-title">Items</h2>
+        <table class="table table-bordered order-items">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Product 1</td>
+                    <td>2</td>
+                    <td>$20.00</td>
+                </tr>
+                <tr>
+                    <td>Product 2</td>
+                    <td>1</td>
+                    <td>$15.00</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2 class="order-section-title">Total</h2>
+        <p class="order-total text-right font-weight-bold"><strong>Total Amount:</strong> $55.00</p>
+    </div>
+</div>

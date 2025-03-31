@@ -57,7 +57,7 @@ namespace ShopNow.Presentation.Controllers
 			var id = await orderService.CreateOrder(model.Items, model.UserDetailDTO, model.PaymentMethod, model.ShippingFee);
 			if (model.PaymentMethod == Shared.Enums.PaymentMethod.VNPay)
 			{
-				return RedirectToAction("CreatePaymentUrl", "Payment", id);
+				return RedirectToAction("CreatePaymentUrl", "Payment", new { id = id });
 			}
 			return View();
 		}
