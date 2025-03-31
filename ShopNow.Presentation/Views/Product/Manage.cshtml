@@ -1,66 +1,102 @@
-﻿@{
-	ViewData["Title"] = "Manage Product";
-}
+﻿@model ShopNow.Presentation.Models.ProductViewModel.ProductManageViewModel
+@using ShopNow.Shared.Enums
+
 @{
-	ViewBag.Title = "Manage Product";
+    ViewData["Title"] = "Manage Products";
 }
 
-<div class="mt-4">
-	<h1 class="mb-3">@ViewBag.Title</h1>
+<div class="container mt-4">
+    <h4 class="mb-4 text-center">@ViewData["Title"]</h4>
 
-	<!-- Filter, Search & Create Product -->
-	<div class="d-flex justify-content-between mb-3">
-		<!-- Search Box -->
-		<input type="text" id="searchInput" class="form-control w-25" placeholder="Search product..." onkeyup="filterProducts()">
+    <!-- Form Search & Filter -->
+    <form method="get" class="row mb-4 d-flex align-items-center">
+        <!-- Phần tìm kiếm -->
+        <div class="col-md-6">
+            <input type="text" name="search" class="form-control" placeholder="Search product..."
+                   value="@Context.Request.Query["search"]" style="height: 50px;" />
+        </div>
 
-		<!-- Category Filter -->
-		<select id="categoryFilter" class="form-select w-25" onchange="filterProducts()">
-			<option value="">All Categories</option>
-			<option value="Electronics">Electronics</option>
-			<option value="Clothing">Clothing</option>
-			<option value="Furniture">Furniture</option>
-		</select>
+        <!-- Phần lọc theo category -->
+        <div class="col-md-4 d-flex">
+            <select name="category" class="form-select" onchange="this.form.submit()" style="height: 50px;">
+                <option value="">All Categories</option>
+                @foreach (var category in ViewBag.Categories)
+                {
+                    <option value="@category" selected="@(category == Context.Request.Query["category"])">@category</option>
+                }
+            </select>
+        </div>
 
-		<!-- Create Product Button -->
-		<a  asp-controller="Product" asp-action="CreateProduct" class="btn btn-success">Create Product</a>
-	</div>
+        <!-- Phần tạo sản phẩm -->
+        <div class="col-md-2 text-end">
+            <a asp-controller="Product" asp-action="CreateProduct" class="btn btn-success" style="height: 50px; padding: 10px 15px;">
+                + Add Product
+            </a>
+        </div>
+    </form>
 
-	<!-- Scrollable Table -->
-	<div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
-		<table class="table table-bordered table-hover">
-			<thead class="table-success" style="position: sticky; top: 0; z-index: 1;">
-				<tr>
-					<th>#</th>
-					<th onclick="alert('Dit me nha may')">Name<i class="fa fa-sort-amount-asc" aria-hidden="true"></i></th>
-					<th>Category</th>
-					<th onclick="alert('Dit me nha may')">Price <i class="fa fa-sort-amount-asc" aria-hidden="true"></i></th>
-					<th onclick="alert('Dit me nha may')">Quantity <i class="fa fa-sort-amount-asc" aria-hidden="true"></i></th>
-					<th onclick="alert('Dit me nha may')">Sold <i class="fa fa-sort-amount-asc" aria-hidden="true"></i></th>
-					<th onclick="alert('Dit me nha may')">Discount <i class="fa fa-sort-amount-asc" aria-hidden="true"></i></th>
-					<th onclick="alert('Dit me nha may')">Featured <i class="fa fa-sort-amount-asc" aria-hidden="true"></i></th>
-					<th onclick="alert('Dit me nha may')">Status <i class="fa fa-sort-amount-asc" aria-hidden="true"></i></th>
+    <!-- Table Responsive -->
+    <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
+        <table class="table table-hover table-bordered text-center align-middle">
+            <thead class="table-dark text-white" style="position: sticky; top: 0; z-index: 1;">
+                <tr>
+                    <th>#</th>
+                    <th><a asp-action="Manage" asp-route-sortBy="Name">Name</a></th>
+                    <th>Category</th>
+                    <th><a asp-action="Manage" asp-route-sortBy="Price">Price</a></th>
+                    <th>Quantity</th>
+                    <th>Sold</th>
+                    <th>Discount</th>
+                    <th>Featured</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var product in Model.Products)
+                {
+                    <tr>
+                        <td>@product.Id</td>
+                        <td>@product.Name</td>
+                        <td>@product.CategoryName</td>
+                        <td>$@product.Price</td>
+                        <td>@product.Variants.Sum(v => v.Quantity)</td>
+                        <td>@product.Variants.Sum(v => v.Sold)</td>
+                        <td>@product.Variants.Sum(v => v.Discount)%</td>
+                        <td>
+                            <span class="badge @(product.Featured == ProductFeatured.Yes ? "bg-success" : "bg-secondary")">
+                                @(product.Featured == ProductFeatured.Yes ? "Yes" : "No")
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge @(product.Status == ProductStatus.Active ? "bg-primary" : "bg-danger")">
+                                @(product.Status)
+                            </span>
+                        </td>
+                        <td>
+                            <a asp-controller="Product" asp-action="ProductDetail" asp-route-id="@product.Id" class="btn btn-info btn-sm">View</a>
+                            <a asp-action="Edit" asp-route-id="@product.Id" class="btn btn-primary btn-sm">Edit</a>
+                            <form asp-action="Delete" asp-route-id="@product.Id" method="post" class="d-inline">
+                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 
-					<th>Actions</th>
-				</tr>
-			</thead>
-			<tbody id="productTable">
-				<tr>
-					<td>1</td>
-					<td>Smartphone</td>
-					<td>Electronics</td>
-					<td>599.99</td>
-					<td>30</td>
-					<td>599.99</td>
-					<td>30</td>
-					<td>30</td>
-					<td>30</td>
-					<td>
-						<a asp-action="ViewDetails" class="btn btn-info btn-sm">View Details</a>
-						<a asp-action="Edit" class="btn btn-primary btn-sm">Edit</a>
-						<a class="btn btn-danger btn-sm">Delete</a>
-					</td>
-				</tr>
-			</tbody>
-		</table>
-	</div>
+    <!-- Pagination -->
+    <nav class="mt-3">
+        <ul class="pagination justify-content-center" style="margin-bottom: 50px;">
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+                    <a class="page-link" asp-action="Manage" asp-route-pageIndex="@i" asp-route-search="@Context.Request.Query["search"]" asp-route-category="@Context.Request.Query["category"]">@i</a>
+                </li>
+            }
+        </ul>
+    </nav>
+
+   
 </div>

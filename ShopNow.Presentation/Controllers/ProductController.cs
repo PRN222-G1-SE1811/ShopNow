@@ -6,6 +6,7 @@ using ShopNow.Shared.Enums;
 using ShopNow.Application.DTOs.Categories;
 using ShowNow.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
+using ShopNow.Application.Services.Implements;
 
 namespace ShopNow.Presentation.Controllers
 {
@@ -19,7 +20,43 @@ namespace ShopNow.Presentation.Controllers
 			return View();
 		}
 
-		[AllowAnonymous]
+        public async Task<IActionResult> Manage(string? search, string? category, string? sortBy, int pageIndex = 1, int pageSize = 10)
+        {
+            // Lấy danh sách categories
+            var categories = await categoryService.GetSelectListCategories();
+            ViewBag.Categories = categories.Select(c => c.Name).ToList();
+
+            Guid? categoryId = null;
+            if (!string.IsNullOrEmpty(category))
+            {
+                var selectedCategory = categories.FirstOrDefault(c => c.Name == category);
+                if (selectedCategory != null)
+                {
+                    categoryId = selectedCategory.Id;  
+                }
+            }
+
+            // Gọi service với categoryId
+            var (products, totalCount) = await productService.GetPaginatedAsync(
+                pageIndex, pageSize, search, categoryId, null, null, sortBy, null
+            );
+
+            // Gán dữ liệu vào ViewModel
+            var viewModel = new ProductManageViewModel
+            {
+                Products = products,
+                TotalPages = (int)Math.Ceiling((double)totalCount / pageSize),
+                PageIndex = pageIndex
+            };
+
+            return View(viewModel);
+        }
+
+
+
+
+
+        [AllowAnonymous]
 		[HttpGet("Product/{id:guid}")]
 		public async Task<IActionResult> ProductDetail(Guid id)
 		{
@@ -33,13 +70,10 @@ namespace ShopNow.Presentation.Controllers
 
 		#endregion
 
+
+
+
 		#region manage
-		[Authorize(Roles = "ADMINISTRATOR")]
-		public async Task<IActionResult> Manage()
-		{
-			ViewData["active"] = "product";
-			return View();
-		}
 
 		[HttpGet]
 		[Authorize(Roles = "ADMINISTRATOR")]
