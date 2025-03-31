@@ -68,7 +68,7 @@
 			<div class="row d-flex justify-content-center">
 				<div class="col-lg-8">
 					<div class="product__details__text">
-						<h4>@Model.ProductDetailDTO.Name</h4>
+						<h4 id="product_name">@Model.ProductDetailDTO.Name</h4>
 						<div class="rating">
 							<i class="fa fa-star"></i>
 							<i class="fa fa-star"></i>
@@ -77,7 +77,7 @@
 							<i class="fa fa-star-o"></i>
 							<span> - 5 Reviews</span>
 						</div>
-						<h3>@Model.ProductDetailDTO.Price.ToString("#,### VND") <span>70.00</span></h3>
+						<h3 id="product_price">@Model.ProductDetailDTO.Price.ToString("#,### VND")</h3>
 						<p>
 							Coat with quilted lining and an adjustable hood. Featuring
 							long sleeves with adjustable cuff tabs, adjustable asymmetric
@@ -102,17 +102,17 @@
 									<input type="text" value="1" min="1" />
 								</div>
 							</div>
-							<button onclick="addToCart()" class="primary-btn text-white">add to cart</button>
+							<button onclick="buyNow()" class="primary-btn text-white">Buy Now</button>
 						</div>
 						<div class="product__details__btns__option">
-							<a href="#"><i class="fa fa-heart"></i> add to wishlist</a>
-							<a href="#"><i class="fa fa-exchange"></i> Add To Compare</a>
+							<a style="cursor: pointer" onclick="addToCart()"><i class="fa fa-cart-plus" aria-hidden="true"></i> Add to Cart</a>
+							@* <a href="#"><i class="fa fa-exchange"></i> Add To Compare</a> *@
 						</div>
 						<div class="product__details__last__option">
 							<h5><span>Guaranteed Safe Checkout</span></h5>
 							<img width="100" src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Logo-VNPAY-QR-1.png" alt="" />
 							<ul>
-								<li><span>SKU:</span> </li>
+								@* <li><span>SKU:</span> </li> *@
 								<li><span>Categories:</span> @Model.ProductDetailDTO.Category</li>
 							</ul>
 						</div>
@@ -655,12 +655,12 @@
 			// Khi ấn "Add to Cart"
 			function addToCart() {
 				if (!selectedColor || !selectedSize) {
-					alert("Vui lòng chọn màu và size!");
+					toastr.error('Please select color and size!');
 					return;
 				}
 
 				if (!selectedProductVariant) {
-					alert("Vui lòng chọn sản phẩm!");
+					toastr.error('Please select product!');
 					return;
 				}
 
@@ -670,7 +670,7 @@
 
 				// Kiểm tra số lượng
 				if (quantity > (selectedProductVariant.quantity || 0)) {
-					alert(`Chỉ còn ${selectedProductVariant.quantity || 0} sản phẩm trong kho!`);
+					toastr.error(`Only ${selectedProductVariant.quantity || 0} items left in stock!`);
 					return;
 				}
 
@@ -681,7 +681,112 @@
 					quantity: quantity
 				});
 
-				// TODO: Gửi thông tin này đến backend để thêm vào giỏ hàng
+				let priceElement = document.getElementById("product_price");
+				let priceText = priceElement.textContent.trim(); // Get full text content
+				let price = parseFloat(priceText.replace(/[^\d.]/g, ''));
+
+				// Send to backend
+				$.ajax({
+					url: "/Cart/AddToCart",
+					type: "POST",
+					contentType: "application/json",
+					data: JSON.stringify({
+						// Wrap the item in the correct ViewModel structure
+						Item: {
+							productVariantId: selectedProductVariant.id,
+							quantity: quantity,
+							price: price
+						}
+					}),
+					dataType: 'json',
+					success: function(response) {
+						toastr.success(response.message);
+					},
+					error: function(xhr, status, error) {
+						console.error("Error details:", {
+							status: xhr.status,
+							responseText: xhr.responseText,
+							error: error
+						});
+						toastr.error("An error occurred while adding to cart.");
+					}
+				});
+			}
+
+			// buy now
+			function buyNow() {
+				if (!selectedColor || !selectedSize) {
+					toastr.error('Please select color and size!');
+					return;
+				}
+
+				if (!selectedProductVariant) {
+					alert("Please select size!");
+					return;
+				}
+
+				// Lấy số lượng từ input
+				const quantityInput = document.querySelector('.pro-qty input');
+				const quantity = parseInt(quantityInput.value) || 1;
+
+				// Kiểm tra số lượng
+				if (quantity > (selectedProductVariant.quantity || 0)) {
+					alert(`Only ${selectedProductVariant.quantity || 0} items left in stock!`);
+					return;
+				}
+
+				console.log("Thêm vào giỏ hàng:", {
+					productVariantId: selectedProductVariant.id,
+					color: selectedColor,
+					size: selectedSize,
+					quantity: quantity
+				});
+
+				let priceElement = document.getElementById("product_price");
+				let priceText = priceElement.textContent.trim(); // Get full text content
+				let price = parseFloat(priceText.replace(/[^\d.]/g, ''));
+				let productName = document.getElementById("product_name").innerText;
+							console.log(JSON.stringify({
+				Items: [
+					{
+						productVariantId: selectedProductVariant.id,
+						productName: productName,
+						quantity: quantity,
+						price: price
+					}
+				]
+			}));
+				// Send to backend
+				$.ajax({
+					url: "/CheckOut/Index",
+					type: "POST",
+					contentType: "application/json",
+					data: JSON.stringify({
+						// Wrap the item in the correct ViewModel structure
+						Items: [
+							{
+								ProductVariantId: selectedProductVariant.id,
+								ProductName: productName,
+								Quantity: quantity,
+								Price: price
+							}
+						]
+					}),
+					dataType: 'json',
+					success: function(response) {
+						if(response.redirectUrl !== null) {
+							window.location.href = response.redirectUrl;
+						}
+					},
+					error: function(xhr, status, error) {
+						console.error("Error details:", {
+							status: xhr.status,
+							responseText: xhr.responseText,
+							error: error
+						});
+						toastr.error("An error occurred while buying.");
+					}
+				});
 			}
 
 			// Khởi tạo ban đầu nếu có màu được chọn sẵn

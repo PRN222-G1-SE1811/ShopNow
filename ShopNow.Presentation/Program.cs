@@ -27,7 +27,7 @@ builder.Services.AddInfrastructureService();
 builder.Services.AddApplicationService(builder.Configuration);
 #endregion
 
-
+builder.Services.AddSession();
 
 #region Identity
 //Dang ki Identity
@@ -101,7 +101,7 @@ builder.Services.AddAuthentication()
 #endregion
 
 var app = builder.Build();
-
+app.UseSession();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
