@@ -28,5 +28,13 @@ namespace ShopNow.Application.Services.Implements
 			i = 0;
 			return rowChanged > 0;
 		}
+
+		public async Task DecreaseQuantity(Guid id, int quantity)
+		{
+			var product = unitOfWork.GenericRepository.GetById(id);
+			product!.Quantity -= quantity;
+			unitOfWork.GenericRepository.Update(product);
+			await unitOfWork.CommitAsync();
+		}
 	}
 }

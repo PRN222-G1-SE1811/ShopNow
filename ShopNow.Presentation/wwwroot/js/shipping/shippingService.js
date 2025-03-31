@@ -103,6 +103,7 @@
 				success: function (res) {
 					let formattedFee = new Intl.NumberFormat("en-US").format(res);
 					$("#shipping_fee").text(`${formattedFee} VND`);
+					$("#ShippingFee").val(res);
 					let subtotal = parseCurrency($("#subtotal").text());
 					let total = res + subtotal;
 					let formattedTotal = new Intl.NumberFormat("en-US").format(total);

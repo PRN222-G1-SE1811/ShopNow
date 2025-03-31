@@ -6,19 +6,9 @@
 	public enum PaymentMethod
 	{
 		/// <summary>
-		/// Payment made using a credit card.
-		/// </summary>
-		CreditCard,
-
-		/// <summary>
-		/// Payment processed via PayPal.
-		/// </summary>
-		Paypal,
-
-		/// <summary>
 		/// Payment made through a bank transfer.
 		/// </summary>
-		BankTranfer,
+		VNPay,
 
 		/// <summary>
 		/// Payment made in cash upon delivery of the order.
