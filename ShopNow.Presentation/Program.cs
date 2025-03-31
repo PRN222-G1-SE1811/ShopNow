@@ -11,7 +11,7 @@ using ShowNow.Domain.Entities;
 using Microsoft.AspNetCore.Mvc.Razor;
 
 var builder = WebApplication.CreateBuilder(args);
-
+//"DefaultConnection": "Data Source=localhost;Initial Catalog=ShopNowDB;User ID=sa;Password=123;Encrypt=True;Trust Server Certificate=True"
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 

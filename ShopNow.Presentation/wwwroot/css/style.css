@@ -86,6 +86,7 @@ img {
 	max-width: 100%;
 }
 
+
 input:focus,
 select:focus,
 button:focus,
@@ -135,6 +136,7 @@ ol {
 	background-repeat: no-repeat;
 	background-size: cover;
 	background-position: top center;
+	background-color: azure;
 }
 
 .spad {

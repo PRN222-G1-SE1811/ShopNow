@@ -1,4 +1,5 @@
 ﻿using ShopNow.Application.DTOs.Products;
+using ShowNow.Domain.Entities;
 
 namespace ShopNow.Application.Services.Interfaces
 {
@@ -6,5 +7,6 @@ namespace ShopNow.Application.Services.Interfaces
 	{
 		Task<Guid> CreateProduct(CreateProductDTO createProductDTO);
 		Task<ProductDetailDTO> GetProductDetail(Guid productId);
-	}
+
+    }
 }

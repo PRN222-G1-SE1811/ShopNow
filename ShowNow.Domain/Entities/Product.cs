@@ -8,6 +8,7 @@ namespace ShowNow.Domain.Entities
 	{
 		public Guid CategoryID { get; set; }
 
+
 		[Column(TypeName = "varchar(255)")]
 		public required string Name { get; set; }
 

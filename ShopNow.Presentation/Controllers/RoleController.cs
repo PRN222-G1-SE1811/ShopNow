@@ -107,7 +107,7 @@ namespace ShopNow.Presentation.Controllers
 			{
 				return NotFound("Không tìm thấy role");
 			}
-			return View(role);
+			return View(roleid);
 		}
 
 		// POST: /Role/Edit/1
@@ -130,7 +130,7 @@ namespace ShopNow.Presentation.Controllers
 			{
 				ModelState.AddModelError(result);
 			}
-			return View(role);
+			return View(roleid);
 		}
 
 		// GET: /Role/Edit/roleid
