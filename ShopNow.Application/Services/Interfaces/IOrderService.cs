@@ -7,7 +7,7 @@ namespace ShopNow.Application.Services.Interfaces
 {
 	public interface IOrderService
 	{
-		Task CreateOrder(List<CheckOutItemDTO> items, UserDetailDTO userDetail, PaymentMethod paymentMethod, decimal shippingFee);
+		Task<Guid> CreateOrder(List<CheckOutItemDTO> items, UserDetailDTO userDetail, PaymentMethod paymentMethod, decimal shippingFee);
 		OrderDTO GetOrderDetail(Guid id);
 		Task<bool> UpdateOrderStatus(Guid id, OrderStatus status);
 	}

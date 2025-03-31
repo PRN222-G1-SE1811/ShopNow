@@ -54,10 +54,10 @@ namespace ShopNow.Presentation.Controllers
 			
 			var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 			model.UserDetailDTO.Id = Guid.Parse(userId!);
-			await orderService.CreateOrder(model.Items, model.UserDetailDTO, model.PaymentMethod, model.ShippingFee);
+			var id = await orderService.CreateOrder(model.Items, model.UserDetailDTO, model.PaymentMethod, model.ShippingFee);
 			if (model.PaymentMethod == Shared.Enums.PaymentMethod.VNPay)
 			{
-				return RedirectToAction("CreatePaymentUrl", "Payment");
+				return RedirectToAction("CreatePaymentUrl", "Payment", id);
 			}
 			return View();
 		}
@@ -68,11 +68,11 @@ namespace ShopNow.Presentation.Controllers
 			return View("/Views/Error/PaymentFailed.cshtml");
 		}
 
-		//[HttpGet]
-		//public IActionResult PaymentSuccesed()
-		//{
-
-		//}
+		[HttpGet]
+		public IActionResult PaymentSuccesed()
+		{
+			return View("/Views/Error/PaymentSuccessed.cshtml");
+		}
 
 	}
 }

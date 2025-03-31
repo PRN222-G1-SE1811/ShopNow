@@ -11,9 +11,10 @@ namespace ShopNow.Application.Services.Implements
 {
 	public class OrderService(IUnitOfWork<Order, Guid> unitOfWork, IMapper mapper, IShippingService shippingService, IProductVariantService productVariantService) : IOrderService
 	{
-		public async Task CreateOrder(List<CheckOutItemDTO> items, UserDetailDTO userDetail, PaymentMethod paymentMethod, decimal shippingFee)
+		public async Task<Guid> CreateOrder(List<CheckOutItemDTO> items, UserDetailDTO userDetail, PaymentMethod paymentMethod, decimal shippingFee)
 		{
-			await InsertOrder(items, userDetail, paymentMethod, shippingFee);
+			var id = await InsertOrder(items, userDetail, paymentMethod, shippingFee);
+			return id;
 		}
 
 		public OrderDTO GetOrderDetail(Guid id)
@@ -30,7 +31,7 @@ namespace ShopNow.Application.Services.Implements
 			return await unitOfWork.CommitAsync() > 0;
 		}
 
-		private async Task<bool> InsertOrder(List<CheckOutItemDTO> items, UserDetailDTO userDetail, PaymentMethod paymentMethod, decimal shippingFee)
+		private async Task<Guid> InsertOrder(List<CheckOutItemDTO> items, UserDetailDTO userDetail, PaymentMethod paymentMethod, decimal shippingFee)
 		{
 			decimal totalCost = items.Sum(item => item.Price) + shippingFee;
 
@@ -65,8 +66,8 @@ namespace ShopNow.Application.Services.Implements
 			};
 
 			unitOfWork.GenericRepository.Insert(order);
-
-			return await unitOfWork.CommitAsync() > 0;
+			await unitOfWork.CommitAsync();
+			return order.Id;
 		}
 
 	}
