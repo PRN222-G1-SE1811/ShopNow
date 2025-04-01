@@ -73,6 +73,8 @@ namespace ShopNow.Presentation.Controllers
 
 
 
+        [AllowAnonymous]
+		[HttpGet("Product/{id:guid}")]
 		public async Task<IActionResult> ProductDetail(Guid id)
 		{
 			var productDetail = await productService.GetProductDetail(id);
@@ -95,13 +97,10 @@ namespace ShopNow.Presentation.Controllers
 
 		#endregion
 
-
-
-
 		#region manage
 
 		[HttpGet]
-		//[Authorize(Roles = "ADMINISTRATOR")]
+		[Authorize(Roles = RoleName.Administrator)]
 		public async Task<IActionResult> CreateProduct([FromQuery] int step = 1)
 		{
 			if (step != 1) step = 1;
@@ -128,7 +127,7 @@ namespace ShopNow.Presentation.Controllers
 		}
 
 		[HttpPost]
-		//[Authorize(Roles = "ADMINISTRATOR")]
+		[Authorize(Roles = RoleName.Administrator)]
 		public async Task<IActionResult> CreateProduct(CreateProductViewModel model)
 		{
 			if (!ModelState.IsValid)
@@ -141,7 +140,7 @@ namespace ShopNow.Presentation.Controllers
 		}
 
 		[HttpGet]
-		//[Authorize(Roles = "ADMINISTRATOR")]
+		[Authorize(Roles = RoleName.Administrator)]
 		public IActionResult CreateProductVariant(Guid? productId)
 		{
 			if (productId == null) return RedirectToAction(nameof(CreateProduct), 1);
@@ -152,7 +151,7 @@ namespace ShopNow.Presentation.Controllers
 		}
 
 		[HttpPost]
-		//[Authorize(Roles = "ADMINISTRATOR")]
+		[Authorize(Roles = RoleName.Administrator)]
 		public async Task<IActionResult> CreateProductVariant(CreateProductVariantViewModel model)
 		{
 			if (!ModelState.IsValid)
