@@ -54,7 +54,7 @@ namespace ShopNow.Presentation.Controllers
 
         [AllowAnonymous]
 		[HttpGet("Product/{id:guid}")]
-		public async Task<IActionResult> ProductDetail(Guid id)
+		public async Task<IActionResult> ProductDetail2(Guid id)
 		{
 			var productDetail = await productService.GetProductDetail(id);
 			ProductDetailViewModel model = new ProductDetailViewModel()
