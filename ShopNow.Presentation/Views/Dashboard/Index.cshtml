@@ -1,264 +1,110 @@
 ﻿@{
-	ViewData["Title"] = "Order Analytics";
+    ViewData["Title"] = "Dashboard Page";
 }
 
-<div>
-	<h1 class="mb-4">Dashboard</h1>
-
-	<!-- First row: Orders by Status and Payment Method Distribution -->
-	<div class="row mb-4">
-		<div class="col-md-4">
-			<div class="card">
-				<div class="card-header">Orders by Status</div>
-				<div class="card-body">
-					<canvas id="orderStatusChart"></canvas>
-				</div>
-			</div>
-		</div>
-		<div class="col-md-8">
-			<div class="card">
-				<div class="card-header">Order Fulfillment Times (Days)</div>
-				<div class="card-body">
-					<canvas id="fulfillmentTimeChart"></canvas>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<!-- Second row: Orders & Revenue by Month and Order Fulfillment Times -->
-	<div class="row">
-		<div class="col-md-4">
-			<div class="card">
-				<div class="card-header">Payment Method Distribution</div>
-				<div class="card-body">
-					<canvas id="paymentMethodChart"></canvas>
-				</div>
-			</div>
-		</div>
-		<div class="col-md-8">
-			<div class="card">
-				<div class="card-header">Orders & Revenue by Month</div>
-				<div class="card-body">
-					<canvas id="monthlyOrdersChart"></canvas>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
-
-@section Scripts {
-	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-	<script>
-		// Define status and payment method names for better display
-		const orderStatusNames = {
-			0: 'Processing',
-			1: 'Paid',
-			2: 'Shipped',
-			3: 'Delivered',
-			4: 'Failed'
-		};
-
-		const paymentMethodNames = {
-			0: 'VN Pay',
-			1: 'Cash on Delivery'
-		};
-
-		// Colors for charts
-		const chartColors = [
-			'rgba(54, 162, 235, 0.7)',
-			'rgba(255, 99, 132, 0.7)',
-			'rgba(75, 192, 192, 0.7)',
-			'rgba(255, 206, 86, 0.7)',
-			'rgba(153, 102, 255, 0.7)',
-			'rgba(255, 159, 64, 0.7)'
-		];
-
-		// Load charts when page is ready
-		document.addEventListener('DOMContentLoaded', function () {
-			loadOrderStatusChart();
-			loadPaymentMethodChart();
-			loadMonthlyOrdersChart();
-			loadFulfillmentTimeChart();
-		});
-
-		
-
-		function loadOrderStatusChart() {
-			fetch('@Url.Action("GetOrdersByStatus", "Dashboard")')
-				.then(response => response.json())
-				.then(data => {
-					const labels = data.map(item => orderStatusNames[item.status] || `Status ${item.status}`);
-					const counts = data.map(item => item.count);
-
-					new Chart(document.getElementById('orderStatusChart'), {
-						type: 'pie',
-						data: {
-							labels: labels,
-							datasets: [{
-								data: counts,
-								backgroundColor: chartColors
-							}]
-						},
-						options: {
-							responsive: true,
-							plugins: {
-								legend: {
-									position: 'right'
-								},
-								tooltip: {
-									callbacks: {
-										label: function (context) {
-											const label = context.label || '';
-											const value = context.raw || 0;
-											const total = context.dataset.data.reduce((a, b) => a + b, 0);
-											const percentage = Math.round((value / total) * 100);
-											return `${label}: ${value} (${percentage}%)`;
-										}
-									}
-								}
-							}
-						}
-					});
-				});
-		}
-
-		function loadPaymentMethodChart() {
-			fetch('@Url.Action("GetPaymentMethodDistribution", "Dashboard")')
-				.then(response => response.json())
-				.then(data => {
-					const labels = data.map(item => paymentMethodNames[item.method] || `Method ${item.method}`);
-					const counts = data.map(item => item.count);
-
-					new Chart(document.getElementById('paymentMethodChart'), {
-						type: 'doughnut',
-						data: {
-							labels: labels,
-							datasets: [{
-								data: counts,
-								backgroundColor: chartColors
-							}]
-						},
-						options: {
-							responsive: true,
-							plugins: {
-								legend: {
-									position: 'right'
-								}
-							}
-						}
-					});
-				});
-		}
-
-		function loadMonthlyOrdersChart() {
-			fetch('@Url.Action("GetOrdersByMonth", "Dashboard")')
-				.then(response => response.json())
-				.then(data => {
-					const labels = data.map(item => item.month);
-					const orderCounts = data.map(item => item.count);
-					const revenue = data.map(item => item.revenue);
-
-					new Chart(document.getElementById('monthlyOrdersChart'), {
-						type: 'bar',
-						data: {
-							labels: labels,
-							datasets: [
-								{
-									label: 'Number of Orders',
-									data: orderCounts,
-									backgroundColor: chartColors[0],
-									yAxisID: 'y'
-								},
-								{
-									label: 'Revenue',
-									data: revenue,
-									backgroundColor: chartColors[1],
-									type: 'line',
-									yAxisID: 'y1'
-								}
-							]
-						},
-						options: {
-							responsive: true,
-							scales: {
-								y: {
-									type: 'linear',
-									display: true,
-									position: 'left',
-									title: {
-										display: true,
-										text: 'Number of Orders'
-									}
-								},
-								y1: {
-									type: 'linear',
-									display: true,
-									position: 'right',
-									title: {
-										display: true,
-										text: 'Revenue ($)'
-									},
-									grid: {
-										drawOnChartArea: false
-									}
-								}
-							}
-						}
-					});
-				});
-		}
-
-		function loadFulfillmentTimeChart() {
-			fetch('@Url.Action("GetOrderFulfillmentTimes", "Dashboard")')
-				.then(response => response.json())
-				.then(data => {
-					// Create histogram data for fulfillment times
-					const fulfillmentDays = data.map(item => Math.round(item.daysToComplete));
-
-					// Group into intervals (0-1 day, 1-2 days, etc.)
-					const maxDays = Math.max(...fulfillmentDays);
-					const intervals = [];
-					const counts = Array(maxDays + 1).fill(0);
-
-					for (let i = 0; i <= maxDays; i++) {
-						intervals.push(`${i} day${i !== 1 ? 's' : ''}`);
-					}
-
-					fulfillmentDays.forEach(days => {
-						counts[days]++;
-					});
-
-					new Chart(document.getElementById('fulfillmentTimeChart'), {
-						type: 'bar',
-						data: {
-							labels: intervals,
-							datasets: [{
-								label: 'Number of Orders',
-								data: counts,
-								backgroundColor: chartColors[2]
-							}]
-						},
-						options: {
-							responsive: true,
-							scales: {
-								y: {
-									beginAtZero: true,
-									title: {
-										display: true,
-										text: 'Number of Orders'
-									}
-								},
-								x: {
-									title: {
-										display: true,
-										text: 'Days to Complete'
-									}
-								}
-							}
-						}
-					});
-				});
-		}
-	</script>
+@{
+    ViewBag.Title = "Dashboard";
 }
+<!-- Main Content -->
+<main>
+    <h1>@ViewBag.Title</h1>
+    <!-- Analyses -->
+    <div class="analyse">
+        <div class="sales">
+            <div class="status">
+                <div class="info">
+                    <h3>Total Sales</h3>
+                    <h1>$65,024</h1>
+                </div>
+                <div class="progresss">
+                    <svg>
+                        <circle cx="38" cy="38" r="36"></circle>
+                    </svg>
+                    <div class="percentage">
+                        <p>+81%</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="visits">
+            <div class="status">
+                <div class="info">
+                    <h3>Site Visit</h3>
+                    <h1>24,981</h1>
+                </div>
+                <div class="progresss">
+                    <svg>
+                        <circle cx="38" cy="38" r="36"></circle>
+                    </svg>
+                    <div class="percentage">
+                        <p>-48%</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="searches">
+            <div class="status">
+                <div class="info">
+                    <h3>Searches</h3>
+                    <h1>14,147</h1>
+                </div>
+                <div class="progresss">
+                    <svg>
+                        <circle cx="38" cy="38" r="36"></circle>
+                    </svg>
+                    <div class="percentage">
+                        <p>+21%</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End of Analyses -->
+    <!-- New Users Section -->
+    <div class="new-users">
+        <h2>New Users</h2>
+        <div class="user-list">
+            <div class="user">
+                <img src="images/profile-2.jpg">
+                <h2>Jack</h2>
+                <p>54 Min Ago</p>
+            </div>
+            <div class="user">
+                <img src="images/profile-3.jpg">
+                <h2>Amir</h2>
+                <p>3 Hours Ago</p>
+            </div>
+            <div class="user">
+                <img src="images/profile-4.jpg">
+                <h2>Ember</h2>
+                <p>6 Hours Ago</p>
+            </div>
+            <div class="user">
+                <img src="images/plus.png">
+                <h2>More</h2>
+                <p>New User</p>
+            </div>
+        </div>
+    </div>
+    <!-- End of New Users Section -->
+    <!-- Recent Orders Table -->
+    <div class="recent-orders">
+        <h2>Recent Orders</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Course Name</th>
+                    <th>Course Number</th>
+                    <th>Payment</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <a href="#">Show All</a>
+    </div>
+    <!-- End of Recent Orders -->
+
+</main>
+<!-- End of Main Content -->
