@@ -120,7 +120,8 @@ namespace ShopNow.Presentation.Controllers
 			var claims = new List<Claim>
 			{
 				new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-				new Claim(ClaimTypes.Name, user.UserName!)
+				new Claim(ClaimTypes.Name, user.UserName!),
+				new Claim(ClaimTypes.Email, user.Email!),
 			};
 
 			claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));

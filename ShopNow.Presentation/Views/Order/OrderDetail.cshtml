@@ -1,0 +1,55 @@
+﻿@model ShopNow.Presentation.Models.OrderViewModel.OrderDetailViewModel
+@{
+	ViewBag.Title = "Order Details";
+}
+
+<div class="container mt-5">
+	<div class="order-container card p-4 shadow-sm">
+		<h1 class="order-title text-center mb-4">Order Details</h1>
+
+		<div class="order-info">
+			<p><strong>Order ID:</strong> @Model.OrderDetailDTO.Id</p>
+			<p><strong>Payment:</strong>@Model.OrderDetailDTO.PaymentMethod</p>
+			<p><strong>Status:</strong> <span class="status pending">@Model.OrderDetailDTO.OrderStatus</span></p>
+			<p><strong>Shipping Fee:</strong> <span class="status pending">@Model.OrderDetailDTO.ShipFee.ToString("#,### VND")</span></p>
+		</div>
+
+		@* <h2 class="order-section-title">Customer Information</h2> *@
+		@* <div class="customer-info"> *@
+		@*     <p><strong>Name:</strong> @Model.</p> *@
+		@*     <p><strong>Email:</strong> johndoe@example.com</p> *@
+		@*     <p><strong>Phone:</strong> +1 234 567 890</p> *@
+		@* </div> *@
+
+		<h2 class="order-section-title">Shipping Address</h2>
+		<div class="shipping-info">
+			<p>@Model.OrderDetailDTO.ShippingAddress</p>
+		</div>
+
+		<h2 class="order-section-title">Items</h2>
+		<table class="table table-bordered order-items">
+			<thead class="thead-dark">
+				<tr>
+					<th>Product</th>
+					<th>Quantity</th>
+					<th>Price</th>
+					<th>Subtotal</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var item in Model.OrderDetailDTO.OrderItems)
+				{
+					<tr>
+						<td>@item.Name</td>
+						<td>@item.Quantity</td>
+						<td>@item.Price.ToString("#,### VND")</td>
+						<td>@((item.Price * item.Quantity).ToString("#,### VND")).</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+
+		<h2 class="order-section-title">Total</h2>
+		<p class="order-total text-right font-weight-bold"><strong>Total Amount:</strong> @Model.OrderDetailDTO.TotalCost.ToString("#,### VND")</p>
+	</div>
+</div>

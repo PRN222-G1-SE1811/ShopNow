@@ -128,8 +128,17 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
+
+app.UseEndpoints(endpoints =>
+{
+	endpoints.MapControllerRoute(
+		name: "CreatePaymentUrl",
+		pattern: "CreatePaymentUrl/{id}",
+		defaults: new { controller = "Payment", action = "CreatePaymentUrl" });
+});
+
 //app.MapControllerRoute(
-//	name: "default",
-//	pattern: "{controller=Product}/{action=Manage}");
+//    name: "default",
+//    pattern: "{controller=Product}/{action=Manage}");
 
 app.Run();

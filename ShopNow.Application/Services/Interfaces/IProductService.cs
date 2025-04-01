@@ -1,4 +1,6 @@
-﻿using ShopNow.Application.DTOs.Products;
+﻿using ShopNow.Application.DTOs.Categories;
+using ShopNow.Application.DTOs.Products;
+using ShopNow.Presentation.Models.ProductViewModel;
 using ShopNow.Shared.Paginators;
 using ShowNow.Domain.Entities;
 
@@ -7,7 +9,13 @@ namespace ShopNow.Application.Services.Interfaces
     public interface IProductService
     {
         Task<Guid> CreateProduct(CreateProductDTO createProductDTO);
+        Task<bool> EditProduct(EditProductDTO editeProductDTO);
+        Task<EditProductDTO> GetProductEditById(Guid id);
         Task<ProductDetailDTO> GetProductDetail(Guid productId);
+
+
+        public Task<bool> DeleteProduct(Guid id);
+
 
         Task<IEnumerable<ProductDTO>> GetAllProductsAsync();
         Task<(List<ProductDTO> Products, int TotalCount)> GetPaginatedAsync(
