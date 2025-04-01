@@ -1,0 +1,218 @@
+﻿@model ShopNow.Presentation.Models.ProductViewModel.EditProductViewModel
+
+@{
+    ViewData["Title"] = "Edit Product";
+}
+
+<!-- CSS toàn trang -->
+<style>
+    /* Background color cho trang */
+    body {
+        background-color: #f4f6f9;
+        font-family: Arial, sans-serif;
+    }
+
+    .container {
+        margin-top: 20px;
+    }
+
+    /* Card */
+    .card {
+        border: none;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-header {
+        background-color: #007bff;
+        color: #fff;
+        text-align: center;
+        padding: 10px;
+        border-radius: 5px 5px 0 0;
+    }
+
+    .card-body {
+        background-color: #fff;
+        padding: 30px;
+        border-radius: 0 0 5px 5px;
+    }
+
+    h3 {
+        font-size: 1.5rem;
+        margin-bottom: 0;
+    }
+
+    /* Labels */
+    .form-label {
+        font-weight: 600;
+        color: #333;
+    }
+
+    /* Input fields */
+    .form-control, .form-select, .textarea {
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        padding: 12px;
+        font-size: 1rem;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .form-control:focus, .form-select:focus, .textarea:focus {
+        border-color: #007bff;
+        outline: none;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+    }
+
+    /* Error messages */
+    .text-danger {
+        font-size: 0.875rem;
+        color: #e74a3b;
+        margin-top: 5px;
+    }
+
+    /* Button styles */
+    .btn {
+        font-size: 1rem;
+        padding: 12px 20px;
+        border-radius: 5px;
+        text-transform: uppercase;
+        font-weight: bold;
+        transition: all 0.3s ease;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        color: #fff;
+        border: none;
+    }
+
+    .btn-success {
+        background-color: #28a745;
+        color: #fff;
+        border: none;
+    }
+
+    /* Hover effect on buttons */
+    .btn:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Spacing between buttons */
+    .d-flex {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+    }
+
+    
+    /* TinyMCE editor */
+    .tox-toolbar, .tox-statusbar {
+        background-color: #f1f1f1;
+        border-color: #ddd;
+    }
+</style>
+
+<!-- HTML content -->
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-lg border-0 rounded">
+                <div class="card-header bg-primary text-white text-center">
+                    <h3 class="mb-0">Edit Product</h3>
+                </div>
+                <div class="card-body">
+                    <form asp-action="EditProduct" asp-controller="Product" method="post">
+                        <input type="hidden" asp-for="EditProductDTO.Id" />
+
+                        <!-- Nhóm Name & Price -->
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="EditProductDTO.Name" class="form-label fw-bold">
+                                    <i class="fas fa-tag"></i> Product Name
+                                </label>
+                                <input asp-for="EditProductDTO.Name" class="form-control" placeholder="Enter product name" />
+                                <span asp-validation-for="EditProductDTO.Name" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="EditProductDTO.Price" class="form-label fw-bold">
+                                    <i class="fas fa-dollar-sign"></i> Price
+                                </label>
+                                <input asp-for="EditProductDTO.Price" class="form-control" placeholder="Enter price" />
+                                <span asp-validation-for="EditProductDTO.Price" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <!-- Description toàn dòng -->
+                        <div class="mb-3">
+                            <label asp-for="EditProductDTO.Description" class="form-label fw-bold">
+                                <i class="fas fa-align-left"></i> Description
+                            </label>
+                            <textarea asp-for="EditProductDTO.Description" id="Description" class="form-control" rows="4"></textarea>
+                            <span asp-validation-for="EditProductDTO.Description" class="text-danger"></span>
+                        </div>
+
+                        <!-- Nhóm Status & Featured -->
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="EditProductDTO.Status" class="form-label fw-bold">
+                                    <i class="fas fa-toggle-on"></i> Status
+                                </label>
+                                <select asp-for="EditProductDTO.Status" class="form-select" asp-items="Model.Status">
+                                    <option value="">Select Status</option>
+                                </select>
+                                <span asp-validation-for="EditProductDTO.Status" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="EditProductDTO.Featured" class="form-label fw-bold">
+                                    <i class="fas fa-star"></i> Featured
+                                </label>
+                                <select asp-for="EditProductDTO.Featured" class="form-select" asp-items="Model.Features">
+                                    <option value="">Select Featured</option>
+                                </select>
+                                <span asp-validation-for="EditProductDTO.Featured" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <!-- Category toàn dòng -->
+                        <div class="mb-3">
+                            <label asp-for="EditProductDTO.CategoryID" class="form-label fw-bold">
+                                <i class="fas fa-list"></i> Category
+                            </label>
+                            <select asp-for="EditProductDTO.CategoryID" class="form-select" asp-items="Model.Categories">
+                                <option value="">Select Category</option>
+                            </select>
+                            <span asp-validation-for="EditProductDTO.CategoryID" class="text-danger"></span>
+                        </div>
+
+                        <!-- Nút bấm đẹp, căn chỉnh hợp lý -->
+                        <div class="mt-4">
+                            <div class=" justify-content-center" style=" padding-top: 45px;">
+                                <a href="@Url.Action("Manage", "Product")" class="btn btn-secondary px-4">
+                                    <i class="fas fa-arrow-left"></i> Back
+                                </a>
+                                <button type="submit" class="btn btn-success px-4">
+                                    <i class="fas fa-save"></i> Save
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="https://cdn.tiny.cloud/1/0vuhsazgiv5rjydoflr0l0zbhd3khd54mgka0cgti58u6pld/tinymce/6/tinymce.min.js"
+            referrerpolicy="origin"></script>
+    <script src="~/js/admin/tinyMCE.js"></script>
+    <script type="text/javascript">
+        loadEditor('#Description');
+    </script>
+}
