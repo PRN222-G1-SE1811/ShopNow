@@ -73,23 +73,35 @@ namespace ShopNow.Presentation.Controllers
 
 
 
-        [AllowAnonymous]
+  //      [AllowAnonymous]
+		//[HttpGet("Product/{id:guid}")]
+		//public async Task<IActionResult> ProductDetail(Guid id)
+		//{
+		//	var productDetail = await productService.GetProductDetail(id);
+
+		//	if (productDetail == null)
+		//	{
+		//		// Nếu không có dữ liệu sản phẩm, có thể trả về 404 hoặc trang lỗi
+		//		return NotFound();
+		//	}
+
+		//	ProductDetailViewModel model = new ProductDetailViewModel()
+		//	{
+		//		ProductDetailDTO = productDetail,
+		//	};
+
+		//	return View(model);
+		//}
+
+		[AllowAnonymous]
 		[HttpGet("Product/{id:guid}")]
 		public async Task<IActionResult> ProductDetail(Guid id)
 		{
 			var productDetail = await productService.GetProductDetail(id);
-
-			if (productDetail == null)
-			{
-				// Nếu không có dữ liệu sản phẩm, có thể trả về 404 hoặc trang lỗi
-				return NotFound();
-			}
-
 			ProductDetailViewModel model = new ProductDetailViewModel()
 			{
 				ProductDetailDTO = productDetail,
 			};
-
 			return View(model);
 		}
 
