@@ -25,7 +25,7 @@ namespace ShopNow.Application.Services.Implements
 				await file.CopyToAsync(stream);
 			}
 
-			return $"/images/prodducts/{filename}";
+			return $"/images/products/{filename}";
 		}
 
 	}

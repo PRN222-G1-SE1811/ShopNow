@@ -1,0 +1,163 @@
+﻿@model ShopNow.Presentation.Models.ProductViewModel.EditProductVariantViewModel
+
+@{
+    ViewData["Title"] = "Edit Product Variant";
+}
+
+<div class="container mt-5">
+    <h1 class="text-center mb-4">@ViewData["Title"]</h1>
+
+    <form asp-action="EditProductVariant" method="post" enctype="multipart/form-data">
+        <div class="row">
+            @for (var i = 0; i < Model.ProductVariantDTOs.Count; i++)
+            {
+                var variant = Model.ProductVariantDTOs[i];
+
+                <div class="col-md-6 mb-3">
+                    <div class="form-group">
+                        <label asp-for="@Model.ProductVariantDTOs[i].Discount" class="font-weight-bold">Discount</label>
+                        <input asp-for="@Model.ProductVariantDTOs[i].Discount" class="form-control" placeholder="Enter Discount" />
+                        <span asp-validation-for="@Model.ProductVariantDTOs[i].Discount" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <div class="form-group">
+                        <label asp-for="@Model.ProductVariantDTOs[i].Quantity" class="font-weight-bold">Quantity</label>
+                        <input asp-for="@Model.ProductVariantDTOs[i].Quantity" class="form-control" placeholder="Enter Quantity" />
+                        <span asp-validation-for="@Model.ProductVariantDTOs[i].Quantity" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <div class="form-group">
+                        <label asp-for="@Model.ProductVariantDTOs[i].Color" class="font-weight-bold">Color</label>
+                        <input asp-for="@Model.ProductVariantDTOs[i].Color" class="form-control" placeholder="Enter Color" />
+                        <span asp-validation-for="@Model.ProductVariantDTOs[i].Color" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <div class="form-group">
+                        <label asp-for="@Model.ProductVariantDTOs[i].Size" class="font-weight-bold">Size</label>
+                        <input asp-for="@Model.ProductVariantDTOs[i].Size" class="form-control" placeholder="Enter Size" />
+                        <span asp-validation-for="@Model.ProductVariantDTOs[i].Size" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <!-- Upload Images -->
+                <div class="col-md-12 mb-4">
+                    <div class="form-group">
+                        <label class="font-weight-bold">Upload Images</label>
+                        <input type="file" name="Assets" multiple class="form-control-file" />
+                    </div>
+                </div>
+
+                <!-- Hiển thị các ảnh cũ nếu có -->
+                @if (ViewBag.ExistingAssets != null && ViewBag.ExistingAssets.Count > 0)
+                {
+                    <div class="col-md-12 mb-4 existing-images">
+                        <h5 class="font-weight-bold">Existing Images</h5>
+                        <ul class="list-inline">
+                            @foreach (var asset in ViewBag.ExistingAssets)
+                            {
+                                <li class="list-inline-item">
+                                    <img src="@asset.Path" alt="Asset Image" width="100" height="100" class="rounded" />
+                                    <div class="mt-2">@asset.FileName</div>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                }
+            }
+        </div>
+
+        <!-- Save Changes and Cancel Buttons -->
+        <div class="form-group text-center">
+            <button type="submit" class="btn btn-primary btn-lg px-5 py-3 mr-2">Save Changes</button>
+            <a href="javascript:history.back()" class="btn btn-secondary btn-lg px-5 py-3">Cancel</a>
+        </div>
+    </form>
+</div>
+<style>
+    .container {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .font-weight-bold {
+        font-weight: 600;
+    }
+
+    .btn {
+        width: 200px;
+        height: 45px;
+        font-size: 16px;
+        border-radius: 30px;
+    }
+
+    .btn-lg {
+        font-size: 18px;
+    }
+
+    .form-control {
+        height: 40px;
+        font-size: 16px;
+    }
+
+    .form-control-file {
+        padding: 10px;
+    }
+
+    .existing-images img {
+        border-radius: 8px;
+    }
+
+    .existing-images {
+        margin-top: 20px;
+    }
+
+    .row {
+        margin-bottom: 20px;
+    }
+
+    .col-md-6 {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    .mb-3 {
+        margin-bottom: 1rem;
+    }
+
+    .mb-4 {
+        margin-bottom: 1.5rem;
+    }
+
+    /* Hover effect on the buttons */
+    .btn:hover {
+        opacity: 0.9;
+    }
+
+    .text-center {
+        text-align: center;
+    }
+
+    h1 {
+        font-size: 28px;
+        margin-bottom: 20px;
+    }
+
+    .list-inline-item img {
+        border-radius: 8px;
+    }
+
+    .list-inline-item {
+        margin-right: 10px;
+    }
+
+</style>

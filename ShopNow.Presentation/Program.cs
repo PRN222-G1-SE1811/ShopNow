@@ -138,7 +138,7 @@ app.UseEndpoints(endpoints =>
 });
 
 //app.MapControllerRoute(
-//	name: "default",
-//	pattern: "{controller=Product}/{action=Manage}");
+//    name: "default",
+//    pattern: "{controller=Product}/{action=Manage}");
 
 app.Run();
