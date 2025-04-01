@@ -30,11 +30,11 @@ namespace ShopNow.Presentation.Controllers
         }
 
 
-        //public async Task<IActionResult> Manage(string? search, string? category, string? sortBy, int pageIndex = 1, int pageSize = 10)
-        //{
-        //    // Lấy danh sách categories
-        //    var categories = await categoryService.GetSelectListCategories();
-        //    ViewBag.Categories = categories.Select(c => c.Name).ToList();
+        public async Task<IActionResult> Manage(string? search, string? category, string? sortBy, int pageIndex = 1, int pageSize = 10)
+        {
+            // Lấy danh sách categories
+            var categories = await categoryService.GetSelectListCategories();
+            ViewBag.Categories = categories.Select(c => c.Name).ToList();
 
 		[HttpGet]
 		public async Task<IActionResult> Manage(string? search, string? category, string? sortBy, int pageIndex = 1, int pageSize = 10)

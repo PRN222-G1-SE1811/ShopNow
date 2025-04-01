@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using ShopNow.Application.Services.Interfaces;
 using ShopNow.Presentation.Models;
 using System.Diagnostics;
 
@@ -9,13 +10,15 @@ namespace ShopNow.Presentation.Controllers
 	public class HomeController : Controller
 	{
 		private readonly ILogger<HomeController> _logger;
+		private readonly IProductService _productService;
 
-		public HomeController(ILogger<HomeController> logger)
+		public HomeController(ILogger<HomeController> logger, IProductService productService)
 		{
 			_logger = logger;
+			_productService = productService;
 		}
 
-		public IActionResult Index()
+		public async Task<IActionResult> IndexAsync()
 		{
             if (User.IsInRole("Administrator"))
             {
@@ -23,7 +26,8 @@ namespace ShopNow.Presentation.Controllers
             }
             else
             {
-                return View();
+				var products = await _productService.GetAllProductsAsync();
+                return View(products);
             }
         }
 
