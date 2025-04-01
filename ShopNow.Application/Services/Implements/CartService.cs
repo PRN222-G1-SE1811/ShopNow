@@ -65,5 +65,38 @@ namespace ShopNow.Application.Services.Implements
 
 			return mapper.Map<CartDTO>(cart);
 		}
+		public async Task<bool> RemoveFromCart(Guid userId, Guid itemId)
+		{
+			var cart = await unitOfWork.GenericRepository
+	.GetQueryAble()
+	.Include(x => x.CartItems)
+	.FirstOrDefaultAsync(x => x.CustomerId == userId);
+
+			if (cart == null) return false;
+
+			var itemToRemove = cart.CartItems!.FirstOrDefault(c => c.Id == itemId);
+			if (itemToRemove == null) return false;
+
+			cart.CartItems!.Remove(itemToRemove);
+			await unitOfWork.SaveChangesAsync();
+			return true;
+		}
+		public async Task<bool> UpdateCartItem(Guid userId, UpdateCartItemDTO updateCartItemDTO)
+		{
+			var cart = await unitOfWork.GenericRepository
+	.GetQueryAble()
+	.Include(x => x.CartItems)
+	.FirstOrDefaultAsync(x => x.CustomerId == userId);
+
+			if (cart == null) return false;
+
+			var itemToUpdate = cart.CartItems!.FirstOrDefault(c => c.Id == updateCartItemDTO.ItemId);
+			if (itemToUpdate == null) return false;
+
+			itemToUpdate.Quantity = updateCartItemDTO.Quantity;
+			await unitOfWork.SaveChangesAsync();
+			return true;
+		}
+
 	}
 }

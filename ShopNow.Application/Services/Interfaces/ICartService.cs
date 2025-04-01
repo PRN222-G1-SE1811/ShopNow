@@ -7,5 +7,7 @@ namespace ShopNow.Application.Services.Interfaces
 	{
 		Task<bool> AddToCart(Guid userId, AddCartItemDTO addCartItemDTO);
 		Task<CartDTO> GetCart(Guid userId);
+		Task<bool> RemoveFromCart(Guid userId, Guid itemId);
+		Task<bool> UpdateCartItem(Guid userId, UpdateCartItemDTO updateCartItemDTO);
 	}
 }

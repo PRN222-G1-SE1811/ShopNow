@@ -34,5 +34,9 @@ namespace ShopNow.Infrastructure.Repositories
 		{
 			return await shopNowDbContext.SaveChangesAsync();
 		}
-	}
+        public async Task<int> SaveChangesAsync()
+        {
+            return await shopNowDbContext.SaveChangesAsync();
+        }
+    }
 }
