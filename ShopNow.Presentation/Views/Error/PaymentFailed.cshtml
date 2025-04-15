@@ -2,17 +2,34 @@
     ViewBag.Title = "Payment Failed";
 }
 
-<div class="container text-center">
-    <h2>Payment Failed</h2>
-    <p>
-        @if (!string.IsNullOrEmpty(ViewBag.OrderId))
-        {
-            <span>Order was not found. Please check and try again.</span>
-        }
-        else
-        {
-            <span>The payment was unsuccessful. Please try again.</span>
-        }
-    </p>
-    <a href="@Url.Action("Index", "Home")" class="btn btn-primary">Return to Homepage</a>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow border-0 rounded-3">
+                <div class="card-body text-center p-5">
+                    <div class="mb-4">
+                        <i class="fa fa-times-circle-o text-danger" aria-hidden="true" style="font-size: 4rem;"></i>
+                    </div>
+                    <h2 class="card-title mb-3 fw-bold">Payment Failed</h2>
+                    <div class="card-text mb-4">
+                        @if (!string.IsNullOrEmpty(ViewBag.OrderId))
+                        {
+                            <p class="fs-5 text-muted">Order was not found. Please check and try again.</p>
+                        }
+                        else
+                        {
+                            <p class="fs-5 text-muted">The payment was unsuccessful.</p>
+                        }
+                    </div>
+                    <div class="d-grid gap-2">
+                        <a href="@Url.Action("Index", "Home")" class="btn btn-primary btn-lg">Return to Homepage</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+@section Scripts {
+    <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
+}

@@ -7,5 +7,6 @@ namespace ShowNow.Domain.Interfaces
 		public IGenericRepository<TEntity, TPrimaryKey> GenericRepository { get; }
 		public Task<int> CommitAsync();
 		public int Commit();
+		public Task<int> SaveChangesAsync();
 	}
 }

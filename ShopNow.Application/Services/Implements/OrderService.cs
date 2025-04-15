@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using ShopNow.Application.DTOs.CheckOut;
 using ShopNow.Application.DTOs.Orders;
 using ShopNow.Application.DTOs.User;
@@ -11,15 +12,24 @@ namespace ShopNow.Application.Services.Implements
 {
 	public class OrderService(IUnitOfWork<Order, Guid> unitOfWork, IMapper mapper, IShippingService shippingService, IProductVariantService productVariantService) : IOrderService
 	{
-		public async Task CreateOrder(List<CheckOutItemDTO> items, UserDetailDTO userDetail, PaymentMethod paymentMethod, decimal shippingFee)
+		public async Task<Guid> CreateOrder(List<CheckOutItemDTO> items, UserDetailDTO userDetail, PaymentMethod paymentMethod, decimal shippingFee)
 		{
-			await InsertOrder(items, userDetail, paymentMethod, shippingFee);
+			var id = await InsertOrder(items, userDetail, paymentMethod, shippingFee);
+			return id;
 		}
 
 		public OrderDTO GetOrderDetail(Guid id)
 		{
 			var order = unitOfWork.GenericRepository.GetById(id);
 			return mapper.Map<OrderDTO>(order);
+		}
+
+		public async Task<OrderDetailDTO> GetOrderDetailReport(Guid id)
+		{
+			var query = unitOfWork.GenericRepository.GetQueryAble();
+			query = query.Include(_ => _.OrderItems);
+			var order = await query.FirstOrDefaultAsync(x => x.Id == id);
+			return mapper.Map<OrderDetailDTO>(order);
 		}
 
 		public async Task<bool> UpdateOrderStatus(Guid id, OrderStatus status)
@@ -30,7 +40,7 @@ namespace ShopNow.Application.Services.Implements
 			return await unitOfWork.CommitAsync() > 0;
 		}
 
-		private async Task<bool> InsertOrder(List<CheckOutItemDTO> items, UserDetailDTO userDetail, PaymentMethod paymentMethod, decimal shippingFee)
+		private async Task<Guid> InsertOrder(List<CheckOutItemDTO> items, UserDetailDTO userDetail, PaymentMethod paymentMethod, decimal shippingFee)
 		{
 			decimal totalCost = items.Sum(item => item.Price) + shippingFee;
 
@@ -65,8 +75,8 @@ namespace ShopNow.Application.Services.Implements
 			};
 
 			unitOfWork.GenericRepository.Insert(order);
-
-			return await unitOfWork.CommitAsync() > 0;
+			await unitOfWork.CommitAsync();
+			return order.Id;
 		}
 
 	}
