@@ -60,7 +60,7 @@ namespace ShopNow.Presentation.Controllers
 
 
 
-		public async Task<IActionResult> ProductDetail(Guid id)
+		public async Task<IActionResult> ProductDetailAdmin(Guid id)
 		{
 			var productDetail = await productService.GetProductDetail(id);
 
@@ -295,7 +295,6 @@ namespace ShopNow.Presentation.Controllers
 
 
         [HttpPost]
-        [HttpPost]
         public async Task<IActionResult> EditProductVariant(Guid id, EditProductVariantViewModel viewModel)
         {
             if (ModelState.IsValid)
@@ -325,7 +324,7 @@ namespace ShopNow.Presentation.Controllers
                     }
 
                     // Nếu không có Referer header, chuyển hướng về trang chi tiết sản phẩm
-                    return RedirectToAction("ProductDetail", "Product", new { id = viewModel.ProductVariantDTOs.First().Id });
+                    return RedirectToAction("ProductDetailAdmin", "Product", new { id = viewModel.ProductVariantDTOs.First().Id });
                 }
             }
 
@@ -372,7 +371,7 @@ namespace ShopNow.Presentation.Controllers
             }
 
             // Nếu không có URL, mặc định sẽ quay lại trang chi tiết sản phẩm
-            return RedirectToAction("ProductDetail", "Product", new { id = id });
+            return RedirectToAction("ProductDetailAdmin", "Product", new { id = id });
         }
 
 
